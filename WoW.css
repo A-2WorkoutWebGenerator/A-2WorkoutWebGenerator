@@ -1,0 +1,269 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background-color: rgba(24, 210, 89, 0.9);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 1rem;
+    color: #222;
+}
+
+.name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.menu {
+    display: flex;
+    gap: 2rem;
+}
+
+.menu-items, .menu-items-dropdown {
+    position: relative;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.menu-items:hover, .menu-items-dropdown:hover {
+    color: #4CAF50;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    border-radius: 4px;
+    padding: 0.5rem 0;
+}
+
+.menu-items-dropdown:hover .submenu {
+    display: block;
+}
+
+.submenu .aItems {
+    display: block;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s;
+}
+
+.submenu .aItems:hover {
+    background-color: #f1f1f1;
+    color: #4CAF50;
+}
+
+main {
+    padding-top: 70px; 
+}
+
+.content {
+    height: 90vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./images/img_fundal3.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.content p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Main Content Sections */
+.workout-routines, .statistics, .gallery, .contacts {
+    padding: 5rem 10%;
+    background-color: white;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #222;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 60px;
+    background-color: #4CAF50;
+}
+
+/* Alternating Sections */
+.statistics, .contacts {
+    background-color: #f9f9f9;
+}
+
+/* Contact Form */
+form {
+    max-width: 500px;
+    margin: 2rem 0;
+}
+
+input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #3e8e41;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: white;
+    padding: 2rem 10%;
+    text-align: center;
+}
+
+.footer-content p {
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .header {
+        margin-bottom: 1rem;
+    }
+    
+    .menu {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .submenu {
+        position: static;
+        box-shadow: none;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .workout-routines, .statistics, .gallery, .contacts {
+        padding: 3rem 5%;
+    }
+}
+
+/* Call-to-Action Button */
+.cta-button {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: bold;
+    margin-top: 2rem;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cta-button:hover {
+    background-color: #3e8e41;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Social Media Icons */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-icon {
+    color: #777;
+    font-size: 1.5rem;
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: #4CAF50;
+}

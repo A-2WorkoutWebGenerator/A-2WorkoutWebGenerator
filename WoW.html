@@ -2,14 +2,16 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name = "viewport" content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <link rel="stylesheet" href="WoW.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
         <title>Workout Web Generator</title>
     </head>
     <body>
         <nav>
             <div class="header">
-                <div class="logo">Logo</div>
-                <div class="name">Name</div>
+                <div class="logo">FitGen</div>
+                <div class="name">Workout Web Generator</div>
             </div>
             <div class="menu">
                 <span class="menu-items-dropdown">Login
@@ -20,70 +22,79 @@
                 </span>
                 <span class="menu-items-dropdown">Workout routines
                     <div class="submenu">
-                        <a class="aItems" href='#workouts'>Fitness</a></span>
-                        <a class="aItems" href='#workouts'>Yoga</a></span>
-                        <a class="aItems" href='#workouts'>Pilates</a></span>
-                        <a class="aItems" href='#workouts'>Cardio</a></span>
-                        <a class="aItems" href='#workouts'>Strength</a></span>
-                        <a class="aItems" href='#workouts'>HIIT</a></span>
-                        <a class="aItems" href='#workouts'>CrossFit</a></span>
-                        <a class="aItems" href='#workouts'>Dance</a></span>
-                        <a class="aItems" href='#workouts'>Boxing</a></span>
-                        <a class="aItems" href='#workouts'>Martial Arts</a></span>
-                        <a class="aItems" href='#workouts'>Bodyweight</a></span>
-                        <a class="aItems" href='#workouts'>Outdoor</a></span>
+                        <a class="aItems" href='#workouts'>Fitness</a>
+                        <a class="aItems" href='#workouts'>Yoga</a>
+                        <a class="aItems" href='#workouts'>Pilates</a>
+                        <a class="aItems" href='#workouts'>Cardio</a>
+                        <a class="aItems" href='#workouts'>Strength</a>
+                        <a class="aItems" href='#workouts'>HIIT</a>
+                        <a class="aItems" href='#workouts'>CrossFit</a>
+                        <a class="aItems" href='#workouts'>Dance</a>
+                        <a class="aItems" href='#workouts'>Boxing</a>
+                        <a class="aItems" href='#workouts'>Martial Arts</a>
+                        <a class="aItems" href='#workouts'>Bodyweight</a>
+                        <a class="aItems" href='#workouts'>Outdoor</a>
                     </div>
                 </span>
-                <span class="menu-items"><a class="aItems" href='#stats'>Statistics</a></span>
+                <span class="menu-items"><a class="aItems" href='#stats'>Champions</a></span>
                 <span class="menu-items"><a class="aItems" href='#gallery'>Gallery</a></span>
                 <span class="menu-items"><a class="aItems" href='#contacts'>Contacts</a></span>
             </div>
         </nav>
         <main>
             <div class="content">
-                <h1>Workout Web Generator</h1>
-                <p>Welcome to the Workout Web Generator! Here you can create and manage your workout routines.</p>
-                <p>Use the navigation menu to explore different sections of the website.</p>
+                <h1>You Can & You Will</h1>
+                <p>Welcome to the Workout Web Generator! Create personalized workout routines tailored to your fitness goals.</p>
+                <p>For your convenience: fitness workouts online & in person so you always have the choice.</p>
+                <a href="#workouts" class="cta-button">Start Now</a>
             </div>
-            <div class="workout-routines">
+            
+            <div id="workouts" class="workout-routines">
                 <h2>Workout Routines</h2>
                 <p>Choose from a variety of workout routines tailored to your fitness goals.</p>
                 <p>Whether you're looking to build strength, improve flexibility, or boost endurance, we have something for everyone!</p>
                 <p>Explore our collection of workout routines and find the perfect fit for you.</p>
-                <p>Start now!</p> 
-                <!-- asta sa fie un buton care imi deschide o fereastra cu tipurile de workouts de unde deja selectezi ce vrei tu -->
+                <a href="#workouts" class="cta-button">Explore Workouts</a>
             </div>
-            <div class="statistics">
-                <h2>You can get personalized statistic</h2>
+            
+            <div id="stats" class="statistics">
+                <h2>Personalized Statistics</h2>
                 <p>Track your progress and see how far you've come!</p>
                 <p>Log your workouts and view your statistics over time.</p>
                 <p>Use the statistics section to set goals and monitor your achievements.</p>
+                <a href="#stats" class="cta-button">View Stats</a>
             </div>
-            <div class="gallery">
+            
+            <div id="gallery" class="gallery">
                 <h2>Gallery</h2>
                 <p>Check out our gallery for workout inspiration and motivation!</p>
                 <p>Share your own workout photos and connect with the community.</p>
                 <p>Use the gallery to showcase your progress and achievements.</p>
+                <a href="#gallery" class="cta-button">View Gallery</a>
             </div>
-            <div class="contacts">
+            
+            <div id="contacts" class="contacts">
                 <h2>Contacts</h2>
                 <p>If you have any questions or need assistance, feel free to reach out!</p>
                 <p>Contact us through the form below or connect with us on social media.</p>
                 <form action="#">
                     <label for="name">Name:</label><br>
-                    <input type="text" id="name" name="name"><br>
+                    <input type="text" id="name" name="name" placeholder="Your name"><br>
                     <label for="email">Email:</label><br>
-                    <input type="email" id="email" name="email"><br>
+                    <input type="email" id="email" name="email" placeholder="Your email"><br>
                     <input type="submit" value="Submit">
                 </form>
-                <p>Follow us on social media for the latest updates and tips!</p>   
-                <p>Facebook | Instagram | Twitter</p>
+                <p>Follow us on social media for the latest updates and tips!</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
-        </div>
         </main>
         <footer>
             <div class="footer-content">
-                <p>&copy; 2023 Workout Web Generator. All rights reserved.</p>
+                <p>&copy; 2025 Workout Web Generator. All rights reserved.</p>
                 <p>Privacy Policy | Terms of Service</p>
             </div>
         </footer>
