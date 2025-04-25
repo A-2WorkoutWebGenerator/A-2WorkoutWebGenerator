@@ -93,6 +93,47 @@ nav {
     color: #4CAF50;
 }
 
+.nested-dropdown {
+    position: relative;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+}
+
+.submenu-right {
+    left: 100%;
+    top: 0;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popup-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    position: relative;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
 main {
     padding-top: 70px; 
 }

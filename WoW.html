@@ -16,24 +16,52 @@
             <div class="menu">
                 <span class="menu-items-dropdown">Login
                     <div class="submenu">
-                        <a class="aItems" href='#create'>Create Account</a>
-                        <a class="aItems" href='#myAccount'>My Account</a>
+                        <button class="aItems" onclick="openPopup()">Create Account</button>
+                        <div id="popup" class="popup">
+                            <div class="popup-content">
+                                <span class="close" onclick="closePopup()">&times;</span>
+                                <h2>Enter your account</h2>
+                                <form>
+                                    <label for="username">Username:</label>
+                                    <input type="text" id="username" name="username" placeholder="Username" required />
+                                    <label for="password">Password:</label>
+                                    <input type="password" id="password" name="password" placeholder="Password" required />
+                                    <input type="submit" value="Login" />
+                                </form>
+                                <a href="register.html">Don't have an account? Register now!</a>
+                            </div>
+                        </div>
+                        <button class="aItems" onclick="openPopup()">My Account</button>
+                        <div id="popup" class="popup">
+                            <div class="popup-content">
+                                <span class="close" onclick="closePopup()">&times;</span>
+                                <h2>Register</h2>
+                                <form>
+                                    <label for="username">Username:</label>
+                                    <input type="text" id="username" name="username" placeholder="Username" required />
+                                    <label for="password">Password:</label>
+                                    <input type="password" id="password" name="password" placeholder="Password" required />
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" placeholder="Email" required />
+                                    <input type="submit" value="Register" />
+                                </form>
+                                <a href="login.html">Already have an account? Login here!</a>
+                            </div>
+                        </div>
                     </div>
                 </span>
                 <span class="menu-items-dropdown">Workout routines
                     <div class="submenu">
-                        <a class="aItems" href='#workouts'>Fitness</a>
-                        <a class="aItems" href='#workouts'>Yoga</a>
-                        <a class="aItems" href='#workouts'>Pilates</a>
-                        <a class="aItems" href='#workouts'>Cardio</a>
-                        <a class="aItems" href='#workouts'>Strength</a>
-                        <a class="aItems" href='#workouts'>HIIT</a>
-                        <a class="aItems" href='#workouts'>CrossFit</a>
-                        <a class="aItems" href='#workouts'>Dance</a>
-                        <a class="aItems" href='#workouts'>Boxing</a>
-                        <a class="aItems" href='#workouts'>Martial Arts</a>
-                        <a class="aItems" href='#workouts'>Bodyweight</a>
-                        <a class="aItems" href='#workouts'>Outdoor</a>
+                        <a class="aItems" href='#workouts'>Physiotherapy</a>
+                        <a class="aItems" href='#workouts'>Kinetotherapy</a>
+                        <span class="aItems menu-items-dropdown nested-dropdown">Sports
+                            <div class="submenu submenu-right">
+                                <a class="aItems" href='#workouts'>Football</a>
+                                <a class="aItems" href='#workouts'>Basketball</a>
+                                <a class="aItems" href='#workouts'>Tennis</a>
+                                <a class="aItems" href='#workouts'>Swimming</a>
+                            </div>
+                        </span>
                     </div>
                 </span>
                 <span class="menu-items"><a class="aItems" href='#stats'>Champions</a></span>
@@ -99,4 +127,5 @@
             </div>
         </footer>
     </body>
+    <script src="WoW.js"></script>
 </html>
