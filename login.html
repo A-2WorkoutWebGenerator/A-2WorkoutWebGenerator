@@ -2,20 +2,92 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Login - FitGen</title>
-    <link rel="stylesheet" type="text/css" th:href="login.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
-    <div class="content">
-        <h2>Enter your account</h2>
-        <form>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Username" required />
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required />
-            <input type="submit" value="Login" />
-        </form>
-        <a href="register.html">Don't have an account? Register now!</a>
+    <div class="particles-container">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
+    
+    <div class="container">
+        <div class="split-layout">
+            <div class="visual-side">
+                <div class="brand-container">
+                    <div class="logo-wrapper">
+                        <div class="logo-text">FitGen</div>
+                        <div class="logo-shine"></div>
+                    </div>
+                    <div class="tagline">Transform Your Workout Experience</div>
+                </div>
+                
+                <div class="decoration">
+                    <div class="circle circle-1"></div>
+                    <div class="circle circle-2"></div>
+                    <div class="circle circle-3"></div>
+                    <div class="line line-1"></div>
+                    <div class="line line-2"></div>
+                </div>
+            </div>
+            
+            <div class="form-side">
+                <div class="form-wrapper">
+                    <div class="form-header">
+                        <h1>Welcome Back</h1>
+                        <p>Login to your account</p>
+                    </div>
+                    
+                    <form class="login-form">
+                        <div class="input-wrapper">
+                            <div class="input-group">
+                                <label for="username">Username</label>
+                                <div class="input-field">
+                                    <i class="icon fas fa-user"></i>
+                                    <input type="text" id="username" name="username" placeholder="Enter your username" required />
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="password">Password</label>
+                                <div class="input-field">
+                                    <i class="icon fas fa-lock"></i>
+                                    <input type="password" id="password" name="password" placeholder="Enter your password" required />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="options-row">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember" name="remember">
+                                <label for="remember">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-link">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">
+                            <span>Log In</span>
+                            <div class="btn-effect"></div>
+                        </button>
+                    </form>
+                    
+                    <div class="form-footer">
+                        <p>Don't have an account? <a href="register.html">Sign Up</a></p>
+                        <a href="WoW.html" class="home-link">Back to home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="FormValidation.js"></script>
+    <script src="ApiService.js"></script>
 </body>
 </html>

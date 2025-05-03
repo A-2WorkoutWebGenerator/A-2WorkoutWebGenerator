@@ -1,0 +1,7 @@
+services:
+  webserver:
+    build: .
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./:/var/www/html

@@ -16,38 +16,8 @@
             <div class="menu">
                 <span class="menu-items-dropdown">Login
                     <div class="submenu">
-                        <button class="aItems" onclick="openPopup()">Create Account</button>
-                        <div id="popup" class="popup">
-                            <div class="popup-content">
-                                <span class="close" onclick="closePopup()">&times;</span>
-                                <h2>Enter your account</h2>
-                                <form>
-                                    <label for="username">Username:</label>
-                                    <input type="text" id="username" name="username" placeholder="Username" required />
-                                    <label for="password">Password:</label>
-                                    <input type="password" id="password" name="password" placeholder="Password" required />
-                                    <input type="submit" value="Login" />
-                                </form>
-                                <a href="register.html">Don't have an account? Register now!</a>
-                            </div>
-                        </div>
-                        <button class="aItems" onclick="openPopup()">My Account</button>
-                        <div id="popup" class="popup">
-                            <div class="popup-content">
-                                <span class="close" onclick="closePopup()">&times;</span>
-                                <h2>Register</h2>
-                                <form>
-                                    <label for="username">Username:</label>
-                                    <input type="text" id="username" name="username" placeholder="Username" required />
-                                    <label for="password">Password:</label>
-                                    <input type="password" id="password" name="password" placeholder="Password" required />
-                                    <label for="email">Email:</label>
-                                    <input type="email" id="email" name="email" placeholder="Email" required />
-                                    <input type="submit" value="Register" />
-                                </form>
-                                <a href="login.html">Already have an account? Login here!</a>
-                            </div>
-                        </div>
+                        <a class="aItems" href="register.html">Create Account</a>
+                        <a class="aItems" href="login.html">My Account</a>
                     </div>
                 </span>
                 <span class="menu-items-dropdown">Workout routines
