@@ -1,8 +1,18 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+$input_data = json_decode(file_get_contents("php://input"), true);
+if ($input_data && isset($input_data['password'])) {
+    $input_data['password'] = '********';
+}
+error_log("Register request received: " . json_encode($input_data));
 
 require_once 'db_connection.php';
 
@@ -14,65 +24,52 @@ $data = json_decode(file_get_contents("php://input"));
 if (!empty($data->username) && !empty($data->email) && !empty($data->password)) {
     $conn = getConnection();
     
-    if (isset($conn['error'])) {
-        $response['message'] = $conn['error'];
+    if ($conn === false) { 
+        $response['message'] = "Database connection failed";
         echo json_encode($response);
         exit();
     }
     
     $username = htmlspecialchars(strip_tags($data->username));
     $email = htmlspecialchars(strip_tags($data->email));
+
+    $check_query = "SELECT * FROM users WHERE username = $1 OR email = $2";
+    $result = pg_query_params($conn, $check_query, array($username, $email));
     
-    $check_stmt = oci_parse($conn, "SELECT * FROM users WHERE username = :username OR email = :email");
-    oci_bind_by_name($check_stmt, ":username", $username);
-    oci_bind_by_name($check_stmt, ":email", $email);
-    oci_execute($check_stmt);
-    
-    if (($row = oci_fetch_assoc($check_stmt)) !== false) {
-        if ($row['USERNAME'] === $username) {
+    if (pg_num_rows($result) > 0) {
+        $row = pg_fetch_assoc($result);
+        if ($row['username'] === $username) {
             $response['message'] = "Username already taken. Please choose another one.";
         } else {
             $response['message'] = "Email already registered. Please use another email or login.";
         }
     } else {
         $hashed_password = password_hash($data->password, PASSWORD_DEFAULT);
+
+        $insert_query = "INSERT INTO users (username, email, password, created_at, updated_at) 
+                        VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id";
+        error_log("Executing query: " . $insert_query . " with values: " . $username . ", " . $email . ", [password]");
+        $result = pg_query_params($conn, $insert_query, array($username, $email, $hashed_password));
         
-        $insert_stmt = oci_parse($conn, 
-            "INSERT INTO users (username, email, password, created_at, updated_at) 
-             VALUES (:username, :email, :password, SYSTIMESTAMP, SYSTIMESTAMP)");
-        
-        oci_bind_by_name($insert_stmt, ":username", $username);
-        oci_bind_by_name($insert_stmt, ":email", $email);
-        oci_bind_by_name($insert_stmt, ":password", $hashed_password);
-        
-        if (oci_execute($insert_stmt)) {
-            $id_query = oci_parse($conn, "SELECT id FROM users WHERE username = :username");
-            oci_bind_by_name($id_query, ":username", $username);
-            oci_execute($id_query);
-            
-            if (($user = oci_fetch_assoc($id_query)) !== false) {
-                $response['success'] = true;
-                $response['message'] = "Registration successful!";
-                $response['user_id'] = $user['ID'];
-            } else {
-                $response['message'] = "Registration successful, but unable to retrieve user ID.";
-            }
-            
-            oci_free_statement($id_query);
+        if ($result) {
+            $row = pg_fetch_assoc($result);
+            error_log("Insert successful, returned ID: " . $row['id']);
+            $response['success'] = true;
+            $response['message'] = "Registration successful!";
+            $response['user_id'] = $row['id'];
         } else {
-            $e = oci_error($insert_stmt);
-            $response['message'] = "Registration failed: " . $e['message'];
+            $error_message = pg_last_error($conn);
+            error_log("Insert failed with error: " . $error_message);
+            $response['message'] = "Registration failed: " . $error_message;
         }
-        
-        oci_free_statement($insert_stmt);
     }
     
-    oci_free_statement($check_stmt);
-    oci_close($conn);
+    pg_close($conn);
     
 } else {
     $response['message'] = "Missing required fields. Please provide username, email, and password.";
 }
 
+error_log("Register response: " . json_encode($response));
 echo json_encode($response);
 ?>

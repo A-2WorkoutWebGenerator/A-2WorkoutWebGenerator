@@ -1,17 +1,23 @@
 <?php
 function getConnection() {
-    $username = "student";
-    $password = "STUDENT";
-    $connection_string = "host.docker.internal:1521/XE";
+    $host = "db";
+    $port = "5432";
+    $dbname = "fitgen";
+    $username = "postgres";
+    $password = "postgres";
     
-    $conn = oci_connect($username, $password, $connection_string);
+    $connection_string = "host=$host port=$port dbname=$dbname user=$username password=$password";
+    
+    error_log("Attempting to connect to PostgreSQL: $host:$port/$dbname");
+    
+    $conn = @pg_connect($connection_string);
     
     if (!$conn) {
-        $e = oci_error();
-        error_log("Database connection error: " . $e['message']);
-        return ["error" => "Database connection failed: " . $e['message']];
+        error_log("Database connection failed: " . pg_last_error());
+        return false;
     }
     
+    error_log("Successfully connected to PostgreSQL database");
     return $conn;
 }
 ?>
