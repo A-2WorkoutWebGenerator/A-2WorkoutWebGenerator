@@ -61,7 +61,7 @@ function loginUser(username, password) {
             }
             
             setTimeout(() => {
-                window.location.href = "WoW.html";
+                window.location.href = "WoW-Logged.html";
             }, 1500);
         } else {
             showMessage(data.message || "Login failed. Please check your credentials.", "error");

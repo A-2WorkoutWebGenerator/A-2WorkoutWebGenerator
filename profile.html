@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personalized Workout Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+    <h2>Complete Your Profile for a Personalized Workout Plan</h2>
+
+    <form action="submit_profile.php" method="POST">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="">Select</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" min="10" max="100" required>
+
+        <label for="goal">Main Fitness Goal:</label>
+        <select id="goal" name="goal" required>
+            <option value="">Select your goal</option>
+            <option value="lose_weight">Lose Weight</option>
+            <option value="build_muscle">Build Muscle</option>
+            <option value="flexibility">Improve Flexibility</option>
+            <option value="endurance">Increase Endurance</option>
+            <option value="rehab">Rehabilitation</option>
+        </select>
+
+        <label for="activity_level">Current Activity Level:</label>
+        <select id="activity_level" name="activity_level" required>
+            <option value="">Select level</option>
+            <option value="sedentary">Sedentary</option>
+            <option value="light">Lightly Active</option>
+            <option value="moderate">Moderately Active</option>
+            <option value="active">Very Active</option>
+        </select>
+
+        <label for="injuries">Injuries or Medical Conditions (optional):</label>
+        <textarea id="injuries" name="injuries" placeholder="E.g. lower back pain, knee issues..."></textarea>
+
+        <label for="equipment">Available Equipment:</label>
+        <select id="equipment" name="equipment">
+            <option value="none">No equipment</option>
+            <option value="basic">Basic equipment (dumbbells, bands)</option>
+            <option value="full">Full gym access</option>
+        </select>
+
+        <button type="submit">Generate Workout Plan</button>
+    </form>
+
+</body>
+</html>
