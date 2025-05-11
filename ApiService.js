@@ -2,7 +2,7 @@ const API_URL = "http://localhost:8081";
 
 function registerUser(username, email, password) {
     toggleLoadingState(true, "Creating account...");
-        const userData = {
+    const userData = {
         username: username,
         email: email,
         password: password
@@ -57,11 +57,25 @@ function loginUser(username, password) {
             
             if (data.token) {
                 localStorage.setItem("authToken", data.token);
+
                 localStorage.setItem("user", JSON.stringify(data.user));
+ 
+                if (data.user && data.user.username) {
+                    localStorage.setItem("username", data.user.username);
+                }
+                if (data.user && data.user.email) {
+                    localStorage.setItem("email", data.user.email);
+                }
             }
             
+            console.log("Stored data:", {
+                token: data.token,
+                user: data.user,
+                username: data.user ? data.user.username : null
+            });
+            
             setTimeout(() => {
-                window.location.href = "WoW-Logged.html";
+                window.location.href = "profile.html"; 
             }, 1500);
         } else {
             showMessage(data.message || "Login failed. Please check your credentials.", "error");

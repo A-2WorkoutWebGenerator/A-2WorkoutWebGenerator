@@ -5,42 +5,61 @@
     <title>FitGen Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="dashboard">
-        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="logo"><a href="#">FitGen</a></div>
+            <div class="logo"><a href="WoW-Logged.html">FitGen</a></div>
+            <div class="user-welcome">
+                <span id="sidebar-username">Welcome</span>
+            </div>
             <ul class="menu nav-links">
-                <li><a href="#account" class="nav-link active" data-section="account">My Account</a></li>
-                <li><a href="#workouts" class="nav-link" data-section="workouts">My Workouts</a></li>
-                <li><a href="#stats" class="nav-link" data-section="stats">Statistics</a></li>
-                <li><a href="#preferences" class="nav-link" data-section="preferences">Workout Preferences</a></li>
-                <li><a href="WoW-Logged.html" class="nav-link" data-section="home">Home</a></li>
+                <li><a href="#account" class="nav-link active" data-section="account">
+                    <i class="fas fa-user"></i> My Account
+                </a></li>
+                <li><a href="#workouts" class="nav-link" data-section="workouts">
+                    <i class="fas fa-dumbbell"></i> My Workouts
+                </a></li>
+                <li><a href="#stats" class="nav-link" data-section="stats">
+                    <i class="fas fa-chart-line"></i> Statistics
+                </a></li>
+                <li><a href="#preferences" class="nav-link" data-section="preferences">
+                    <i class="fas fa-sliders-h"></i> Workout Preferences
+                </a></li>
+                <li><a href="WoW-Logged.html" class="nav-link" data-section="home">
+                    <i class="fas fa-home"></i> Home
+                </a></li>
             </ul>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
         </aside>        
-
-        <!-- Main Content -->
         <main class="content">
             <section id="account" class="section active">
-                <h2>User Profile</h2>
-                <form action="submit_profile.php" method="POST" enctype="multipart/form-data">
+                <div class="profile-header">
+                    <h2 id="profile-title">User Profile</h2>
+                </div>
+                <form action="submit-profile.php" method="POST" enctype="multipart/form-data" id="profile-form">
+                    <input type="hidden" id="auth_token" name="auth_token" value="">
+                    
                     <div class="profile-photo">
                         <label for="profile_pic">Profile Picture:</label><br>
                         <input type="file" id="profile_pic" name="profile_pic" accept="image/*"><br><br>
-                        <!-- Imaginea existentă poate fi redată dintr-un URL dacă există -->
                         <img src="default-profile.png" alt="Profile Photo" id="profile_preview" width="150">
                     </div>
-                
+
                     <label for="first_name">First Name:</label>
                     <input type="text" id="first_name" name="first_name" value="">
-                
+
                     <label for="last_name">Last Name:</label>
                     <input type="text" id="last_name" name="last_name" value="">
-                
+
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" value="">
-                
+
                     <label for="gender">Gender:</label>
                     <select id="gender" name="gender">
                         <option value="">Select</option>
@@ -48,10 +67,10 @@
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                     </select>
-                
+
                     <label for="age">Age:</label>
                     <input type="number" id="age" name="age" min="10" max="100" value="">
-                
+
                     <label for="goal">Main Fitness Goal:</label>
                     <select id="goal" name="goal">
                         <option value="">Select your goal</option>
@@ -61,7 +80,7 @@
                         <option value="endurance">Increase Endurance</option>
                         <option value="rehab">Rehabilitation</option>
                     </select>
-                
+
                     <label for="activity_level">Current Activity Level:</label>
                     <select id="activity_level" name="activity_level">
                         <option value="">Select level</option>
@@ -70,20 +89,20 @@
                         <option value="moderate">Moderately Active</option>
                         <option value="active">Very Active</option>
                     </select>
-                
+
                     <label for="injuries">Injuries or Medical Conditions (optional):</label>
                     <textarea id="injuries" name="injuries" placeholder="E.g. lower back pain, knee issues..."></textarea>
-                
+
                     <label for="equipment">Available Equipment:</label>
                     <select id="equipment" name="equipment">
+                        <option value="">Select available equipment</option>
                         <option value="none">No equipment</option>
                         <option value="basic">Basic equipment (dumbbells, bands)</option>
                         <option value="full">Full gym access</option>
                     </select>
-                
-                    <br><br>
+
                     <button type="submit">Save Profile</button>
-                    </form>
+                </form>
             </section>
 
             <section id="workouts" class="section hidden">
@@ -124,7 +143,6 @@
                         <option value="full">Full gym</option>
                     </select>
 
-                    <br><br>
                     <button type="submit">Generate Workout</button>
                 </form>
             </section>
