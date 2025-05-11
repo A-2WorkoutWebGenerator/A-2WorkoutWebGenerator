@@ -4,71 +4,415 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="kinetotherapy.css">
-    <title>Kinetotherapy Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <title>Kinetotherapy - FitGen</title>
 </head>
 <body>
+    <div class="page-wrapper">
+        <!-- Header Navigation -->
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW-Logged.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link active">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy.html">Physiotherapy</a>
+                        <a href="kinetotherapy.html" class="active">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="#football">Football</a>
+                                <a href="#basketball">Basketball</a>
+                                <a href="#tennis">Tennis</a>
+                                <a href="#swimming">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#champions" class="nav-link">Champions</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#contacts" class="nav-link">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="profile.html" class="btn btn-outline">Profile</a>
+                <a href="WoW.html" class="btn btn-outline">Logout</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
 
-    <h1>Kinetotherapy Overview & Exercise Routines</h1>
+        <!-- Hero Section -->
+        <section class="hero kinesio-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Kinetotherapy</h1>
+                    <p class="subtitle">Therapeutic healing through movement</p>
+                    <p class="description">
+                        Kinetotherapy is a specialized therapeutic discipline based on human movement, used to improve strength, 
+                        flexibility, coordination, and function through carefully designed exercises. It's an essential component 
+                        in rehabilitation after injuries, surgeries, and for managing chronic conditions.
+                    </p>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-heart-pulse"></i>
+                            </div>
+                            <span>Promotes healing</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-person-walking"></i>
+                            </div>
+                            <span>Improves mobility</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <span>Builds strength</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <span>Enhances coordination</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image-container">
+                    <div class="image-frame">
+                        <img src="images/img_kineto.webp" alt="Kinetotherapy Session" onerror="this.src='/api/placeholder/600/400';this.onerror='';">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="routines-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Expert-Designed Exercise Routines</h2>
+                    <p>Therapeutic programs designed by professional kinesiotherapists</p>
+                </div>
 
-    <p>
-        Kinetotherapy is a therapeutic discipline based on human movement.
-        It is used to improve strength, flexibility, coordination, and function through active and passive exercises.
-        Kinetotherapy is commonly applied in rehabilitation after injuries, surgeries, or neurological disorders.
-    </p>
+                <div class="routines-grid">
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>Postural Correction</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Correct posture problems and alignment issues with these foundational exercises</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Wall posture alignment</li>
+                                <li><i class="fas fa-check"></i> Scapular retraction exercises</li>
+                                <li><i class="fas fa-check"></i> Chin tucks</li>
+                                <li><i class="fas fa-check"></i> Thoracic spine extensions</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>3-4x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-bars-progress"></i>
+                            </div>
+                            <h3>Core Stabilization</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Strengthen your core muscles for better stability and reduced back pain</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Pelvic tilts</li>
+                                <li><i class="fas fa-check"></i> Dead bug exercise</li>
+                                <li><i class="fas fa-check"></i> Bird-dog</li>
+                                <li><i class="fas fa-check"></i> Plank (with modifications)</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>20-25 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>2-3x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=OD3xUoQfuWY" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-person-walking"></i>
+                            </div>
+                            <h3>Functional Mobility</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Improve daily movement patterns and recover functional independence</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Heel-to-toe walking</li>
+                                <li><i class="fas fa-check"></i> Side steps with resistance band</li>
+                                <li><i class="fas fa-check"></i> Squat to chair</li>
+                                <li><i class="fas fa-check"></i> Marching in place</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>3-5x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=akMJlvLqZYg" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3>Neuromuscular Coordination</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Advanced</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Enhance the connection between your brain and muscles for better coordination</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Balance board drills</li>
+                                <li><i class="fas fa-check"></i> Step-ups with arm movements</li>
+                                <li><i class="fas fa-check"></i> Single-leg balance</li>
+                                <li><i class="fas fa-check"></i> Cross-crawl patterns</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>25-30 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>2-3x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=X2UJr3hb-Xg" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="info-section">
+            <div class="container">
+                <div class="info-columns">
+                    <div class="info-column">
+                        <h3><i class="fas fa-user-doctor"></i> When to Seek Kinetotherapy</h3>
+                        <ul class="info-list">
+                            <li>After injury or surgery</li>
+                            <li>For chronic pain management</li>
+                            <li>To improve movement limitations</li>
+                            <li>For neurological conditions</li>
+                            <li>For preventive care</li>
+                            <li>For sports performance enhancement</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-notes-medical"></i> Benefits of Kinetotherapy</h3>
+                        <ul class="info-list">
+                            <li>Reduces pain and inflammation</li>
+                            <li>Improves joint mobility and muscle strength</li>
+                            <li>Enhances balance and coordination</li>
+                            <li>Accelerates recovery after injuries</li>
+                            <li>Prevents future injuries</li>
+                            <li>Improves overall quality of life</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-circle-exclamation"></i> Important Notes</h3>
+                        <div class="info-notice">
+                            <p>Always consult with a healthcare provider before starting any new exercise program, especially if you have existing health conditions or injuries.</p>
+                            <p>These routines are meant as general guidance and should be personalized by a qualified kinesiotherapist for your specific needs.</p>
+                            <a href="#" class="btn btn-sm">Find a professional</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Common questions about kinetotherapy practices and benefits</p>
+                </div>
 
-    <h2>Recommended Kinetotherapy Exercise Routines</h2>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>What is the difference between physiotherapy and kinetotherapy?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>While both focus on rehabilitation, physiotherapy is a broader field that includes various treatment modalities like electrotherapy, ultrasound, and manual therapy. Kinetotherapy specifically focuses on movement-based exercises and physical activities as therapeutic interventions.</p>
+                        </div>
+                    </div>
 
-    <div class="routine">
-        <h3>1. Postural Correction Routine</h3>
-        <ul>
-            <li>Wall posture alignment</li>
-            <li>Scapular retraction exercises</li>
-            <li>Chin tucks</li>
-            <li>Thoracic spine extensions</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank">Watch on YouTube</a>
-        </p>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>How long does a typical kinetotherapy program last?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The duration varies based on your condition and goals. Acute injuries might require 4-6 weeks, while chronic conditions may need ongoing management. A typical session lasts 30-60 minutes, with frequency ranging from daily to 2-3 times per week.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Can I practice kinetotherapy exercises at home?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, most kinetotherapy programs include home exercises. After initial assessment and training with a professional, you'll receive a customized routine to practice at home. Regular follow-ups ensure proper technique and progression.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Is kinetotherapy covered by insurance?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Many insurance plans cover kinetotherapy when medically necessary and prescribed by a doctor. Coverage varies by provider and plan. It's recommended to check with your insurance company about specific coverage details and requirements.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="cta">
+            <div class="cta-content">
+                <h2>Ready to Start Your Healing Journey?</h2>
+                <p>Get personalized kinetotherapy plans tailored to your specific needs and goals.</p>
+                <a href="#" class="btn btn-primary btn-large">Get Personalized Plan</a>
+            </div>
+        </section>
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Partners</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Community</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
-    <div class="routine">
-        <h3>2. Core Stabilization Routine</h3>
-        <ul>
-            <li>Pelvic tilts</li>
-            <li>Dead bug exercise</li>
-            <li>Bird-dog</li>
-            <li>Plank (with modifications)</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=OD3xUoQfuWY" target="_blank">Watch on YouTube</a>
-        </p>
-    </div>
-
-    <div class="routine">
-        <h3>3. Functional Mobility Routine</h3>
-        <ul>
-            <li>Heel-to-toe walking</li>
-            <li>Side steps with resistance band</li>
-            <li>Squat to chair</li>
-            <li>Marching in place</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=akMJlvLqZYg" target="_blank">Watch on YouTube</a>
-        </p>
-    </div>
-
-    <div class="routine">
-        <h3>4. Neuromuscular Coordination Routine</h3>
-        <ul>
-            <li>Balance board drills</li>
-            <li>Step-ups with arm movements</li>
-            <li>Single-leg balance</li>
-            <li>Cross-crawl patterns</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=X2UJr3hb-Xg" target="_blank">Watch on YouTube</a>
-        </p>
-    </div>
-
+    <script src="kinetotherapy.js"></script>
 </body>
 </html>
