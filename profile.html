@@ -2,66 +2,135 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Personalized Workout Form</title>
+    <title>FitGen Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="profile.css">
 </head>
 <body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo"><a href="#">FitGen</a></div>
+            <ul class="menu nav-links">
+                <li><a href="#account" class="nav-link active" data-section="account">My Account</a></li>
+                <li><a href="#workouts" class="nav-link" data-section="workouts">My Workouts</a></li>
+                <li><a href="#stats" class="nav-link" data-section="stats">Statistics</a></li>
+                <li><a href="#preferences" class="nav-link" data-section="preferences">Workout Preferences</a></li>
+                <li><a href="WoW-Logged.html" class="nav-link" data-section="home">Home</a></li>
+            </ul>
+        </aside>        
 
-    <h2>Complete Your Profile for a Personalized Workout Plan</h2>
+        <!-- Main Content -->
+        <main class="content">
+            <section id="account" class="section active">
+                <h2>User Profile</h2>
+                <form action="submit_profile.php" method="POST" enctype="multipart/form-data">
+                    <div class="profile-photo">
+                        <label for="profile_pic">Profile Picture:</label><br>
+                        <input type="file" id="profile_pic" name="profile_pic" accept="image/*"><br><br>
+                        <!-- Imaginea existentă poate fi redată dintr-un URL dacă există -->
+                        <img src="default-profile.png" alt="Profile Photo" id="profile_preview" width="150">
+                    </div>
+                
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" value="">
+                
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" value="">
+                
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="">
+                
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender">
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="10" max="100" value="">
+                
+                    <label for="goal">Main Fitness Goal:</label>
+                    <select id="goal" name="goal">
+                        <option value="">Select your goal</option>
+                        <option value="lose_weight">Lose Weight</option>
+                        <option value="build_muscle">Build Muscle</option>
+                        <option value="flexibility">Improve Flexibility</option>
+                        <option value="endurance">Increase Endurance</option>
+                        <option value="rehab">Rehabilitation</option>
+                    </select>
+                
+                    <label for="activity_level">Current Activity Level:</label>
+                    <select id="activity_level" name="activity_level">
+                        <option value="">Select level</option>
+                        <option value="sedentary">Sedentary</option>
+                        <option value="light">Lightly Active</option>
+                        <option value="moderate">Moderately Active</option>
+                        <option value="active">Very Active</option>
+                    </select>
+                
+                    <label for="injuries">Injuries or Medical Conditions (optional):</label>
+                    <textarea id="injuries" name="injuries" placeholder="E.g. lower back pain, knee issues..."></textarea>
+                
+                    <label for="equipment">Available Equipment:</label>
+                    <select id="equipment" name="equipment">
+                        <option value="none">No equipment</option>
+                        <option value="basic">Basic equipment (dumbbells, bands)</option>
+                        <option value="full">Full gym access</option>
+                    </select>
+                
+                    <br><br>
+                    <button type="submit">Save Profile</button>
+                    </form>
+            </section>
 
-    <form action="submit_profile.php" method="POST">
-        <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" required>
+            <section id="workouts" class="section hidden">
+                <h2>My Workouts</h2>
+                <p>Here will be the user's workouts...</p>
+            </section>
 
-        <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" required>
+            <section id="stats" class="section hidden">
+                <h2>Statistics</h2>
+                <p>Workout frequency, performance metrics, etc.</p>
+            </section>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+            <section id="preferences" class="section hidden">
+                <h2>Workout Preferences</h2>
+                <form>
+                    <label for="muscle_group">Muscle Group:</label>
+                    <select id="muscle_group" name="muscle_group">
+                        <option value="full_body">Full Body</option>
+                        <option value="upper_body">Upper Body</option>
+                        <option value="lower_body">Lower Body</option>
+                        <option value="core">Core</option>
+                    </select>
 
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" required>
-            <option value="">Select</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-        </select>
+                    <label for="intensity">Intensity:</label>
+                    <select id="intensity" name="intensity">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
 
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" min="10" max="100" required>
+                    <label for="duration">Duration (minutes):</label>
+                    <input type="number" id="duration" name="duration" min="10" max="90">
 
-        <label for="goal">Main Fitness Goal:</label>
-        <select id="goal" name="goal" required>
-            <option value="">Select your goal</option>
-            <option value="lose_weight">Lose Weight</option>
-            <option value="build_muscle">Build Muscle</option>
-            <option value="flexibility">Improve Flexibility</option>
-            <option value="endurance">Increase Endurance</option>
-            <option value="rehab">Rehabilitation</option>
-        </select>
+                    <label for="equipment_pref">Equipment:</label>
+                    <select id="equipment_pref" name="equipment_pref">
+                        <option value="none">No equipment</option>
+                        <option value="basic">Basic</option>
+                        <option value="full">Full gym</option>
+                    </select>
 
-        <label for="activity_level">Current Activity Level:</label>
-        <select id="activity_level" name="activity_level" required>
-            <option value="">Select level</option>
-            <option value="sedentary">Sedentary</option>
-            <option value="light">Lightly Active</option>
-            <option value="moderate">Moderately Active</option>
-            <option value="active">Very Active</option>
-        </select>
+                    <br><br>
+                    <button type="submit">Generate Workout</button>
+                </form>
+            </section>
+        </main>
+    </div>
 
-        <label for="injuries">Injuries or Medical Conditions (optional):</label>
-        <textarea id="injuries" name="injuries" placeholder="E.g. lower back pain, knee issues..."></textarea>
-
-        <label for="equipment">Available Equipment:</label>
-        <select id="equipment" name="equipment">
-            <option value="none">No equipment</option>
-            <option value="basic">Basic equipment (dumbbells, bands)</option>
-            <option value="full">Full gym access</option>
-        </select>
-
-        <button type="submit">Generate Workout Plan</button>
-    </form>
-
+    <script src="profile.js"></script>
 </body>
 </html>
