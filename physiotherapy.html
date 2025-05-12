@@ -4,71 +4,415 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="physiotherapy.css">
-    <title>Physiotherapy Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <title>Physiotherapy - FitGen</title>
 </head>
 <body>
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW-Logged.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link active">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy.html" class="active">Physiotherapy</a>
+                        <a href="kinetotherapy.html">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="#football">Football</a>
+                                <a href="#basketball">Basketball</a>
+                                <a href="#tennis">Tennis</a>
+                                <a href="#swimming">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#champions" class="nav-link">Champions</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#contacts" class="nav-link">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="profile.html" class="btn btn-outline">Profile</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+        <section class="hero physio-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Physiotherapy</h1>
+                    <p class="subtitle">Evidence-based movement and rehabilitation</p>
+                    <p class="description">
+                        Physiotherapy is a healthcare profession focused on the prevention, diagnosis, and 
+                        treatment of physical impairments, movement dysfunctions, and disabilities. 
+                        It helps restore function, improve mobility, relieve pain, and prevent further injury 
+                        through exercise, manual therapy, and education.
+                    </p>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <span>Relieves pain</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <span>Improves function</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-child"></i>
+                            </div>
+                            <span>Enhances mobility</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <span>Prevents injury</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image-container">
+                    <div class="image-frame">
+                        <img src="images/img_phisio.webp" alt="Physiotherapy Session" onerror="this.src='/api/placeholder/600/400';this.onerror='';">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="routines-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Evidence-Based Exercise Routines</h2>
+                    <p>Therapeutic programs designed by professional physiotherapists</p>
+                </div>
 
-    <h1>Physiotherapy Information & Training Routines</h1>
+                <div class="routines-grid">
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-lower-back"></i>
+                            </div>
+                            <h3>Lower Back Pain Relief</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Gentle exercises designed to alleviate lower back pain and improve spine mobility</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Pelvic tilts</li>
+                                <li><i class="fas fa-check"></i> Knee-to-chest stretch</li>
+                                <li><i class="fas fa-check"></i> Cat-Cow stretch</li>
+                                <li><i class="fas fa-check"></i> Bridge exercise</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>Daily</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=78uskIw0R0Y" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
 
-    <p>
-        Physiotherapy (also known as physical therapy) is a healthcare profession focused on the prevention,
-        diagnosis, and treatment of physical impairments, movement dysfunctions, and disabilities.
-        It helps restore function, improve mobility, relieve pain, and prevent further injury.
-    </p>
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-shoulder"></i>
+                            </div>
+                            <h3>Shoulder Mobility</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Exercises to improve shoulder range of motion and reduce pain and stiffness</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Pendulum swings</li>
+                                <li><i class="fas fa-check"></i> Wall slides</li>
+                                <li><i class="fas fa-check"></i> Shoulder blade squeezes</li>
+                                <li><i class="fas fa-check"></i> External rotations with band</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>3-4x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=4WnfgA6YHHg" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-walking"></i>
+                            </div>
+                            <h3>Knee Rehabilitation</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Progressive</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Strengthen the muscles around your knee and improve joint stability</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Quad sets</li>
+                                <li><i class="fas fa-check"></i> Straight leg raises</li>
+                                <li><i class="fas fa-check"></i> Heel slides</li>
+                                <li><i class="fas fa-check"></i> Step-ups</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>20-30 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>3x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=1N-3pO_M0OQ" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                            </div>
+                            <h3>Full-Body Stretching</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Improve overall flexibility and reduce muscle tension with this complete routine</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Neck stretches</li>
+                                <li><i class="fas fa-check"></i> Hamstring stretch</li>
+                                <li><i class="fas fa-check"></i> Hip flexor stretch</li>
+                                <li><i class="fas fa-check"></i> Calf stretches</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>Daily</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=XeXz8fIZDCE" target="_blank" class="btn btn-primary">
+                                <i class="fab fa-youtube"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="info-section">
+            <div class="container">
+                <div class="info-columns">
+                    <div class="info-column">
+                        <h3><i class="fas fa-question-circle"></i> When to Seek Physiotherapy</h3>
+                        <ul class="info-list">
+                            <li>After injury or surgery</li>
+                            <li>For chronic pain management</li>
+                            <li>To improve range of motion</li>
+                            <li>For sports-related injuries</li>
+                            <li>For balance and coordination issues</li>
+                            <li>For neurological conditions</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-list-check"></i> What to Expect</h3>
+                        <ul class="info-list">
+                            <li>Initial assessment and diagnosis</li>
+                            <li>Treatment plan development</li>
+                            <li>Hands-on therapeutic techniques</li>
+                            <li>Customized exercise programs</li>
+                            <li>Education on self-management</li>
+                            <li>Regular progress evaluations</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Important Notice</h3>
+                        <div class="info-notice">
+                            <p>Always consult with a qualified healthcare professional before starting any new exercise program, especially if you have existing health conditions, injuries, or chronic pain.</p>
+                            <p>These routines are meant as general guidance and should be personalized by a qualified physiotherapist for your specific needs.</p>
+                            <a href="#" class="btn btn-sm">Find a professional</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Common questions about physiotherapy practices and benefits</p>
+                </div>
 
-    <h2>Recommended Physiotherapy Exercise Routines</h2>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>What is the difference between physiotherapy and chiropractic care?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Physiotherapy focuses on restoring movement and function through exercise, manual therapy, and education. Chiropractors primarily focus on the spine and use adjustments to address misalignments. Physiotherapists typically use a broader range of techniques and focus on long-term rehabilitation and pain management strategies.</p>
+                        </div>
+                    </div>
 
-    <div class="routine">
-        <h3>1. Lower Back Pain Routine</h3>
-        <ul>
-            <li>Pelvic tilts</li>
-            <li>Knee-to-chest stretch</li>
-            <li>Cat-Cow stretch</li>
-            <li>Bridge exercise</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=78uskIw0R0Y" target="_blank">Watch on YouTube</a>
-        </p>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>How many physiotherapy sessions will I need?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The number of sessions varies based on your condition, its severity, and your individual response to treatment. Acute injuries might require 6-8 sessions over a few weeks, while chronic conditions may need ongoing management. Your physiotherapist will develop a personalized treatment plan and provide an estimate during your initial assessment.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Is physiotherapy painful?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Some techniques may cause temporary discomfort, especially when working on injured or inflamed areas. However, treatment should never cause significant pain. Your physiotherapist will work within your comfort level and adjust techniques accordingly. Any discomfort usually subsides quickly after treatment, and the benefits outweigh the temporary discomfort.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Is a doctor's referral required for physiotherapy?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>In most countries and states, physiotherapists can provide direct access care without a physician referral. However, some insurance plans may require a doctor's referral for coverage. It's advisable to check with your insurance provider regarding their specific requirements before scheduling an appointment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="cta">
+            <div class="cta-content">
+                <h2>Ready to Start Your Recovery Journey?</h2>
+                <p>Get personalized physiotherapy programs tailored to your specific needs and goals.</p>
+                <a href="#" class="btn btn-primary btn-large">Get Personalized Plan</a>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Partners</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Community</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
-    <div class="routine">
-        <h3>2. Shoulder Mobility Routine</h3>
-        <ul>
-            <li>Pendulum swings</li>
-            <li>Wall slides</li>
-            <li>Shoulder blade squeezes</li>
-            <li>External rotations with band</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=4WnfgA6YHHg" target="_blank">Watch on YouTube</a>
-        </p>
-    </div>
-
-    <div class="routine">
-        <h3>3. Knee Rehabilitation Routine</h3>
-        <ul>
-            <li>Quad sets</li>
-            <li>Straight leg raises</li>
-            <li>Heel slides</li>
-            <li>Step-ups</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=1N-3pO_M0OQ" target="_blank">Watch on YouTube</a>
-        </p>
-    </div>
-
-    <div class="routine">
-        <h3>4. General Full-Body Stretching</h3>
-        <ul>
-            <li>Neck stretches</li>
-            <li>Hamstring stretch</li>
-            <li>Hip flexor stretch</li>
-            <li>Calf stretches</li>
-        </ul>
-        <p>
-            <a href="https://www.youtube.com/watch?v=XeXz8fIZDCE" target="_blank">Watch on YouTube</a>
-        </p>
-    </div>
-
+    <script src="physiotherapy.js"></script>
 </body>
 </html>
