@@ -16,6 +16,11 @@ function getConnection() {
         error_log("Database connection failed: " . pg_last_error());
         return false;
     }
+    $schemaResult = pg_query($conn, "SET search_path TO fitgen, public");
+    if (!$schemaResult) {
+        error_log("Failed to set search_path: " . pg_last_error($conn));
+        return false;
+    }
     
     error_log("Successfully connected to PostgreSQL database");
     return $conn;

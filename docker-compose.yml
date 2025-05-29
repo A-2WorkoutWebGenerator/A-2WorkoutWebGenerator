@@ -23,7 +23,9 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./fitgen_plpgsql_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./fitgen_plpgsql_triggers.sql:/docker-entrypoint-initdb.d/02-triggers.sql
+
 
 volumes:
   postgres_data:

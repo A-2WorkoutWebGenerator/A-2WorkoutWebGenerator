@@ -1,24 +1,17 @@
 <?php
-// Activăm afișarea erorilor (dezactivă în producție)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Includem conexiunea la baza de date
 require_once 'db_connection.php';
 
-// Log pentru debugging
 error_log("SUBMIT PROFILE REQUEST RECEIVED: " . json_encode($_POST));
-
-// Funcție pentru extragerea token-ului din diverse surse
 function getBearerToken() {
-    // Verificăm dacă există token în POST
     if (isset($_POST['auth_token']) && !empty($_POST['auth_token'])) {
         error_log("Found auth_token in POST: " . $_POST['auth_token']);
         return $_POST['auth_token'];
     }
-    
-    // Obținem headerele
+
     $headers = null;
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
@@ -26,7 +19,6 @@ function getBearerToken() {
         $headers = apache_request_headers();
     }
     
-    // Verificăm headerul de autorizare
     if ($headers) {
         foreach ($headers as $key => $value) {
             if (strtolower($key) === 'authorization') {
@@ -37,8 +29,7 @@ function getBearerToken() {
             }
         }
     }
-    
-    // Verificăm variabilele server
+
     $authHeaders = [
         'HTTP_AUTHORIZATION',
         'REDIRECT_HTTP_AUTHORIZATION',
@@ -57,7 +48,6 @@ function getBearerToken() {
     return null;
 }
 
-// Funcția pentru verificarea token-ului de autentificare
 function verifyAuthToken($token) {
     error_log("Verifying token: " . $token);
     
@@ -66,8 +56,7 @@ function verifyAuthToken($token) {
         error_log("Database connection failed in verifyAuthToken");
         return false;
     }
-    
-    // Verifică dacă token-ul există și nu a expirat
+
     $query = "SELECT user_id FROM auth_tokens WHERE token = $1 AND expires_at > NOW()";
     
     error_log("Running token query with token: " . $token);
@@ -92,24 +81,17 @@ function verifyAuthToken($token) {
     return false;
 }
 
-// Inițializăm răspunsul
 $response = array();
 $response['success'] = false;
-
-// Procesăm formularul doar dacă este o cerere POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Obținem token-ul de autentificare
     $auth_token = getBearerToken();
     error_log("Auth token extracted: " . ($auth_token ? $auth_token : "none"));
     
     if (!$auth_token) {
-        // Fără autentificare, nu putem continua
         $response['message'] = "Authentication required. Please log in.";
         echo json_encode($response);
         exit();
     }
-    
-    // Verifică token-ul și obține user_id
     $user_id = verifyAuthToken($auth_token);
     if (!$user_id) {
         $response['message'] = "Invalid or expired token. Please log in again.";
@@ -117,10 +99,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
     
-    // Log pentru debugging
     error_log("Token verified successfully. User ID: " . $user_id);
-    
-    // Acum avem user_id, putem procesa datele formularului
+
     $firstName = isset($_POST["first_name"]) ? htmlspecialchars($_POST["first_name"]) : '';
     $lastName = isset($_POST["last_name"]) ? htmlspecialchars($_POST["last_name"]) : '';
     $email = isset($_POST["email"]) ? htmlspecialchars($_POST["email"]) : '';
@@ -131,15 +111,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $injuries = isset($_POST["injuries"]) ? htmlspecialchars($_POST["injuries"]) : '';
     $equipment = isset($_POST["equipment"]) ? htmlspecialchars($_POST["equipment"]) : '';
     
-    // Procesează imaginea profilului dacă a fost încărcată
     $profilePicturePath = null;
     if (isset($_FILES["profile_pic"]) && $_FILES["profile_pic"]["error"] == 0) {
         $allowed = ["jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png"];
         $filename = $_FILES["profile_pic"]["name"];
         $filetype = $_FILES["profile_pic"]["type"];
         $filesize = $_FILES["profile_pic"]["size"];
-        
-        // Verificăm extensia
+
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if (!array_key_exists($ext, $allowed)) {
             $response['message'] = "Invalid file format. Please use JPG, JPEG, GIF or PNG.";
@@ -147,27 +125,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit();
         }
         
-        // Verificăm dimensiunea (max 5MB)
         $maxsize = 5 * 1024 * 1024;
         if ($filesize > $maxsize) {
             $response['message'] = "File size exceeds the limit (5MB).";
             echo json_encode($response);
             exit();
         }
-        
-        // Verificăm tipul MIME
+
         if (in_array($filetype, $allowed)) {
-            // Creăm directorul de upload dacă nu există
             $uploadDir = "uploads/profile_pics/";
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
             
-            // Generăm un nume unic pentru fișier
             $newFilename = uniqid() . "-" . $filename;
             $uploadPath = $uploadDir . $newFilename;
-            
-            // Salvăm fișierul
+
             if (move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $uploadPath)) {
                 $profilePicturePath = $uploadPath;
             } else {
@@ -181,8 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit();
         }
     }
-    
-    // Conectăm la baza de date
+
     $conn = getConnection();
     if ($conn === false) {
         $response['message'] = "Database connection failed.";
@@ -190,12 +162,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
     
-    // Verificăm dacă tabelul user_profiles există
     $checkTableQuery = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'user_profiles')";
     $tableResult = pg_query($conn, $checkTableQuery);
     
     if (!$tableResult || pg_fetch_result($tableResult, 0, 0) === 'f') {
-        // Tabelul nu există, îl creăm
         $createTableQuery = "
         CREATE TABLE user_profiles (
             id SERIAL PRIMARY KEY,
@@ -242,13 +212,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         error_log("Tabelul user_profiles a fost creat cu succes.");
     }
     
-    // Verificăm dacă utilizatorul are deja un profil
     $checkQuery = "SELECT id FROM user_profiles WHERE user_id = $1";
     $result = pg_query_params($conn, $checkQuery, array($user_id));
     
     if ($result) {
         if (pg_num_rows($result) > 0) {
-            // Profilul există, actualizăm datele
             $row = pg_fetch_assoc($result);
             $profileId = $row['id'];
             
@@ -273,7 +241,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $equipment
             );
             
-            // Adăugăm calea imaginii numai dacă a fost încărcată una nouă
             if ($profilePicturePath) {
                 $updateQuery .= ", profile_picture_path = $" . (count($params) + 1);
                 $params[] = $profilePicturePath;
@@ -291,7 +258,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $response['message'] = "Error updating profile: " . pg_last_error($conn);
             }
         } else {
-            // Profilul nu există, creăm unul nou
             $insertQuery = "INSERT INTO user_profiles 
                 (user_id, first_name, last_name, gender, age, goal, activity_level, injuries, equipment, profile_picture_path) 
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)";
@@ -321,41 +287,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo json_encode($response);
         exit();
     }
-    
-    // Actualizăm și email-ul utilizatorului dacă e furnizat
+
     if (!empty($email)) {
         $updateEmailQuery = "UPDATE users SET email = $1 WHERE id = $2";
         pg_query_params($conn, $updateEmailQuery, array($email, $user_id));
     }
-    
-    // Închidem conexiunea
+
     pg_close($conn);
     
-    // Generăm recomandarea de antrenament bazată pe profilul utilizatorului
     $suggestion = generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries, $age, $gender);
     $response['suggestion'] = $suggestion;
     
-    // Dacă cererea a fost făcută prin AJAX, returnăm un JSON
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
         echo json_encode($response);
         exit();
     } else {
-        // Dacă a fost un submit normal, afișăm o pagină cu rezultatele
         displayResultPage($firstName, $lastName, $response['message'], $suggestion);
     }
 } else {
-    // Nu este o cerere POST
     $response['message'] = "Invalid request method.";
     echo json_encode($response);
 }
 
-/**
- * Generează o recomandare de antrenament bazată pe profilul utilizatorului
- */
+
 function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries, $age, $gender) {
     $suggestion = [];
-    
-    // Recomandare de bază în funcție de obiectiv
+
     switch ($goal) {
         case 'lose_weight':
             $suggestion['title'] = "Weight Loss Program";
@@ -463,8 +420,7 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 "Active Recovery - 1 time per week"
             ];
     }
-    
-    // Ajustează în funcție de nivelul de activitate
+
     switch ($activityLevel) {
         case 'sedentary':
             $suggestion['intensity'] = "Start with low intensity and gradually build up.";
@@ -487,7 +443,6 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
             break;
     }
     
-    // Ajustează pentru accidentări/condiții medicale
     if (!empty($injuries)) {
         $suggestion['caution'] = "Due to your reported injuries/conditions, please take the following precautions: 
         1. Start slowly and focus on proper form
@@ -496,7 +451,6 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
         4. Pay attention to pain vs. discomfort";
     }
     
-    // Ajustează pentru vârstă
     if ($age < 18) {
         $suggestion['age_note'] = "For younger athletes, focus on proper technique, variety, and fun rather than intense specialization.";
     } elseif ($age > 60) {
@@ -506,9 +460,6 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
     return $suggestion;
 }
 
-/**
- * Afișează pagina cu rezultatele formularului
- */
 function displayResultPage($firstName, $lastName, $message, $suggestion) {
     $fullName = $firstName . ' ' . $lastName;
     
