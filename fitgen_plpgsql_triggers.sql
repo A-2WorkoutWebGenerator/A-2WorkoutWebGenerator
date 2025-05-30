@@ -1,3 +1,5 @@
+SET search_path TO fitgen;
+
 CREATE TRIGGER update_users_modtime
     BEFORE UPDATE ON users
     FOR EACH ROW
@@ -28,13 +30,26 @@ RETURNS TRIGGER AS $$
 DECLARE
     v_user_id INTEGER := NULL;
     v_ip_address INET := NULL;
-    v_record_id INTEGER := NULL;
 BEGIN
+
     BEGIN
         v_user_id := current_setting('app.current_user_id')::INTEGER;
     EXCEPTION
         WHEN OTHERS THEN
-            v_user_id := NULL;
+
+            IF TG_OP = 'DELETE' THEN
+                IF OLD.user_id IS NOT NULL THEN
+                    v_user_id := OLD.user_id;
+                ELSIF TG_TABLE_NAME = 'users' THEN
+                    v_user_id := OLD.id;
+                END IF;
+            ELSE
+                IF NEW.user_id IS NOT NULL THEN
+                    v_user_id := NEW.user_id;
+                ELSIF TG_TABLE_NAME = 'users' THEN
+                    v_user_id := NEW.id;
+                END IF;
+            END IF;
     END;
 
     BEGIN
@@ -45,70 +60,36 @@ BEGIN
     END;
 
     IF TG_OP = 'DELETE' THEN
-        IF TG_TABLE_NAME = 'users' THEN
-            v_record_id := OLD.id;
-            IF v_user_id IS NULL THEN
-                v_user_id := OLD.id;
-            END IF;
-        ELSE
-            v_record_id := OLD.id;
-            IF v_user_id IS NULL THEN
-                BEGIN
-                    EXECUTE format('SELECT ($1).user_id') USING OLD INTO v_user_id;
-                EXCEPTION
-                    WHEN OTHERS THEN
-                        v_user_id := NULL;
-                END;
-            END IF;
-        END IF;
-        
         INSERT INTO audit_log (
             table_name, operation, record_id, user_id, 
             old_values, ip_address, created_at
         ) VALUES (
-            TG_TABLE_NAME, TG_OP, v_record_id,
+            TG_TABLE_NAME, TG_OP, 
+            CASE WHEN TG_TABLE_NAME = 'users' THEN OLD.id ELSE OLD.id END,
             v_user_id, row_to_json(OLD), v_ip_address, NOW()
         );
         RETURN OLD;
-        
-    ELSE
-        IF TG_TABLE_NAME = 'users' THEN
-            v_record_id := NEW.id;
-            IF v_user_id IS NULL THEN
-                v_user_id := NEW.id; 
-            END IF;
-        ELSE
-            v_record_id := NEW.id;
-            IF v_user_id IS NULL THEN
-                BEGIN
-                    EXECUTE format('SELECT ($1).user_id') USING NEW INTO v_user_id;
-                EXCEPTION
-                    WHEN OTHERS THEN
-                        v_user_id := NULL;
-                END;
-            END IF;
-        END IF;
-        
-        IF TG_OP = 'UPDATE' THEN
-            INSERT INTO audit_log (
-                table_name, operation, record_id, user_id,
-                old_values, new_values, ip_address, created_at
-            ) VALUES (
-                TG_TABLE_NAME, TG_OP, v_record_id,
-                v_user_id, row_to_json(OLD), row_to_json(NEW), v_ip_address, NOW()
-            );
-        ELSE
-            INSERT INTO audit_log (
-                table_name, operation, record_id, user_id,
-                new_values, ip_address, created_at
-            ) VALUES (
-                TG_TABLE_NAME, TG_OP, v_record_id,
-                v_user_id, row_to_json(NEW), v_ip_address, NOW()
-            );
-        END IF;
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO audit_log (
+            table_name, operation, record_id, user_id,
+            old_values, new_values, ip_address, created_at
+        ) VALUES (
+            TG_TABLE_NAME, TG_OP,
+            CASE WHEN TG_TABLE_NAME = 'users' THEN NEW.id ELSE NEW.id END,
+            v_user_id, row_to_json(OLD), row_to_json(NEW), v_ip_address, NOW()
+        );
+        RETURN NEW;
+    ELSIF TG_OP = 'INSERT' THEN
+        INSERT INTO audit_log (
+            table_name, operation, record_id, user_id,
+            new_values, ip_address, created_at
+        ) VALUES (
+            TG_TABLE_NAME, TG_OP,
+            CASE WHEN TG_TABLE_NAME = 'users' THEN NEW.id ELSE NEW.id END,
+            v_user_id, row_to_json(NEW), v_ip_address, NOW()
+        );
         RETURN NEW;
     END IF;
-    
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -130,12 +111,13 @@ CREATE TRIGGER audit_workout_sessions_trigger
     FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
 
 CREATE OR REPLACE FUNCTION validate_user_profile()
-RETURNS TRIGGER AS $
+RETURNS TRIGGER AS $$
 BEGIN
+
     IF NEW.age IS NOT NULL AND (NEW.age < 10 OR NEW.age > 120) THEN
         RAISE EXCEPTION 'Age must be between 10 and 120 years. Provided: %', NEW.age;
     END IF;
-    
+
     IF NEW.first_name IS NOT NULL AND trim(NEW.first_name) = '' THEN
         RAISE EXCEPTION 'First name cannot be empty or only whitespace';
     END IF;
@@ -143,7 +125,7 @@ BEGIN
     IF NEW.last_name IS NOT NULL AND trim(NEW.last_name) = '' THEN
         RAISE EXCEPTION 'Last name cannot be empty or only whitespace';
     END IF;
-    
+
     IF NEW.goal = 'rehab' AND NEW.activity_level = 'active' THEN
         RAISE WARNING 'High activity level unusual for rehabilitation goal';
     END IF;
@@ -154,18 +136,20 @@ BEGIN
     
     RETURN NEW;
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER validate_user_profile_trigger
     BEFORE INSERT OR UPDATE ON user_profiles
     FOR EACH ROW EXECUTE FUNCTION validate_user_profile();
 
 CREATE OR REPLACE FUNCTION validate_user()
-RETURNS TRIGGER AS $
+RETURNS TRIGGER AS $$
 BEGIN
+
     IF NOT validate_email(NEW.email) THEN
         RAISE EXCEPTION 'Invalid email format: %', NEW.email;
     END IF;
+
     IF length(trim(NEW.username)) < 3 THEN
         RAISE EXCEPTION 'Username must be at least 3 characters long';
     END IF;
@@ -173,23 +157,24 @@ BEGIN
     IF NEW.username ~ '\s' THEN
         RAISE EXCEPTION 'Username cannot contain spaces';
     END IF;
-    
+
     NEW.email := lower(NEW.email);
     
     RETURN NEW;
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER validate_user_trigger
     BEFORE INSERT OR UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION validate_user();
 
 CREATE OR REPLACE FUNCTION update_user_stats_on_workout()
-RETURNS TRIGGER AS $
+RETURNS TRIGGER AS $$
 DECLARE
     v_stats_record user_stats%ROWTYPE;
     v_current_date DATE := CURRENT_DATE;
 BEGIN
+
     IF TG_OP = 'UPDATE' AND OLD.completed_at IS NULL AND NEW.completed_at IS NOT NULL THEN
 
         SELECT * INTO v_stats_record
@@ -197,6 +182,7 @@ BEGIN
         WHERE user_id = NEW.user_id AND stat_date = v_current_date;
         
         IF FOUND THEN
+
             UPDATE user_stats SET
                 total_workouts = total_workouts + 1,
                 total_minutes = total_minutes + COALESCE(NEW.duration_minutes, 0),
@@ -204,6 +190,7 @@ BEGIN
                 updated_at = NOW()
             WHERE user_id = NEW.user_id AND stat_date = v_current_date;
         ELSE
+
             INSERT INTO user_stats (
                 user_id, stat_date, total_workouts, total_minutes, total_calories
             ) VALUES (
@@ -219,14 +206,15 @@ BEGIN
     
     RETURN NEW;
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION update_user_streak(p_user_id INTEGER)
-RETURNS VOID AS $
+RETURNS VOID AS $$
 DECLARE
     v_yesterday_workout BOOLEAN;
     v_current_streak INTEGER := 1;
 BEGIN
+
     SELECT EXISTS(
         SELECT 1 FROM workout_sessions 
         WHERE user_id = p_user_id 
@@ -235,33 +223,34 @@ BEGIN
     ) INTO v_yesterday_workout;
     
     IF v_yesterday_workout THEN
+
         SELECT COALESCE(current_streak, 0) + 1 INTO v_current_streak
         FROM user_stats 
         WHERE user_id = p_user_id AND stat_date = CURRENT_DATE - INTERVAL '1 day';
     END IF;
-    
+
     UPDATE user_stats SET
         current_streak = v_current_streak,
         longest_streak = GREATEST(longest_streak, v_current_streak)
     WHERE user_id = p_user_id AND stat_date = CURRENT_DATE;
     
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_stats_on_workout_completion
     AFTER UPDATE ON workout_sessions
     FOR EACH ROW EXECUTE FUNCTION update_user_stats_on_workout();
-
 
 CREATE OR REPLACE FUNCTION register_user(
     p_username VARCHAR(50),
     p_email VARCHAR(100),
     p_password VARCHAR(255)
 )
-RETURNS TABLE(success BOOLEAN, message TEXT, user_id INTEGER) AS $
+RETURNS TABLE(success BOOLEAN, message TEXT, user_id INTEGER) AS $$
 DECLARE
     v_user_id INTEGER;
 BEGIN
+
     IF p_username IS NULL OR trim(p_username) = '' THEN
         RETURN QUERY SELECT FALSE, 'Username cannot be empty', NULL::INTEGER;
         RETURN;
@@ -286,6 +275,7 @@ BEGIN
         
     EXCEPTION
         WHEN unique_violation THEN
+
             IF POSITION('username' IN SQLERRM) > 0 THEN
                 RETURN QUERY SELECT FALSE, 'Username already exists', NULL::INTEGER;
             ELSE
@@ -295,7 +285,7 @@ BEGIN
             RETURN QUERY SELECT FALSE, 'Registration failed: ' || SQLERRM, NULL::INTEGER;
     END;
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION authenticate_user(
     p_username VARCHAR(50),
@@ -307,7 +297,7 @@ RETURNS TABLE(
     user_id INTEGER,
     username VARCHAR(50),
     email VARCHAR(100)
-) AS $
+) AS $$
 DECLARE
     v_user_record users%ROWTYPE;
 BEGIN
@@ -321,8 +311,6 @@ BEGIN
         RETURN;
     END IF;
     
-    -- in mod normal aici sa vf parola hash-uita, dar aceasta se face în PHP
-    
     RETURN QUERY SELECT TRUE, 'Authentication successful',
                        v_user_record.id, v_user_record.username, v_user_record.email;
     
@@ -331,11 +319,10 @@ EXCEPTION
         RETURN QUERY SELECT FALSE, 'Authentication error: ' || SQLERRM,
                            NULL::INTEGER, NULL::VARCHAR(50), NULL::VARCHAR(100);
 END;
-$ LANGUAGE plpgsql;
-
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION populate_sample_data()
-RETURNS TEXT AS $
+RETURNS TEXT AS $$
 DECLARE
     v_result TEXT := '';
     v_category_id INTEGER;
@@ -345,7 +332,7 @@ DECLARE
     i INTEGER;
 BEGIN
     v_result := 'Starting database population...' || E'\n';
-    
+
     v_result := v_result || 'Inserting exercise categories...' || E'\n';
     
     INSERT INTO exercise_categories (name, description, workout_type) VALUES
@@ -376,19 +363,19 @@ BEGIN
     (v_category_id, 'Pendulum Swings', 'Gentle shoulder mobility exercise', 'Let arm hang and swing in circles', 8, 'beginner', 'none', ARRAY['shoulders'], 2.0),
     (v_category_id, 'Wall Slides', 'Improves shoulder blade movement', 'Slide arms up and down against wall', 10, 'intermediate', 'none', ARRAY['shoulders', 'upper_back'], 3.0),
     (v_category_id, 'External Rotations', 'Strengthens rotator cuff', 'Rotate arm outward with resistance', 12, 'intermediate', 'basic', ARRAY['shoulders', 'rotator_cuff'], 3.5);
-    
+
     SELECT id INTO v_category_id FROM exercise_categories WHERE name = 'Postural Correction';
     INSERT INTO exercises (category_id, name, description, instructions, duration_minutes, difficulty, equipment_needed, muscle_groups, calories_per_minute) VALUES
     (v_category_id, 'Wall Posture Alignment', 'Teaches proper standing posture', 'Stand against wall with proper alignment', 15, 'beginner', 'none', ARRAY['core', 'upper_back'], 2.5),
     (v_category_id, 'Scapular Retraction', 'Strengthens upper back muscles', 'Squeeze shoulder blades together', 10, 'beginner', 'none', ARRAY['upper_back', 'shoulders'], 3.0),
     (v_category_id, 'Chin Tucks', 'Corrects forward head posture', 'Pull chin back to align head over shoulders', 8, 'beginner', 'none', ARRAY['neck', 'upper_back'], 2.0);
-    
+
     v_result := v_result || 'Creating workout routines...' || E'\n';
-    
+
     INSERT INTO workout_routines (name, description, workout_type, difficulty, duration_minutes, frequency_per_week, equipment_needed)
     VALUES ('Lower Back Pain Relief Program', 'Gentle exercises designed to alleviate lower back pain and improve spine mobility', 'physiotherapy', 'all_levels', 20, 5, 'none')
     RETURNING id INTO v_routine_id;
-    
+
     INSERT INTO routine_exercises (routine_id, exercise_id, order_index, sets, reps, duration_seconds, rest_seconds)
     SELECT v_routine_id, e.id, ROW_NUMBER() OVER (ORDER BY e.id), 2, 10, 30, 15
     FROM exercises e
@@ -404,7 +391,7 @@ BEGIN
     FROM exercises e
     JOIN exercise_categories ec ON e.category_id = ec.id
     WHERE ec.name = 'Postural Correction';
-    
+
     v_result := v_result || 'Creating test users...' || E'\n';
     
     FOR i IN 1..5 LOOP
@@ -449,16 +436,17 @@ EXCEPTION
     WHEN OTHERS THEN
         RETURN 'Error during population: ' || SQLERRM;
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION generate_user_report(p_user_id INTEGER)
-RETURNS JSON AS $
+RETURNS JSON AS $$
 DECLARE
     v_report JSON;
     v_user_info JSON;
     v_stats JSON;
     v_recommendations JSON;
 BEGIN
+
     SELECT row_to_json(user_data) INTO v_user_info
     FROM (
         SELECT u.username, u.email, up.first_name, up.last_name, 
@@ -472,12 +460,12 @@ BEGIN
     FROM (
         SELECT * FROM calculate_user_statistics(p_user_id)
     ) stats_data;
-    
+
     SELECT json_agg(rec_data) INTO v_recommendations
     FROM (
         SELECT * FROM get_workout_recommendations(p_user_id, 3)
     ) rec_data;
-    
+
     v_report := json_build_object(
         'user_info', v_user_info,
         'statistics', v_stats,
@@ -491,7 +479,7 @@ EXCEPTION
     WHEN OTHERS THEN
         RETURN json_build_object('error', 'Failed to generate report: ' || SQLERRM);
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 SELECT populate_sample_data();
 
