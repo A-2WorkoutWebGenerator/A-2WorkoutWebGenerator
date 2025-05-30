@@ -1,48 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     initializeNavigation();
-    
     initializeProfilePhoto();
     initializeProfileForm();
 });
 
 function checkAuth() {
-    const userData = localStorage.getItem("user");
     const token = localStorage.getItem("authToken");
-    
+
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
-    let user;
-    try {
-        user = userData ? JSON.parse(userData) : null;
-    } catch (e) {
-        console.error("Error parsing user data:", e);
-        user = null;
-    }
-    if (user && user.username) {
-        const welcomeSection = document.getElementById('sidebar-username');
-        if (welcomeSection) {
-            welcomeSection.textContent = `Welcome, ${user.username}!`;
-        }
-        const profileTitle = document.getElementById('profile-title');
-        if (profileTitle) {
-            profileTitle.textContent = `${user.username}'s Profile`;
-        }
-    } else {
-        const username = localStorage.getItem("username");
-        if (username) {
+
+    fetch('get-profile.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.user) {
             const welcomeSection = document.getElementById('sidebar-username');
             if (welcomeSection) {
-                welcomeSection.textContent = `Welcome, ${username}!`;
+                welcomeSection.textContent = `Welcome, ${data.user.username}!`;
             }
             const profileTitle = document.getElementById('profile-title');
             if (profileTitle) {
-                profileTitle.textContent = `${username}'s Profile`;
+                profileTitle.textContent = `${data.user.username}'s Profile`;
             }
+        } else {
+            logout();
         }
-    }
+    })
+    .catch(error => {
+        console.error("Error fetching user info:", error);
+        logout();
+    });
+
     loadUserProfile();
 }
 
@@ -84,34 +82,8 @@ function initializeProfilePhoto() {
     }
 }
 
-function populateEmailField() {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-        try {
-            const user = JSON.parse(userData);
-            if (user && user.email) {
-                const emailField = document.getElementById('email');
-                if (emailField) {
-                    emailField.value = user.email;
-                }
-            }
-        } catch (e) {
-            console.error("Error parsing user data:", e);
-        }
-    } else {
-        const email = localStorage.getItem("email");
-        if (email) {
-            const emailField = document.getElementById('email');
-            if (emailField) {
-                emailField.value = email;
-            }
-        }
-    }
-}
-
 function loadUserProfile() {
     const authToken = localStorage.getItem("authToken");
-    console.log("Auth token from localStorage:", authToken);
     if (!authToken) {
         console.error("No auth token found in localStorage");
         return;
@@ -120,20 +92,7 @@ function loadUserProfile() {
     if (authTokenInput) {
         authTokenInput.value = authToken;
     }
-    const userData = localStorage.getItem("user");
-    console.log("User data from localStorage:", userData);
-    
-    let userId = null;
-    try {
-        const user = JSON.parse(userData);
-        userId = user?.id;
-    } catch (e) {
-        console.error("Error parsing user data:", e);
-    }
-    if (!userId) {
-        console.error("No user ID found in localStorage");
-        return;
-    }
+
     const profileForm = document.getElementById('profile-form');
     if (!profileForm) return;
     
@@ -145,55 +104,29 @@ function loadUserProfile() {
     loadingIndicator.style.marginBottom = '20px';
     profileForm.parentNode.insertBefore(loadingIndicator, profileForm);
     profileForm.style.display = 'none';
-    
-    const data = { user_id: userId };
-    console.log("Sending data:", data);
-    console.log("Auth headers:", { Authorization: `Bearer ${authToken}` });
+
     fetch('get-profile.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authToken}`
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({})
     })
-    .then(response => {
-        console.log("Server response status:", response.status);
-        console.log("Server response headers:", Object.fromEntries([...response.headers]));
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        console.log("Server response data:", data);
-        
         if (data.success) {
             populateFormWithData(data);
         } else {
-            console.warn("Profile load failed:", data.message);
-            console.log("Trying alternative method with token in body...");
-            return fetch('get-profile.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    auth_token: authToken
-                })
-            })
-            .then(response => response.json())
-            .then(altData => {
-                console.log("Alternative method response:", altData);
-                
-                if (altData.success) {
-                    populateFormWithData(altData);
-                } else {
-                    console.error("Both methods failed. Unable to load profile data.");
-                }
-            });
+            showMessage(data.message || "Unable to load profile data.", "error");
+            if (data.message && data.message.toLowerCase().includes("token")) {
+                logout();
+            }
         }
     })
     .catch(error => {
         console.error("Error during profile fetch:", error);
+        showMessage("Connection error. Please try again later.", "error");
     })
     .finally(() => {
         profileForm.style.display = 'grid';
@@ -205,9 +138,7 @@ function loadUserProfile() {
 
 function populateFormWithData(data) {
     if (data.profile) {
-        console.log("Populating form with profile data");
         const profile = data.profile;
-
         const fields = {
             'first_name': profile.first_name,
             'last_name': profile.last_name,
@@ -218,12 +149,10 @@ function populateFormWithData(data) {
             'injuries': profile.injuries,
             'equipment': profile.equipment
         };
-        
         for (const [fieldId, value] of Object.entries(fields)) {
             const field = document.getElementById(fieldId);
             if (field && value) field.value = value;
         }
-        
         if (profile.profile_picture_path) {
             const profilePreview = document.getElementById('profile_preview');
             if (profilePreview) {
@@ -231,27 +160,15 @@ function populateFormWithData(data) {
             }
         }
     }
-    
+
     if (data.user && data.user.email) {
         const emailField = document.getElementById('email');
         if (emailField) emailField.value = data.user.email;
-    } else {
-        const userData = localStorage.getItem("user");
-        try {
-            const user = JSON.parse(userData);
-            if (user && user.email) {
-                const emailField = document.getElementById('email');
-                if (emailField) emailField.value = user.email;
-            }
-        } catch (e) {
-            console.error("Error parsing user data for email:", e);
-        }
     }
 }
 
 function initializeProfileForm() {
     const profileForm = document.getElementById('profile-form');
-    
     if (profileForm) {
         profileForm.addEventListener('submit', function(e) {
             if (useAjaxSubmit) {
@@ -373,9 +290,6 @@ function showWorkoutSuggestion(suggestion) {
 }
 function logout() {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('username');
-    localStorage.removeItem('email');
     console.log("Logged out successfully");
     window.location.href = 'login.html';
 }

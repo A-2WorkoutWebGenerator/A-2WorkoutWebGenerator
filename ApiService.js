@@ -57,22 +57,7 @@ function loginUser(username, password) {
             
             if (data.token) {
                 localStorage.setItem("authToken", data.token);
-
-                localStorage.setItem("user", JSON.stringify(data.user));
- 
-                if (data.user && data.user.username) {
-                    localStorage.setItem("username", data.user.username);
-                }
-                if (data.user && data.user.email) {
-                    localStorage.setItem("email", data.user.email);
-                }
             }
-            
-            console.log("Stored data:", {
-                token: data.token,
-                user: data.user,
-                username: data.user ? data.user.username : null
-            });
             
             setTimeout(() => {
                 window.location.href = "profile.html"; 
@@ -88,6 +73,15 @@ function loginUser(username, password) {
     .finally(() => {
         toggleLoadingState(false);
     });
+}
+
+function apiFetchAuth(url, options = {}) {
+    const token = localStorage.getItem("authToken");
+    const headers = options.headers || {};
+    if (token) {
+        headers["Authorization"] = "Bearer " + token;
+    }
+    return fetch(url, { ...options, headers });
 }
 
 function toggleLoadingState(isLoading, message = "Loading...") {

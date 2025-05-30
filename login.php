@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once 'db_connection.php';
+require_once 'jwt_utils.php';
 
 $input_data = json_decode(file_get_contents("php://input"), true);
 if ($input_data && isset($input_data['password'])) {
@@ -34,12 +35,6 @@ if (!empty($data->username) && !empty($data->password)) {
         exit();
     }
     
-    $schemaCheck = pg_query($conn, "SELECT current_schema()");
-    if ($schemaCheck) {
-        $currentSchema = pg_fetch_result($schemaCheck, 0, 0);
-        error_log("Current schema: " . $currentSchema);
-    }
-    
     $username = htmlspecialchars(strip_tags($data->username));
     
     $query = "SELECT id, username, email, password FROM users WHERE username = $1";
@@ -56,29 +51,10 @@ if (!empty($data->username) && !empty($data->password)) {
         $user = pg_fetch_assoc($result);
         
         if (password_verify($data->password, $user['password'])) {
-            $token = bin2hex(random_bytes(32));
-            $user_id = $user['id'];
-            $expires_at = date('Y-m-d H:i:s', strtotime('+24 hour'));
-            
-            $token_query = "INSERT INTO auth_tokens (user_id, token, expires_at)
-                           VALUES ($1, $2, $3)";
-            
-            $token_result = pg_query_params($conn, $token_query, array($user_id, $token, $expires_at));
-            
-            if ($token_result) {
-                $response['success'] = true;
-                $response['message'] = "Login successful!";
-                $response['token'] = $token;
-                $response['user'] = array(
-                    "id" => $user['id'],
-                    "username" => $user['username'],
-                    "email" => $user['email']
-                );
-            } else {
-                $error_message = pg_last_error($conn);
-                error_log("Token insert failed with error: " . $error_message);
-                $response['message'] = "Login failed: " . $error_message;
-            }
+            $response['success'] = true;
+            $response['message'] = "Login successful!";
+
+            $response['token'] = create_jwt($user['id'], $user['username'], $user['email']);
         } else {
             $response['message'] = "Invalid username or password.";
         }

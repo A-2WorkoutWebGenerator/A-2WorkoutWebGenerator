@@ -8,13 +8,14 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+require_once 'db_connection.php';
+require_once 'jwt_utils.php';
+
 $input_data = json_decode(file_get_contents("php://input"), true);
 if ($input_data && isset($input_data['password'])) {
     $input_data['password'] = '********';
 }
 error_log("Register request received: " . json_encode($input_data));
-
-require_once 'db_connection.php';
 
 $response = array();
 $response['success'] = false;
@@ -28,12 +29,6 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
         $response['message'] = "Database connection failed";
         echo json_encode($response);
         exit();
-    }
-    
-    $schemaCheck = pg_query($conn, "SELECT current_schema()");
-    if ($schemaCheck) {
-        $currentSchema = pg_fetch_result($schemaCheck, 0, 0);
-        error_log("Current schema: " . $currentSchema);
     }
     
     $username = htmlspecialchars(strip_tags($data->username));
@@ -66,7 +61,9 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
             if ($row['success'] === 't') {
                 $response['success'] = true;
                 $response['message'] = $row['message'];
-                $response['user_id'] = $row['user_id'];
+                $user_id = $row['user_id'];
+
+                $response['token'] = create_jwt($user_id, $username, $email);
             } else {
                 $response['message'] = $row['message'];
             }
@@ -81,7 +78,7 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
                 error_log("Insert successful, returned ID: " . $row['id']);
                 $response['success'] = true;
                 $response['message'] = "Registration successful!";
-                $response['user_id'] = $row['id'];
+                $response['token'] = create_jwt($row['id'], $username, $email);
             } else {
                 $error_message = pg_last_error($conn);
                 error_log("Insert failed with error: " . $error_message);
