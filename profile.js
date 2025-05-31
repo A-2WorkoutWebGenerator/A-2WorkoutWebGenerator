@@ -256,18 +256,14 @@ function showMessage(message, type) {
 }
 
 function showWorkoutSuggestion(suggestion) {
-    let suggestionElement = document.querySelector('.workout-suggestion');
-    
-    if (!suggestionElement) {
-        suggestionElement = document.createElement('div');
-        suggestionElement.className = 'workout-suggestion';
-        suggestionElement.style.marginTop = '30px';
-        suggestionElement.style.padding = '20px';
-        suggestionElement.style.backgroundColor = 'white';
-        suggestionElement.style.borderRadius = '10px';
-        suggestionElement.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.05)';
-        const profileForm = document.getElementById('profile-form');
-        profileForm.parentNode.appendChild(suggestionElement);
+    let suggestionContainer = document.getElementById('workout-suggestion-container');
+    if (!suggestionContainer) {
+        suggestionContainer = document.createElement('div');
+        suggestionContainer.id = 'workout-suggestion-container';
+        const workoutsSection = document.getElementById('workouts');
+        if (workoutsSection) {
+            workoutsSection.insertBefore(suggestionContainer, workoutsSection.firstChild.nextSibling);
+        }
     }
     let workoutList = '';
     if (suggestion.workouts) {
@@ -275,24 +271,28 @@ function showWorkoutSuggestion(suggestion) {
             workoutList += `<li>${workout}</li>`;
         });
     }
-    
-    suggestionElement.innerHTML = `
-        <h3 style="color: #2ecc71; margin-bottom: 10px;">${suggestion.title || 'Your Workout Plan'}</h3>
-        <p>${suggestion.description || ''}</p>
-        
-        <h4>Recommended Workouts:</h4>
-        <ul style="margin-top: 15px; padding-left: 20px;">
-            ${workoutList}
-        </ul>
-        
-        ${suggestion.intensity ? `<p><strong>Intensity:</strong> ${suggestion.intensity}</p>` : ''}
-        ${suggestion.frequency ? `<p><strong>Frequency:</strong> ${suggestion.frequency}</p>` : ''}
-        
-        ${suggestion.caution ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;"><strong>Important:</strong> ${suggestion.caution}</div>` : ''}
-        ${suggestion.age_note ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;">${suggestion.age_note}</div>` : ''}
+    suggestionContainer.innerHTML = `
+        <div class="workout-suggestion" style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h3 style="color: #2ecc71; margin-bottom: 10px;">${suggestion.title || 'Your Workout Plan'}</h3>
+            <p>${suggestion.description || ''}</p>
+            <h4>Recommended Workouts:</h4>
+            <ul style="margin-top: 15px; padding-left: 20px;">${workoutList}</ul>
+            ${suggestion.intensity ? `<p><strong>Intensity:</strong> ${suggestion.intensity}</p>` : ''}
+            ${suggestion.frequency ? `<p><strong>Frequency:</strong> ${suggestion.frequency}</p>` : ''}
+            ${suggestion.caution ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;"><strong>Important:</strong> ${suggestion.caution}</div>` : ''}
+            ${suggestion.age_note ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;">${suggestion.age_note}</div>` : ''}
+        </div>
     `;
+
+    const menuItems = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+    menuItems.forEach(i => i.classList.remove('active'));
+    sections.forEach(s => s.classList.remove('active'));
+    document.querySelector('[data-section="workouts"]').classList.add('active');
+    document.getElementById('workouts').classList.add('active');
+
     setTimeout(() => {
-        suggestionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('workouts').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 500);
 }
 
