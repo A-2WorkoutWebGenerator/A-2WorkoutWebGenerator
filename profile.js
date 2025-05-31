@@ -1,3 +1,5 @@
+const useAjaxSubmit = true;
+
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     initializeNavigation();
@@ -151,7 +153,7 @@ function populateFormWithData(data) {
         };
         for (const [fieldId, value] of Object.entries(fields)) {
             const field = document.getElementById(fieldId);
-            if (field && value) field.value = value;
+            if (field && value !== undefined && value !== null) field.value = value;
         }
         if (profile.profile_picture_path) {
             const profilePreview = document.getElementById('profile_preview');
@@ -175,6 +177,10 @@ function initializeProfileForm() {
                 e.preventDefault();
 
                 const formData = new FormData(profileForm);
+                const authToken = localStorage.getItem("authToken");
+                if (authToken && !formData.has('auth_token')) {
+                    formData.append('auth_token', authToken);
+                }
                 const submitButton = profileForm.querySelector('button[type="submit"]');
                 const originalText = submitButton.textContent;
                 submitButton.disabled = true;
@@ -288,9 +294,9 @@ function showWorkoutSuggestion(suggestion) {
         suggestionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 500);
 }
+
 function logout() {
     localStorage.removeItem('authToken');
     console.log("Logged out successfully");
     window.location.href = 'login.html';
 }
-const useAjaxSubmit = false;

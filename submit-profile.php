@@ -4,27 +4,20 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once 'db_connection.php';
+require_once 'jwt_utils.php';
 
 error_log("SUBMIT PROFILE REQUEST RECEIVED: " . json_encode($_POST));
-function getBearerToken() {
-    if (isset($_POST['auth_token']) && !empty($_POST['auth_token'])) {
-        error_log("Found auth_token in POST: " . $_POST['auth_token']);
-        return $_POST['auth_token'];
-    }
 
-    $headers = null;
+function getBearerToken() {
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
-    } else if (function_exists('apache_request_headers')) {
-        $headers = apache_request_headers();
-    }
-    
-    if ($headers) {
-        foreach ($headers as $key => $value) {
-            if (strtolower($key) === 'authorization') {
-                error_log("Found authorization header: " . $value);
-                if (preg_match('/Bearer\s(\S+)/', $value, $matches)) {
-                    return $matches[1];
+        if ($headers) {
+            foreach ($headers as $key => $value) {
+                if (strtolower($key) === 'authorization') {
+                    error_log("Found authorization header: " . $value);
+                    if (preg_match('/Bearer\s(\S+)/', $value, $matches)) {
+                        return $matches[1];
+                    }
                 }
             }
         }
@@ -35,7 +28,6 @@ function getBearerToken() {
         'REDIRECT_HTTP_AUTHORIZATION',
         'AUTHORIZATION'
     ];
-    
     foreach ($authHeaders as $header) {
         if (isset($_SERVER[$header])) {
             error_log("Found $header: " . $_SERVER[$header]);
@@ -44,61 +36,46 @@ function getBearerToken() {
             }
         }
     }
-    
+
+    if (isset($_POST['auth_token']) && !empty($_POST['auth_token'])) {
+        error_log("Found auth_token in POST: " . $_POST['auth_token']);
+        return $_POST['auth_token'];
+    }
+
     return null;
 }
 
-function verifyAuthToken($token) {
-    error_log("Verifying token: " . $token);
-    
-    $conn = getConnection();
-    if ($conn === false) {
-        error_log("Database connection failed in verifyAuthToken");
-        return false;
-    }
-
-    $query = "SELECT user_id FROM auth_tokens WHERE token = $1 AND expires_at > NOW()";
-    
-    error_log("Running token query with token: " . $token);
-    $result = pg_query_params($conn, $query, array($token));
-    
-    if ($result) {
-        $numRows = pg_num_rows($result);
-        error_log("Token query returned $numRows rows");
-        
-        if ($numRows > 0) {
-            $row = pg_fetch_assoc($result);
-            $userId = $row['user_id'];
-            error_log("Token verified successfully. User ID: " . $userId);
-            return $userId;
-        } else {
-            error_log("Token not found in database or expired");
+function getUserIdFromJWT($token) {
+    try {
+        $jwt = decode_jwt($token);
+        if (isset($jwt->sub)) {
+            return $jwt->sub;
         }
-    } else {
-        error_log("Token query failed: " . pg_last_error($conn));
+    } catch (Exception $e) {
+        error_log("JWT decode error: " . $e->getMessage());
     }
-    
     return false;
 }
 
 $response = array();
 $response['success'] = false;
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $auth_token = getBearerToken();
     error_log("Auth token extracted: " . ($auth_token ? $auth_token : "none"));
-    
+
     if (!$auth_token) {
         $response['message'] = "Authentication required. Please log in.";
         echo json_encode($response);
         exit();
     }
-    $user_id = verifyAuthToken($auth_token);
+
+    $user_id = getUserIdFromJWT($auth_token);
     if (!$user_id) {
         $response['message'] = "Invalid or expired token. Please log in again.";
         echo json_encode($response);
         exit();
     }
-    
     error_log("Token verified successfully. User ID: " . $user_id);
 
     $firstName = isset($_POST["first_name"]) ? htmlspecialchars($_POST["first_name"]) : '';
@@ -164,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     $checkTableQuery = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'user_profiles')";
     $tableResult = pg_query($conn, $checkTableQuery);
-    
+
     if (!$tableResult || pg_fetch_result($tableResult, 0, 0) === 'f') {
         $createTableQuery = "
         CREATE TABLE user_profiles (
@@ -294,21 +271,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     pg_close($conn);
-    
+
     $suggestion = generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries, $age, $gender);
     $response['suggestion'] = $suggestion;
-    
-    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-        echo json_encode($response);
-        exit();
-    } else {
-        displayResultPage($firstName, $lastName, $response['message'], $suggestion);
-    }
+
+    header("Content-Type: application/json");
+    echo json_encode($response);
+    exit();
+
 } else {
     $response['message'] = "Invalid request method.";
     echo json_encode($response);
+    exit();
 }
-
 
 function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries, $age, $gender) {
     $suggestion = [];
@@ -317,7 +292,6 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
         case 'lose_weight':
             $suggestion['title'] = "Weight Loss Program";
             $suggestion['description'] = "A balanced program focusing on calorie deficit through cardio and strength training.";
-            
             if ($equipment === "none") {
                 $suggestion['workouts'] = [
                     "HIIT Bodyweight Circuit - 3-4 times per week",
@@ -338,11 +312,9 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 ];
             }
             break;
-            
         case 'build_muscle':
             $suggestion['title'] = "Muscle Building Program";
             $suggestion['description'] = "A progressive resistance training program with adequate protein intake to build lean muscle.";
-            
             if ($equipment === "none") {
                 $suggestion['workouts'] = [
                     "Progressive Calisthenics - 4 times per week",
@@ -364,11 +336,9 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 ];
             }
             break;
-            
         case 'flexibility':
             $suggestion['title'] = "Flexibility Improvement Program";
             $suggestion['description'] = "A program designed to increase range of motion, reduce stiffness, and improve posture.";
-            
             $suggestion['workouts'] = [
                 "Dynamic Stretching Routine - Daily",
                 "Yoga Flow Session - 3-4 times per week",
@@ -376,11 +346,9 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 "Static Stretching - Daily"
             ];
             break;
-            
         case 'endurance':
             $suggestion['title'] = "Endurance Building Program";
             $suggestion['description'] = "A program to improve cardiovascular health and stamina for longer physical activity.";
-            
             if ($equipment === "none") {
                 $suggestion['workouts'] = [
                     "Progressive Running/Walking - 3-4 times per week",
@@ -396,11 +364,9 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 ];
             }
             break;
-            
         case 'rehab':
             $suggestion['title'] = "Rehabilitation Program";
             $suggestion['description'] = "A gentle program focusing on recovery and gradual strengthening. Always consult a medical professional.";
-            
             $suggestion['workouts'] = [
                 "Gentle Mobility Work - Daily",
                 "Low-Impact Strengthening - 2-3 times per week",
@@ -408,11 +374,9 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 "Progressive Range of Motion Exercises - 3-4 times per week"
             ];
             break;
-            
         default:
             $suggestion['title'] = "General Fitness Program";
             $suggestion['description'] = "A balanced approach to overall fitness including strength, cardio, and flexibility.";
-            
             $suggestion['workouts'] = [
                 "Full Body Strength - 2 times per week",
                 "Cardio Session - 2 times per week",
@@ -426,17 +390,14 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
             $suggestion['intensity'] = "Start with low intensity and gradually build up.";
             $suggestion['frequency'] = "Begin with 3 sessions per week.";
             break;
-            
         case 'light':
             $suggestion['intensity'] = "Begin with low to moderate intensity.";
             $suggestion['frequency'] = "Aim for 3-4 sessions per week.";
             break;
-            
         case 'moderate':
             $suggestion['intensity'] = "Work at moderate intensity with some high-intensity intervals.";
             $suggestion['frequency'] = "Aim for 4-5 sessions per week.";
             break;
-            
         case 'active':
             $suggestion['intensity'] = "Include moderate to high intensity with adequate recovery.";
             $suggestion['frequency'] = "5-6 sessions per week with recovery days.";
@@ -450,127 +411,11 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
         3. Modify exercises as needed to avoid pain
         4. Pay attention to pain vs. discomfort";
     }
-    
     if ($age < 18) {
         $suggestion['age_note'] = "For younger athletes, focus on proper technique, variety, and fun rather than intense specialization.";
     } elseif ($age > 60) {
         $suggestion['age_note'] = "Focus on functional movement, balance exercises, and joint-friendly activities.";
     }
-    
     return $suggestion;
-}
-
-function displayResultPage($firstName, $lastName, $message, $suggestion) {
-    $fullName = $firstName . ' ' . $lastName;
-    
-    $workoutList = '';
-    if (isset($suggestion['workouts'])) {
-        foreach ($suggestion['workouts'] as $workout) {
-            $workoutList .= "<li>{$workout}</li>";
-        }
-    }
-    
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <title>Profile Saved - FitGen</title>
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <link rel='stylesheet' href='profile.css'>
-        <style>
-            .result-container {
-                max-width: 800px;
-                margin: 50px auto;
-                padding: 30px;
-                background: linear-gradient(135deg, #ffffff, #f0fff4);
-                border-radius: 16px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            }
-            
-            .success-message {
-                padding: 15px;
-                background-color: rgba(46, 204, 113, 0.15);
-                color: #2ecc71;
-                border: 1px solid #2ecc71;
-                border-radius: 6px;
-                margin-bottom: 20px;
-            }
-            
-            .back-button {
-                display: inline-block;
-                margin-top: 20px;
-                padding: 10px 20px;
-                background-color: #3498db;
-                color: white;
-                text-decoration: none;
-                border-radius: 6px;
-                transition: all 0.3s ease;
-            }
-            
-            .back-button:hover {
-                background-color: #2980b9;
-                transform: translateY(-2px);
-            }
-            
-            .workout-plan {
-                margin-top: 30px;
-                padding: 20px;
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            }
-            
-            .workout-plan h3 {
-                color: #2ecc71;
-                margin-bottom: 10px;
-            }
-            
-            .workout-plan ul {
-                margin-top: 15px;
-                padding-left: 20px;
-            }
-            
-            .workout-plan li {
-                margin-bottom: 10px;
-            }
-            
-            .note {
-                margin-top: 20px;
-                padding: 15px;
-                background-color: #f9f9f9;
-                border-left: 4px solid #3498db;
-                font-style: italic;
-            }
-        </style>
-    </head>
-    <body>
-        <div class='result-container'>
-            <div class='success-message'>
-                {$message}
-            </div>
-            
-            <h2>Thank you, {$fullName}!</h2>
-            <p>Your profile has been updated successfully. Based on your profile information, we've created a personalized workout plan for you.</p>
-            
-            <div class='workout-plan'>
-                <h3>" . (isset($suggestion['title']) ? $suggestion['title'] : 'Your Workout Plan') . "</h3>
-                <p>" . (isset($suggestion['description']) ? $suggestion['description'] : '') . "</p>
-                
-                <h4>Recommended Workouts:</h4>
-                <ul>
-                    {$workoutList}
-                </ul>
-                
-                " . (isset($suggestion['intensity']) ? "<p><strong>Intensity:</strong> {$suggestion['intensity']}</p>" : '') . "
-                " . (isset($suggestion['frequency']) ? "<p><strong>Frequency:</strong> {$suggestion['frequency']}</p>" : '') . "
-                
-                " . (isset($suggestion['caution']) ? "<div class='note'><strong>Important:</strong> {$suggestion['caution']}</div>" : '') . "
-                " . (isset($suggestion['age_note']) ? "<div class='note'>{$suggestion['age_note']}</div>" : '') . "
-            </div>
-            
-            <a href='profile.html' class='back-button'>Back to Profile</a>
-        </div>
-    </body>
-    </html>";
 }
 ?>
