@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Swimming - FitGen</title>
+    <link rel="stylesheet" href="physiotherapy.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW-Logged.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link active">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy.html">Physiotherapy</a>
+                        <a href="kinetotherapy.html">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="football.html">Football</a>
+                                <a href="basketball.html">Basketball</a>
+                                <a href="tennis.html">Tennis</a>
+                                <a href="swimming.html" class="active">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#champions" class="nav-link">Champions</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#contacts" class="nav-link">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="profile.html" class="btn btn-outline">Profile</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+        <section class="hero physio-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Swimming</h1>
+                    <p class="subtitle">Strength, mobility and injury prevention for swimmers</p>
+                    <p class="description">
+                        Discover routines for swimmers of all levels, designed to improve stroke power, shoulder health, and overall aquatic performance.
+                    </p>
+                    <div class="benefits-list">
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-swimmer"></i></div><span>Improves technique</span></div>
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-heartbeat"></i></div><span>Boosts endurance</span></div>
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-dumbbell"></i></div><span>Builds muscle</span></div>
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-shield-alt"></i></div><span>Prevents overuse injuries</span></div>
+                    </div>
+                </div>
+                <div class="hero-image-container">
+                    <div class="image-frame">
+                        <img src="images/swimming_hero.webp" alt="Swimming Training" onerror="this.src='/api/placeholder/600/400';this.onerror='';">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="routines-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Swimming Exercise Routines</h2>
+                    <p>Routines for technique, strength, and injury prevention</p>
+                </div>
+                <div class="routines-grid">
+                    <div class="routine-card" data-workout="swimming-dynamic-warmup">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-fire"></i></div>
+                            <h3>Dynamic Warm-up</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Prepare your body for the pool with dynamic stretches.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Arm circles</li>
+                                <li><i class="fas fa-check"></i> Leg swings</li>
+                                <li><i class="fas fa-check"></i> Torso rotations</li>
+                                <li><i class="fas fa-check"></i> Jumping jacks</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>8 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>Before swimming</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="swimming-shoulder-stability">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-user-injured"></i></div>
+                            <h3>Shoulder Stability</h3>
+                            <div class="difficulty"><span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Protect your shoulders from overuse injuries.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Band pull-aparts</li>
+                                <li><i class="fas fa-check"></i> Scapular push-ups</li>
+                                <li><i class="fas fa-check"></i> External rotations</li>
+                                <li><i class="fas fa-check"></i> YTWs</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>12 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>2x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="swimming-core-strength">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-dna"></i></div>
+                            <h3>Core Strength</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span class="active"></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Enhance your core for better body alignment and speed in the water.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Plank holds</li>
+                                <li><i class="fas fa-check"></i> Flutter kicks</li>
+                                <li><i class="fas fa-check"></i> Superman holds</li>
+                                <li><i class="fas fa-check"></i> Dead bugs</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>10 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>3x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="swimming-leg-power">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-dumbbell"></i></div>
+                            <h3>Leg Power for Kicking</h3>
+                            <div class="difficulty"><span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter"><span class="active"></span><span></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Improve your kick strength and propulsion in the water.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Squat jumps</li>
+                                <li><i class="fas fa-check"></i> Calf raises</li>
+                                <li><i class="fas fa-check"></i> Wall sits</li>
+                                <li><i class="fas fa-check"></i> Ankle mobility drills</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>10 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>2x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="swimming-mobility-flexibility">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-child"></i></div>
+                            <h3>Mobility & Flexibility</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Increase your range of motion for smoother strokes.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Shoulder stretches</li>
+                                <li><i class="fas fa-check"></i> Hip mobility drills</li>
+                                <li><i class="fas fa-check"></i> Thoracic rotations</li>
+                                <li><i class="fas fa-check"></i> Cat-cow stretch</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>10 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>3x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="swimming-cooldown">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-snowflake"></i></div>
+                            <h3>Cooldown & Recovery</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Finish your swim with gentle stretches to speed up recovery.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Light pool walking</li>
+                                <li><i class="fas fa-check"></i> Shoulder stretch</li>
+                                <li><i class="fas fa-check"></i> Quadriceps stretch</li>
+                                <li><i class="fas fa-check"></i> Foam rolling</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>8 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>After swimming</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="info-section">
+            <div class="container">
+                <div class="info-columns">
+                    <div class="info-column">
+                        <h3><i class="fas fa-swimmer"></i> Swimming Tips</h3>
+                        <ul class="info-list">
+                            <li>Hydrate before and after swimming</li>
+                            <li>Warm up before entering pool</li>
+                            <li>Work on mobility to prevent shoulder pain</li>
+                            <li>Don't skip core training</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-list-check"></i> What to Expect</h3>
+                        <ul class="info-list">
+                            <li>Dryland strength routines</li>
+                            <li>Mobility and flexibility</li>
+                            <li>Shoulder and core focus</li>
+                            <li>Technique tips</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Important Notice</h3>
+                        <div class="info-notice">
+                            <p>Consult a swim coach or health professional before starting new swimming routines, especially if you have injuries.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Common questions about swimming fitness and routines</p>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>What dryland exercises help swimmers most?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Core, shoulder stability, and leg strength exercises are most effective for swimmers.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>How often should I do mobility work?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>2-3 times a week is ideal for most swimmers to maintain healthy joints and prevent injuries.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="cta">
+            <div class="cta-content">
+                <h2>Ready to Dive In?</h2>
+                <p>Start these routines and swim stronger every session!</p>
+                <a href="#" class="btn btn-primary btn-large">Get Personalized Swimming Plan</a>
+            </div>
+        </section>
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Partners</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Community</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    <script src="swimming.js"></script>
+</body>
+</html>

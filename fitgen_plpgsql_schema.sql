@@ -74,6 +74,13 @@ CREATE TABLE workout_suggestions (
     generated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     suggestion JSONB NOT NULL
 );
+CREATE TABLE saved_workouts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  workout_id VARCHAR(64) NOT NULL,
+  saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY(user_id, workout_id)
+);
 CREATE TABLE workout_routines (
     id SERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,

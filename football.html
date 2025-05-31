@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Football - FitGen</title>
+    <link rel="stylesheet" href="physiotherapy.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW-Logged.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link active">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy.html">Physiotherapy</a>
+                        <a href="kinetotherapy.html">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="football.html" class="active">Football</a>
+                                <a href="basketball.html">Basketball</a>
+                                <a href="tennis.html">Tennis</a>
+                                <a href="swimming.html">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#champions" class="nav-link">Champions</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#contacts" class="nav-link">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="profile.html" class="btn btn-outline">Profile</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+        <section class="hero physio-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Football</h1>
+                    <p class="subtitle">Power, agility and injury prevention for footballers</p>
+                    <p class="description">
+                        Discover evidence-based routines designed to boost your football performance, prevent common injuries, and support optimal recovery throughout the season.
+                    </p>
+                    <div class="benefits-list">
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-futbol"></i></div><span>Improves ball control</span></div>
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-running"></i></div><span>Builds speed & agility</span></div>
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-shield-alt"></i></div><span>Prevents injuries</span></div>
+                        <div class="benefit-item"><div class="benefit-icon"><i class="fas fa-heartbeat"></i></div><span>Enhances endurance</span></div>
+                    </div>
+                </div>
+                <div class="hero-image-container">
+                    <div class="image-frame">
+                        <img src="images/football_hero.webp" alt="Football Training" onerror="this.src='/api/placeholder/600/400';this.onerror='';">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="routines-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Football-Specific Exercise Routines</h2>
+                    <p>Routines to improve skills, strength, and reduce injury risk for footballers</p>
+                </div>
+                <div class="routines-grid">
+                    <div class="routine-card" data-workout="football-dynamic-warmup">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-fire"></i></div>
+                            <h3>Dynamic Warm-up</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Prepares the body for intense football activity with movement-based stretches.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> High knees</li>
+                                <li><i class="fas fa-check"></i> Lunges with twist</li>
+                                <li><i class="fas fa-check"></i> Butt kicks</li>
+                                <li><i class="fas fa-check"></i> Leg swings</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>10 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>Before training</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="football-agility-drills">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-shoe-prints"></i></div>
+                            <h3>Agility Drills</h3>
+                            <div class="difficulty"><span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Increase footwork speed and field maneuverability.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Ladder runs</li>
+                                <li><i class="fas fa-check"></i> Cone shuffles</li>
+                                <li><i class="fas fa-check"></i> Zig-zag sprints</li>
+                                <li><i class="fas fa-check"></i> Box jumps</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>15 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>2-3x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="football-leg-strength">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-dumbbell"></i></div>
+                            <h3>Leg Strength & Power</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span class="active"></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Build explosive power for sprints, tackles, and shots.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Bulgarian split squats</li>
+                                <li><i class="fas fa-check"></i> Jump squats</li>
+                                <li><i class="fas fa-check"></i> Calf raises</li>
+                                <li><i class="fas fa-check"></i> Glute bridges</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>20 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>2x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="football-core-stability">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-dna"></i></div>
+                            <h3>Core Stability</h3>
+                            <div class="difficulty"><span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter"><span class="active"></span><span></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Stabilize your trunk to improve balance and shot power.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Plank variations</li>
+                                <li><i class="fas fa-check"></i> Russian twists</li>
+                                <li><i class="fas fa-check"></i> Mountain climbers</li>
+                                <li><i class="fas fa-check"></i> Dead bugs</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>10 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>3x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="football-hamstring-prevention">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-band-aid"></i></div>
+                            <h3>Hamstring Injury Prevention</h3>
+                            <div class="difficulty"><span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter"><span class="active"></span><span class="active"></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Strengthen hamstrings to avoid common strains and tears.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Nordic curls</li>
+                                <li><i class="fas fa-check"></i> Single-leg deadlifts</li>
+                                <li><i class="fas fa-check"></i> Hamstring bridges</li>
+                                <li><i class="fas fa-check"></i> Eccentric hamstring slides</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>12 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>2x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                    <div class="routine-card" data-workout="football-cooldown-recovery">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-snowflake"></i></div>
+                            <h3>Cooldown & Recovery</h3>
+                            <div class="difficulty"><span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter"><span class="active"></span><span></span><span></span></div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Reduce soreness and speed up recovery after matches or training.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Light jogging</li>
+                                <li><i class="fas fa-check"></i> Static hamstring stretch</li>
+                                <li><i class="fas fa-check"></i> Quadriceps stretch</li>
+                                <li><i class="fas fa-check"></i> Foam rolling</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>10 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>After training</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=2ZDNX9sEPH8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="info-section">
+            <div class="container">
+                <div class="info-columns">
+                    <div class="info-column">
+                        <h3><i class="fas fa-futbol"></i> Football Wellness Tips</h3>
+                        <ul class="info-list">
+                            <li>Always warm-up before playing</li>
+                            <li>Hydrate before, during, and after matches</li>
+                            <li>Use proper footwear for your playing surface</li>
+                            <li>Focus on technique to avoid injury</li>
+                            <li>Include strength & flexibility routines</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-list-check"></i> What to Expect</h3>
+                        <ul class="info-list">
+                            <li>Skill-focused drills</li>
+                            <li>Strength and conditioning</li>
+                            <li>Mobility and recovery</li>
+                            <li>Injury prevention focus</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Important Notice</h3>
+                        <div class="info-notice">
+                            <p>Consult your coach or a healthcare professional for personalized advice before starting any new football training program.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Common questions about football fitness and routines</p>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>How often should I train football-specific strength?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>2-3 sessions per week are ideal for maintaining and building football-specific strength, especially during the off-season.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>What recovery is best after a match?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Cooldown exercises, stretching, hydration, and light foam rolling help reduce soreness and speed recovery after matches.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="cta">
+            <div class="cta-content">
+                <h2>Want to Boost Your Football Game?</h2>
+                <p>Start these routines and take your performance to the next level!</p>
+                <a href="#" class="btn btn-primary btn-large">Get Personalized Football Plan</a>
+            </div>
+        </section>
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Partners</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Community</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    <script src="football.js"></script>
+</body>
+</html>
