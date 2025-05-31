@@ -68,7 +68,12 @@ CREATE TABLE exercises (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES exercise_categories(id) ON DELETE CASCADE
 );
-
+CREATE TABLE workout_suggestions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    generated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    suggestion JSONB NOT NULL
+);
 CREATE TABLE workout_routines (
     id SERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,

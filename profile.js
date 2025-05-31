@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNavigation();
     initializeProfilePhoto();
     initializeProfileForm();
+    loadWorkoutSuggestions();
+    document.querySelector('[data-section="workouts"]').addEventListener('click', () => {
+        loadWorkoutSuggestions();
+    });
 });
 
 function checkAuth() {
@@ -214,7 +218,53 @@ function initializeProfileForm() {
         });
     }
 }
+function loadWorkoutSuggestions() {
+    const token = localStorage.getItem("authToken");
+    fetch('workout-suggestions.php', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.suggestions) {
+            showAllSuggestions(data.suggestions);
+        } else {
+            document.getElementById('workout-suggestion-container').innerHTML = "<div style='color: #999; font-style: italic; text-align:center; margin-top: 30px;'>No workout suggestions have been generated yet.</div>";
+        }
+    });
+}
 
+function showAllSuggestions(suggestions) {
+    const container = document.getElementById('workout-suggestion-container');
+    container.innerHTML = "";
+    suggestions.forEach(item => {
+        const date = new Date(item.generated_at);
+        const suggestion = item.suggestion;
+        let workoutList = '';
+        if (suggestion.workouts) {
+            suggestion.workouts.forEach(workout => {
+                workoutList += `<li>${workout}</li>`;
+            });
+        }
+        container.innerHTML += `
+            <div class="workout-suggestion" style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 0.9em; color: #888; margin-bottom: 5px;">
+                    Generated: ${date.toLocaleString()}
+                </div>
+                <h3 style="color: #2ecc71; margin-bottom: 10px;">${suggestion.title || 'Your Workout Plan'}</h3>
+                <p>${suggestion.description || ''}</p>
+                <h4>Recommended Workouts:</h4>
+                <ul style="margin-top: 15px; padding-left: 20px;">${workoutList}</ul>
+                ${suggestion.intensity ? `<p><strong>Intensity:</strong> ${suggestion.intensity}</p>` : ''}
+                ${suggestion.frequency ? `<p><strong>Frequency:</strong> ${suggestion.frequency}</p>` : ''}
+                ${suggestion.caution ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;"><strong>Important:</strong> ${suggestion.caution}</div>` : ''}
+                ${suggestion.age_note ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;">${suggestion.age_note}</div>` : ''}
+            </div>
+        `;
+    });
+}
 function showMessage(message, type) {
     let messageElement = document.querySelector('.message-container');
     
@@ -283,17 +333,37 @@ function showWorkoutSuggestion(suggestion) {
             ${suggestion.age_note ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;">${suggestion.age_note}</div>` : ''}
         </div>
     `;
-
-    const menuItems = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
-    menuItems.forEach(i => i.classList.remove('active'));
-    sections.forEach(s => s.classList.remove('active'));
-    document.querySelector('[data-section="workouts"]').classList.add('active');
-    document.getElementById('workouts').classList.add('active');
+    
+    showTemporaryNotification("You can check your workout suggestion in <b>My Workouts</b> section!");
+}
+function showTemporaryNotification(message) {
+    let notification = document.querySelector('.profile-temp-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'profile-temp-notification';
+        notification.style.position = "fixed";
+        notification.style.top = "30px";
+        notification.style.right = "30px";
+        notification.style.zIndex = "9999";
+        notification.style.background = "#fffbe6";
+        notification.style.color = "#8e7300";
+        notification.style.border = "1px solid #ffe066";
+        notification.style.padding = "14px 24px";
+        notification.style.borderRadius = "8px";
+        notification.style.fontWeight = "500";
+        notification.style.boxShadow = "0 2px 10px rgba(0,0,0,0.08)";
+        document.body.appendChild(notification);
+    }
+    notification.innerHTML = message;
+    notification.style.display = "block";
+    notification.style.opacity = "1";
 
     setTimeout(() => {
-        document.getElementById('workouts').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 500);
+        notification.style.opacity = "0";
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 400);
+    }, 4000);
 }
 
 function logout() {

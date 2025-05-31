@@ -273,10 +273,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         pg_query_params($conn, $updateEmailQuery, array($email, $user_id));
     }
 
-    pg_close($conn);
-
     $suggestion = generateWorkoutSuggestion($goal, '', $activityLevel, $injuries, $age, $gender);
+    $checkQuery = "SELECT id FROM workout_suggestions WHERE user_id = $1 AND suggestion = $2";
+    $checkResult = pg_query_params($conn, $checkQuery, [$user_id, json_encode($suggestion)]);
+
+    if (pg_num_rows($checkResult) == 0) {
+        $insertSuggestionQuery = "INSERT INTO workout_suggestions (user_id, generated_at, suggestion) VALUES ($1, NOW(), $2)";
+        pg_query_params($conn, $insertSuggestionQuery, [$user_id, json_encode($suggestion)]);
+    }
     $response['suggestion'] = $suggestion;
+    pg_close($conn);
 
     header("Content-Type: application/json");
     echo json_encode($response);
