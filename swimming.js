@@ -201,4 +201,18 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal();
         });
     }
+    const swimmingPlanBtn = document.getElementById('personalizedSwimmingPlanBtn');
+    if (swimmingPlanBtn) {
+        swimmingPlanBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showModal(
+                'Authentication Required',
+                'You need to be logged in to access your personalized swimming plan.<br><br><b>Please log in or create an account to continue.</b>',
+                function() {
+                    window.location.href = 'login.html';
+                }
+            );
+        });
+    }
 });

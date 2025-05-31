@@ -201,4 +201,18 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal();
         });
     }
+    const footballPlanBtn = document.getElementById('personalizedFootballPlanBtn');
+    if (footballPlanBtn) {
+        footballPlanBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showModal(
+                'Authentication Required',
+                'You need to be logged in to access your personalized football plan.<br><br><b>Please log in or create an account to continue.</b>',
+                function() {
+                    window.location.href = 'login.html'; 
+                }
+            );
+        });
+    }
 });

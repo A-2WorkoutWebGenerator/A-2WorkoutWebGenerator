@@ -201,4 +201,18 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal();
         });
     }
+    const tennisPlanBtn = document.getElementById('personalizedTennisPlanBtn');
+    if (tennisPlanBtn) {
+        tennisPlanBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showModal(
+                'Authentication Required',
+                'You need to be logged in to access your personalized tennis plan.<br><br><b>Please log in or create an account to continue.</b>',
+                function() {
+                    window.location.href = 'login.html';
+                }
+            );
+        });
+    }
 });

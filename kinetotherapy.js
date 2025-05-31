@@ -393,4 +393,18 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(faqStyles);
     }
+    const kinetoPlanBtn = document.getElementById('personalizedKinetoPlanBtn');
+    if (kinetoPlanBtn) {
+        kinetoPlanBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showModal(
+                'Authentication Required',
+                'You need to be logged in to access your personalized kineto plan.<br><br><b>Please log in or create an account to continue.</b>',
+                function() {
+                    window.location.href = 'login.html';
+                }
+            );
+        });
+    }
 });
