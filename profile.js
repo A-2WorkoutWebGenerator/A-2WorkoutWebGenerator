@@ -148,8 +148,8 @@ function populateFormWithData(data) {
             'age': profile.age,
             'goal': profile.goal,
             'activity_level': profile.activity_level,
-            'injuries': profile.injuries,
-            'equipment': profile.equipment
+            'injuries': profile.injuries
+            //'equipment': profile.equipment
         };
         for (const [fieldId, value] of Object.entries(fields)) {
             const field = document.getElementById(fieldId);

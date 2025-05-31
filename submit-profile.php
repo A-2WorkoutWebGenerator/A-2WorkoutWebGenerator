@@ -86,8 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $goal = isset($_POST["goal"]) ? htmlspecialchars($_POST["goal"]) : '';
     $activityLevel = isset($_POST["activity_level"]) ? htmlspecialchars($_POST["activity_level"]) : '';
     $injuries = isset($_POST["injuries"]) ? htmlspecialchars($_POST["injuries"]) : '';
-    $equipment = isset($_POST["equipment"]) ? htmlspecialchars($_POST["equipment"]) : '';
-    
+
     $profilePicturePath = null;
     if (isset($_FILES["profile_pic"]) && $_FILES["profile_pic"]["error"] == 0) {
         $allowed = ["jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png"];
@@ -204,8 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 age = $4, 
                 goal = $5, 
                 activity_level = $6, 
-                injuries = $7, 
-                equipment = $8";
+                injuries = $7";
             
             $params = array(
                 $firstName,
@@ -214,8 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $age,
                 $goal,
                 $activityLevel,
-                $injuries,
-                $equipment
+                $injuries
             );
             
             if ($profilePicturePath) {
@@ -235,11 +232,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $response['message'] = "Error updating profile: " . pg_last_error($conn);
             }
         } else {
-            $insertQuery = "INSERT INTO user_profiles 
-                (user_id, first_name, last_name, gender, age, goal, activity_level, injuries, equipment, profile_picture_path) 
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)";
-            
-            $result = pg_query_params($conn, $insertQuery, array(
+            $insertFields = "user_id, first_name, last_name, gender, age, goal, activity_level, injuries";
+            $insertValues = "\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8";
+            $params = array(
                 $user_id,
                 $firstName,
                 $lastName,
@@ -247,10 +242,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $age,
                 $goal,
                 $activityLevel,
-                $injuries,
-                $equipment,
-                $profilePicturePath
-            ));
+                $injuries
+            );
+
+            if ($profilePicturePath) {
+                $insertFields .= ", profile_picture_path";
+                $insertValues .= ", \$" . (count($params) + 1);
+                $params[] = $profilePicturePath;
+            }
+
+            $insertQuery = "INSERT INTO user_profiles ($insertFields) VALUES ($insertValues)";
+            
+            $result = pg_query_params($conn, $insertQuery, $params);
             
             if ($result) {
                 $response['success'] = true;
@@ -272,7 +275,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     pg_close($conn);
 
-    $suggestion = generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries, $age, $gender);
+    $suggestion = generateWorkoutSuggestion($goal, '', $activityLevel, $injuries, $age, $gender);
     $response['suggestion'] = $suggestion;
 
     header("Content-Type: application/json");
@@ -292,49 +295,20 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
         case 'lose_weight':
             $suggestion['title'] = "Weight Loss Program";
             $suggestion['description'] = "A balanced program focusing on calorie deficit through cardio and strength training.";
-            if ($equipment === "none") {
-                $suggestion['workouts'] = [
-                    "HIIT Bodyweight Circuit - 3-4 times per week",
-                    "Walking/Jogging - 2-3 times per week",
-                    "Active Recovery (stretching) - 1-2 times per week"
-                ];
-            } elseif ($equipment === "basic") {
-                $suggestion['workouts'] = [
-                    "Dumbbell Circuit Training - 3 times per week",
-                    "Resistance Band HIIT - 2 times per week", 
-                    "Cardio Session (moderate intensity) - 2-3 times per week"
-                ];
-            } else {
-                $suggestion['workouts'] = [
-                    "Full Body Strength Training - 2 times per week",
-                    "HIIT or Circuit Training - 2 times per week",
-                    "Steady State Cardio - 2 times per week"
-                ];
-            }
+            $suggestion['workouts'] = [
+                "HIIT Bodyweight Circuit - 3-4 times per week",
+                "Walking/Jogging - 2-3 times per week",
+                "Active Recovery (stretching) - 1-2 times per week"
+            ];
             break;
         case 'build_muscle':
             $suggestion['title'] = "Muscle Building Program";
             $suggestion['description'] = "A progressive resistance training program with adequate protein intake to build lean muscle.";
-            if ($equipment === "none") {
-                $suggestion['workouts'] = [
-                    "Progressive Calisthenics - 4 times per week",
-                    "Bodyweight Supersets - 2 times per week",
-                    "Active Recovery - 1 time per week"
-                ];
-            } elseif ($equipment === "basic") {
-                $suggestion['workouts'] = [
-                    "Dumbbell Push Workout - 2 times per week",
-                    "Dumbbell Pull Workout - 2 times per week",
-                    "Legs & Core - 1-2 times per week"
-                ];
-            } else {
-                $suggestion['workouts'] = [
-                    "Upper Body Push (Chest/Shoulders/Triceps) - 2 times per week",
-                    "Upper Body Pull (Back/Biceps) - 2 times per week",
-                    "Lower Body - 2 times per week",
-                    "Active Recovery - 1 time per week"
-                ];
-            }
+            $suggestion['workouts'] = [
+                "Progressive Calisthenics - 4 times per week",
+                "Bodyweight Supersets - 2 times per week",
+                "Active Recovery - 1 time per week"
+            ];
             break;
         case 'flexibility':
             $suggestion['title'] = "Flexibility Improvement Program";
@@ -349,20 +323,11 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
         case 'endurance':
             $suggestion['title'] = "Endurance Building Program";
             $suggestion['description'] = "A program to improve cardiovascular health and stamina for longer physical activity.";
-            if ($equipment === "none") {
-                $suggestion['workouts'] = [
-                    "Progressive Running/Walking - 3-4 times per week",
-                    "Bodyweight Circuit (high rep) - 2 times per week",
-                    "Long Duration Low Intensity Session - 1 time per week"
-                ];
-            } else {
-                $suggestion['workouts'] = [
-                    "Cardio Intervals - 2-3 times per week",
-                    "Long Duration Cardio - 1-2 times per week",
-                    "Cross Training - 2 times per week",
-                    "Recovery Session - 1 time per week"
-                ];
-            }
+            $suggestion['workouts'] = [
+                "Progressive Running/Walking - 3-4 times per week",
+                "Bodyweight Circuit (high rep) - 2 times per week",
+                "Long Duration Low Intensity Session - 1 time per week"
+            ];
             break;
         case 'rehab':
             $suggestion['title'] = "Rehabilitation Program";
