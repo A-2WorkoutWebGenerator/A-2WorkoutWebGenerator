@@ -197,6 +197,7 @@ function initializeProfileForm() {
                         if (data.suggestion) {
                             showWorkoutSuggestion(data.suggestion);
                         }
+                        loadUserProfile();
                     } else {
                         showMessage(data.message || "Error saving profile!", "error");
                     }

@@ -15,9 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'db_connection.php';
 require_once 'jwt_utils.php';
 
-$input = file_get_contents("php://input");
-$headers = getallheaders();
-
 function getBearerToken() {
     $headers = null;
     if (function_exists('getallheaders')) {
@@ -53,13 +50,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$user_id) {
                 $response['message'] = "User ID missing in token.";
             } else {
+                $conn = getConnection();
+                if ($conn === false) {
+                    $response['message'] = "Database connection failed.";
+                    echo json_encode($response);
+                    exit();
+                }
+                $profileQuery = "SELECT * FROM user_profiles WHERE user_id = $1";
+                $profileResult = pg_query_params($conn, $profileQuery, array($user_id));
+                if ($profileResult && pg_num_rows($profileResult) > 0) {
+                    $profile = pg_fetch_assoc($profileResult);
+                    $response['profile'] = $profile;
+                } else {
+                    $response['profile'] = null;
+                }
+                pg_close($conn);
+
                 $response['success'] = true;
                 $response['user'] = [
                     'user_id' => $user_id,
                     'username' => $username,
                     'email' => $email
                 ];
-                $response['message'] = "User info retrieved from JWT.";
+                $response['message'] = "User info and profile retrieved successfully.";
             }
         } catch (Exception $e) {
             $response['message'] = "Invalid or expired token: " . $e->getMessage();
