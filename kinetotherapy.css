@@ -103,14 +103,18 @@ ul {
 
 .btn-primary {
     background-color: var(--primary);
-    color: white;
+    color: #fff;
     box-shadow: 0 4px 10px rgba(24, 210, 89, 0.2);
 }
 
 .btn-primary:hover {
     background-color: var(--primary-dark);
+    color: #fff;
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+.btn-primary i {
+    color: #fff !important;
 }
 
 .btn-outline {
@@ -953,7 +957,6 @@ ul {
     background-color: var(--primary);
     color: white;
 }
-
 ::-webkit-scrollbar {
     width: 10px;
 }
