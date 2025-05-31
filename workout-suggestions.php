@@ -4,43 +4,47 @@ require_once 'jwt_utils.php';
 
 header("Content-Type: application/json");
 
-function getBearerToken() {
-    if (function_exists('getallheaders')) {
-        $headers = getallheaders();
-        foreach ($headers as $key => $value) {
-            if (strtolower($key) === 'authorization') {
-                if (preg_match('/Bearer\s(\S+)/', $value, $matches)) {
-                    return $matches[1];
-                }
-            }
-        }
+$token = null;
+$headers = getallheaders();
+if (isset($headers['Authorization'])) {
+    if (preg_match('/Bearer\s(\S+)/', $headers['Authorization'], $matches)) {
+        $token = $matches[1];
     }
-    if (isset($_POST['auth_token'])) return $_POST['auth_token'];
-    return null;
 }
 
-$token = getBearerToken();
 if (!$token) {
-    echo json_encode(['success' => false, 'message' => 'Token missing.']);
-    exit();
+    echo json_encode(['success' => false, 'message' => 'No token!']);
+    exit;
 }
-$jwt = decode_jwt($token);
-$user_id = $jwt->sub ?? null;
+try {
+    $jwt = decode_jwt($token);
+    $user_id = $jwt->sub ?? null;
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Invalid token!']);
+    exit;
+}
+if (!$user_id) {
+    echo json_encode(['success' => false, 'message' => 'No user id!']);
+    exit;
+}
 
 $conn = getConnection();
-if (!$user_id || !$conn) {
-    echo json_encode(['success' => false, 'message' => 'DB or user error.']);
-    exit();
-}
+$sql = "SELECT id, generated_at, workout FROM user_workouts WHERE user_id = $1 ORDER BY generated_at DESC";
+$result = pg_query_params($conn, $sql, [$user_id]);
 
-$query = "SELECT generated_at, suggestion FROM workout_suggestions WHERE user_id = $1 ORDER BY generated_at DESC";
-$result = pg_query_params($conn, $query, [$user_id]);
-$suggestions = [];
-while ($row = pg_fetch_assoc($result)) {
-    $suggestions[] = [
-        'generated_at' => $row['generated_at'],
-        'suggestion' => json_decode($row['suggestion'], true)
-    ];
+$workout_suggestions = [];
+if ($result) {
+    while ($row = pg_fetch_assoc($result)) {
+        $workoutArr = json_decode($row['workout'], true); 
+        $workout_suggestions[] = [
+            "id" => $row["id"],
+            "generated_at" => $row["generated_at"],
+            "exercises" => $workoutArr
+        ];
+    }
+    echo json_encode(['success' => true, 'suggestions' => $workout_suggestions]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Could not fetch saved workouts.']);
 }
-echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+pg_close($conn);
 ?>

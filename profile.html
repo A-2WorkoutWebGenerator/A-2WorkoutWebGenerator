@@ -101,7 +101,7 @@
 
             <section id="workouts" class="section hidden">
                 <h2>My Workouts</h2>
-                <p>Here will be the user's workouts...</p>
+                <div id="workout-suggestion-container"></div>
             </section>
 
             <section id="stats" class="section hidden">
@@ -111,7 +111,7 @@
 
             <section id="preferences" class="section hidden">
                 <h2>Workout Preferences</h2>
-                <form>
+                <form id="preferences-form">
                     <label for="muscle_group">Muscle Group:</label>
                     <select id="muscle_group" name="muscle_group">
                         <option value="full_body">Full Body</option>
@@ -122,9 +122,10 @@
 
                     <label for="intensity">Intensity:</label>
                     <select id="intensity" name="intensity">
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="all_levels">All Levels</option>
                     </select>
 
                     <label for="duration">Duration (minutes):</label>
