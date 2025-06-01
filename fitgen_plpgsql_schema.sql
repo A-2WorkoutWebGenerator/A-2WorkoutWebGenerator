@@ -191,6 +191,31 @@ CREATE INDEX idx_user_stats_date ON user_stats(stat_date);
 CREATE INDEX idx_audit_log_table_operation ON audit_log(table_name, operation);
 CREATE INDEX idx_audit_log_created_at ON audit_log(created_at);
 
+-- Tabelul pentru success stories
+CREATE TABLE success_stories (
+    id SERIAL PRIMARY KEY,
+    user_name VARCHAR(100) NOT NULL,
+    achievement VARCHAR(255) NOT NULL,
+    story_text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_approved BOOLEAN DEFAULT TRUE,
+    ip_address INET,
+    user_agent TEXT
+);
+
+-- Index pentru performanță
+CREATE INDEX idx_success_stories_created_at ON success_stories(created_at DESC);
+CREATE INDEX idx_success_stories_approved ON success_stories(is_approved);
+
+-- Comentarii pentru claritate
+COMMENT ON TABLE success_stories IS 'Stores user submitted success stories for the fitness app';
+COMMENT ON COLUMN success_stories.user_name IS 'Name of the user sharing the story';
+COMMENT ON COLUMN success_stories.achievement IS 'Brief description of what they achieved';
+COMMENT ON COLUMN success_stories.story_text IS 'Full story text';
+COMMENT ON COLUMN success_stories.is_approved IS 'Whether the story is approved for display';
+COMMENT ON COLUMN success_stories.ip_address IS 'IP address for spam prevention';
+COMMENT ON COLUMN success_stories.user_agent IS 'Browser info for analytics';
+
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
