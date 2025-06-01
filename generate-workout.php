@@ -33,17 +33,20 @@ if (!$user_id) {
 $muscle_group = $input['muscle_group'] ?? null;
 $difficulty   = $input['intensity'] ?? null; 
 $equipment    = $input['equipment'] ?? null;
-$num_exercises = $input['num_exercises'] ?? 6; 
+$duration_minutes = $input['duration'] ?? 30; 
 
 $conn = getConnection();
 $sql = "SELECT * FROM fitgen.generate_workout_for_user($1, $2, $3, $4, $5)";
 $result = pg_query_params($conn, $sql, [
-    $user_id, $muscle_group, $difficulty, $equipment, $num_exercises
+    $user_id, $muscle_group, $difficulty, $equipment, $duration_minutes
 ]);
 
 $workout = [];
 if ($result) {
     while ($row = pg_fetch_assoc($result)) {
+        if (isset($row['muscle_groups']) && is_string($row['muscle_groups'])) {
+            $row['muscle_groups'] = json_decode($row['muscle_groups']);
+        }
         $workout[] = $row;
     }
     if (!empty($workout)) {
