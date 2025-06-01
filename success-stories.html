@@ -67,93 +67,28 @@
                     <p>Real stories from real people who achieved their fitness goals</p>
                 </div>
                 
-                <div class="stories-grid">
-                    <div class="story-card">
-                        <div class="story-header">
-                            <div class="author-image">A</div>
-                            <div class="author-info">
-                                <h4>Andreea M.</h4>
-                                <span>Lost 15kg in 4 months</span>
-                                <div class="story-date">March 2024</div>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"FitGen completely transformed my approach to fitness. The personalized workout plans and tracking features helped me lose 15kg in just 4 months! The physiotherapy exercises were especially helpful for my back problems."</p>
-                        </div>
-                    </div>
-
-                    <div class="story-card">
-                        <div class="story-header">
-                            <div class="author-image">R</div>
-                            <div class="author-info">
-                                <h4>Radu C.</h4>
-                                <span>From beginner to marathon runner</span>
-                                <div class="story-date">January 2024</div>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"As someone who travels frequently, having access to workouts I can do anywhere has been a game-changer. The mobile app is intuitive and the community support is amazing. I went from never running to completing my first marathon!"</p>
-                        </div>
-                    </div>
-
-                    <div class="story-card">
-                        <div class="story-header">
-                            <div class="author-image">M</div>
-                            <div class="author-info">
-                                <h4>Maria S.</h4>
-                                <span>Recovered from knee injury</span>
-                                <div class="story-date">February 2024</div>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"After my knee surgery, I thought I'd never be active again. The rehabilitation programs in FitGen helped me not only recover but become stronger than before. The step-by-step videos were incredibly helpful."</p>
-                        </div>
-                    </div>
-
-                    <div class="story-card">
-                        <div class="story-header">
-                            <div class="author-image">A</div>
-                            <div class="author-info">
-                                <h4>Alex D.</h4>
-                                <span>Built muscle and confidence</span>
-                                <div class="story-date">December 2023</div>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"I was always the skinny guy at the gym feeling lost. FitGen's personalized strength training programs helped me gain 8kg of muscle in 6 months. The progress tracking kept me motivated every day."</p>
-                        </div>
-                    </div>
-
-                    <div class="story-card">
-                        <div class="story-header">
-                            <div class="author-image">E</div>
-                            <div class="author-info">
-                                <h4>Elena P.</h4>
-                                <span>Improved flexibility and balance</span>
-                                <div class="story-date">April 2024</div>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"At 55, I thought it was too late to improve my flexibility. The kinetotherapy programs proved me wrong! I can now touch my toes and my back pain is completely gone. Age is just a number!"</p>
-                        </div>
-                    </div>
-
-                    <div class="story-card">
-                        <div class="story-header">
-                            <div class="author-image">M</div>
-                            <div class="author-info">
-                                <h4>Mihai L.</h4>
-                                <span>Transformed lifestyle completely</span>
-                                <div class="story-date">May 2024</div>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"Working from home made me sedentary and unhappy. FitGen's home workout routines fit perfectly into my schedule. I've lost 20kg and gained so much energy. My productivity at work has improved dramatically!"</p>
-                        </div>
+                <!-- Stories info -->
+                <div class="stories-info">
+                    <p id="stories-count">Loading stories...</p>
+                </div>
+                
+                <!-- Stories grid -->
+                <div id="user-stories" class="user-stories-grid"></div>
+                
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination">
+                        <button id="prev-btn" class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        
+                        <div class="pagination-numbers" id="pagination-numbers"></div>
+                        
+                        <button id="next-btn" class="pagination-btn" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
-
-                <div id="user-stories" class="user-stories-grid"></div>
             </section>
 
             <section id="share-story" class="cta">
@@ -236,14 +171,14 @@
         </div>
 
         <style>
-            .stories-grid {
+            .user-stories-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
                 gap: 2rem;
-                margin-bottom: 3rem;
+                margin-top: 2rem;
             }
 
-            .story-card {
+            .user-story-card {
                 background-color: var(--primary-light);
                 border-radius: var(--radius-md);
                 padding: 2rem;
@@ -252,25 +187,23 @@
                 border-left: 4px solid var(--primary);
             }
 
-            .story-card:hover {
+            .user-story-card:hover {
                 transform: translateY(-5px);
                 box-shadow: var(--shadow-md);
             }
 
-            .story-header {
+            .user-story-header {
                 display: flex;
                 align-items: center;
                 margin-bottom: 1.5rem;
             }
 
-            .author-image {
+            .user-author-image {
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
-                background-size: cover;
-                background-position: center;
-                margin-right: 1rem;
                 background-color: var(--primary);
+                margin-right: 1rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -279,13 +212,13 @@
                 font-size: 1.2rem;
             }
 
-            .author-info h4 {
+            .user-author-info h4 {
                 font-size: 1.5rem;
                 margin-bottom: 0.5rem;
                 color: var(--text-dark);
             }
 
-            .author-info span {
+            .user-author-info span {
                 font-size: 1rem;
                 color: var(--primary);
                 font-weight: 600;
@@ -293,12 +226,12 @@
                 margin-bottom: 0.8rem;
             }
 
-            .story-date {
+            .user-story-date {
                 font-size: 0.9rem;
                 color: var(--text-light);
             }
 
-            .story-content p {
+            .user-story-content p {
                 color: var(--text-dark);
                 line-height: 1.7;
                 font-style: italic;
@@ -361,120 +294,258 @@
                 color: var(--white);
             }
 
-            .new-story {
-                border-left: 4px solid var(--primary);
-                background-color: var(--primary-light);
+            /* Pagination Styles */
+            .stories-info {
+                text-align: center;
+                margin-bottom: 2rem;
             }
 
-            .user-stories-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: 2rem;
-                margin-top: 2rem;
-            }
-
-            .user-story-card {
-                background-color: var(--white);
-                border-radius: var(--radius-md);
-                padding: 2rem;
-                box-shadow: var(--shadow-sm);
-                transition: all var(--transition-normal);
-                border-left: 4px solid var(--primary);
-                background-color: var(--primary-light);
-            }
-
-            .user-story-card:hover {
-                transform: translateY(-5px);
-                box-shadow: var(--shadow-md);
-            }
-
-            .user-story-header {
-                display: flex;
-                align-items: center;
-                margin-bottom: 1.5rem;
-            }
-
-            .user-author-image {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                background-color: var(--primary);
-                margin-right: 1rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-weight: bold;
-                font-size: 1.2rem;
-            }
-
-            .user-author-info h4 {
-                font-size: 1.5rem;
-                margin-bottom: 0.5rem;
-                color: var(--text-dark);
-            }
-
-            .user-author-info span {
+            .stories-info p {
+                color: var(--text-light);
                 font-size: 1rem;
-                color: var(--primary);
-                font-weight: 600;
-                display: block;
-                margin-bottom: 0.8rem;
             }
 
-            .user-story-date {
-                font-size: 0.9rem;
+            .pagination-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 3rem;
+                margin-bottom: 2rem;
+            }
+
+            .pagination {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                background-color: var(--white);
+                padding: 1rem 2rem;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-sm);
+            }
+
+            .pagination-btn {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border: 2px solid var(--primary);
+                background-color: transparent;
+                color: var(--primary);
+                border-radius: var(--radius-full);
+                font-weight: 600;
+                cursor: pointer;
+                transition: all var(--transition-normal);
+            }
+
+            .pagination-btn:hover:not(:disabled) {
+                background-color: var(--primary);
+                color: var(--white);
+                transform: translateY(-2px);
+            }
+
+            .pagination-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                border-color: var(--text-light);
                 color: var(--text-light);
             }
 
-            .user-story-content p {
+            .pagination-numbers {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .pagination-number {
+                width: 40px;
+                height: 40px;
+                border: 2px solid var(--border-color);
+                background-color: transparent;
                 color: var(--text-dark);
-                line-height: 1.7;
-                font-style: italic;
-                font-size: 1.1rem;
+                border-radius: 50%;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all var(--transition-normal);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .pagination-number:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+                transform: translateY(-2px);
+            }
+
+            .pagination-number.active {
+                background-color: var(--primary);
+                border-color: var(--primary);
+                color: var(--white);
+            }
+
+            .pagination-ellipsis {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-light);
+                font-weight: bold;
             }
 
             @media (max-width: 768px) {
-                .stories-grid {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
-                }
-                
                 .story-form {
                     margin: 1rem auto;
+                }
+                
+                .pagination {
+                    flex-direction: column;
+                    gap: 1rem;
+                    padding: 1rem;
+                }
+                
+                .pagination-numbers {
+                    order: -1;
+                }
+                
+                .pagination-btn {
+                    font-size: 0.9rem;
+                    padding: 0.5rem 1rem;
                 }
             }
         </style>
 
         <script>
             const API_URL = "http://localhost:8081";
+            const STORIES_PER_PAGE = 6;
+            let currentPage = 1;
+            let totalStories = 0;
+            let totalPages = 0;
 
             document.addEventListener('DOMContentLoaded', function() {
-                loadStoriesFromDatabase();
+                loadStoriesFromDatabase(currentPage);
+                setupPaginationEvents();
             });
 
-            function loadStoriesFromDatabase() {
-                fetch(`${API_URL}/get_stories.php`)
+            function setupPaginationEvents() {
+                document.getElementById('prev-btn').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        loadStoriesFromDatabase(currentPage);
+                    }
+                });
+
+                document.getElementById('next-btn').addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        loadStoriesFromDatabase(currentPage);
+                    }
+                });
+            }
+            function loadStoriesFromDatabase(page = 1) {
+                const offset = (page - 1) * STORIES_PER_PAGE;
+                
+                fetch(`${API_URL}/get_stories.php?limit=${STORIES_PER_PAGE}&offset=${offset}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.data.length > 0) {
-                        const userStoriesContainer = document.getElementById('user-stories');
-                        userStoriesContainer.innerHTML = ''; 
+                    if (data.success) {
+                        totalStories = data.pagination.total;
+                        totalPages = Math.ceil(totalStories / STORIES_PER_PAGE);
                         
-                        data.data.forEach(story => {
-                            const storyCard = createStoryCard(story);
-                            userStoriesContainer.appendChild(storyCard);
-                        });
+                        displayStories(data.data);
+                        updateStoriesInfo(page);
+                        updatePagination(page);
+                    } else {
+                        console.error('Failed to load stories:', data.message);
                     }
                 })
                 .catch(error => {
                     console.error('Error loading stories:', error);
                 });
             }
+            function displayStories(stories) {
+                const userStoriesContainer = document.getElementById('user-stories');
+                userStoriesContainer.innerHTML = '';
+
+                if (stories.length === 0) {
+                    userStoriesContainer.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1;">No stories found. Be the first to share your story!</p>';
+                    return;
+                }
+
+                stories.forEach(story => {
+                    const storyCard = createStoryCard(story);
+                    userStoriesContainer.appendChild(storyCard);
+                });
+            }
+            function updateStoriesInfo(page) {
+                const start = (page - 1) * STORIES_PER_PAGE + 1;
+                const end = Math.min(page * STORIES_PER_PAGE, totalStories);
+                
+                const infoText = totalStories === 0 
+                    ? 'No stories yet' 
+                    : `Showing ${start}-${end} of ${totalStories} stories`;
+                
+                document.getElementById('stories-count').textContent = infoText;
+            }
+
+            function updatePagination(page) {
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+                
+                prevBtn.disabled = page <= 1;
+                nextBtn.disabled = page >= totalPages;
+
+                updatePaginationNumbers(page);
+            }
+
+            function updatePaginationNumbers(currentPage) {
+                const container = document.getElementById('pagination-numbers');
+                container.innerHTML = '';
+
+                if (totalPages <= 1) {
+                    return;
+                }
+
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, currentPage + 2);
+
+                if (startPage > 1) {
+                    addPageNumber(container, 1, currentPage);
+                    if (startPage > 2) {
+                        addEllipsis(container);
+                    }
+                }
+                for (let i = startPage; i <= endPage; i++) {
+                    addPageNumber(container, i, currentPage);
+                }
+
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        addEllipsis(container);
+                    }
+                    addPageNumber(container, totalPages, currentPage);
+                }
+            }
+            function addPageNumber(container, pageNum, currentPage) {
+                const btn = document.createElement('button');
+                btn.className = `pagination-number ${pageNum === currentPage ? 'active' : ''}`;
+                btn.textContent = pageNum;
+                btn.addEventListener('click', () => {
+                    if (pageNum !== currentPage) {
+                        currentPage = pageNum;
+                        loadStoriesFromDatabase(currentPage);
+                    }
+                });
+                container.appendChild(btn);
+            }
+            function addEllipsis(container) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'pagination-ellipsis';
+                ellipsis.textContent = '...';
+                container.appendChild(ellipsis);
+            }
+
             function createStoryCard(story) {
                 const storyCard = document.createElement('div');
                 storyCard.className = 'user-story-card';
-                
                 const firstLetter = story.userName.charAt(0).toUpperCase();
                 
                 storyCard.innerHTML = `
@@ -493,6 +564,7 @@
                 
                 return storyCard;
             }
+
             document.getElementById('story-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -522,11 +594,12 @@
                         document.getElementById('success-message').style.display = 'block';
                         
                         this.reset();
-
-                        setTimeout(() => {
-                            loadStoriesFromDatabase();
-                        }, 1000);
                         
+                        setTimeout(() => {
+                            currentPage = 1;
+                            loadStoriesFromDatabase(currentPage);
+                        }, 1000);
+
                         setTimeout(() => {
                             document.getElementById('success-message').style.display = 'none';
                         }, 5000);

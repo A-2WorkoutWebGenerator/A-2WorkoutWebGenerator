@@ -191,7 +191,6 @@ CREATE INDEX idx_user_stats_date ON user_stats(stat_date);
 CREATE INDEX idx_audit_log_table_operation ON audit_log(table_name, operation);
 CREATE INDEX idx_audit_log_created_at ON audit_log(created_at);
 
--- Tabelul pentru success stories
 CREATE TABLE success_stories (
     id SERIAL PRIMARY KEY,
     user_name VARCHAR(100) NOT NULL,
@@ -203,11 +202,8 @@ CREATE TABLE success_stories (
     user_agent TEXT
 );
 
--- Index pentru performanță
 CREATE INDEX idx_success_stories_created_at ON success_stories(created_at DESC);
 CREATE INDEX idx_success_stories_approved ON success_stories(is_approved);
-
--- Comentarii pentru claritate
 COMMENT ON TABLE success_stories IS 'Stores user submitted success stories for the fitness app';
 COMMENT ON COLUMN success_stories.user_name IS 'Name of the user sharing the story';
 COMMENT ON COLUMN success_stories.achievement IS 'Brief description of what they achieved';
