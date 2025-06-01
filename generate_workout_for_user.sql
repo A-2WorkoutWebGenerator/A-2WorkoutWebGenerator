@@ -88,7 +88,6 @@ BEGIN
         END IF;
     END LOOP;
 
-    -- Dacă nu s-a atins limita, adaugă un exercițiu mic (excludem deja selectate)
     IF p_total_duration IS NOT NULL AND v_cur_duration < p_total_duration THEN
         FOR v_exercise IN
             SELECT 
