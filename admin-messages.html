@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Contact Messages | FitGen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #18D259;
+            --primary-dark: #3fcb70;
+            --primary-light: #e6f9ed;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --white: #ffffff;
+            --light-bg: #f9f9f9;
+            --border-color: #e0e0e0;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .admin-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .messages-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .message-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .message-card.unread {
+            border-left-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .message-card.responded {
+            border-left-color: var(--success);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .message-info h3 {
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .message-info .email {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .message-info .date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .message-status {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-unread {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-read {
+            background: #f8f9fa;
+            color: var(--text-light);
+        }
+
+        .status-responded {
+            background: #d4edda;
+            color: var(--success);
+        }
+
+        .message-content {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-dark);
+        }
+
+        .response-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid var(--primary-light);
+            display: none;
+        }
+
+        .response-form.active {
+            display: block;
+        }
+
+        .response-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .response-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .response-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .admin-stats {
+                justify-content: center;
+            }
+            
+            .message-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .message-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1><i class="fas fa-envelope"></i> Contact Messages Admin</h1>
+        <div class="admin-stats">
+            <div>Total: <span id="total-count">0</span></div>
+            <div>Unread: <span id="unread-count">0</span></div>
+            <div>Responded: <span id="responded-count">0</span></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Messages</button>
+            <button class="filter-btn" data-filter="unread">Unread</button>
+            <button class="filter-btn" data-filter="responded">Responded</button>
+        </div>
+
+        <div id="messages-container">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading messages...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8081";
+        let allMessages = [];
+        let currentFilter = 'all';
+
+        function checkAdminAuth() {
+            const adminPassword = prompt("Enter admin password to access Contact Messages:");
+            
+            const correctPassword = "fitgen_admin_2025";
+            
+            if (adminPassword !== correctPassword) {
+                alert("Access denied. Incorrect password.");
+                window.location.href = "WoW-Logged.html"; 
+                return false;
+            }
+            
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAdminAuth()) {
+                return;
+            }
+            loadMessages();
+            setupFilters();
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMessages();
+            setupFilters();
+        });
+
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    displayMessages();
+                });
+            });
+        }
+
+        function loadMessages() {
+            fetch(`${API_URL}/admin_messages.php`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    allMessages = data.data;
+                    updateStats();
+                    displayMessages();
+                } else {
+                    document.getElementById('messages-container').innerHTML = 
+                        '<div class="loading">Failed to load messages</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+                document.getElementById('messages-container').innerHTML = 
+                    '<div class="loading">Error loading messages</div>';
+            });
+        }
+
+        function updateStats() {
+            const total = allMessages.length;
+            const unread = allMessages.filter(m => !m.isRead).length;
+            const responded = allMessages.filter(m => m.responseSent).length;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('unread-count').textContent = unread;
+            document.getElementById('responded-count').textContent = responded;
+        }
+
+        function displayMessages() {
+            let filteredMessages = allMessages;
+
+            if (currentFilter === 'unread') {
+                filteredMessages = allMessages.filter(m => !m.isRead);
+            } else if (currentFilter === 'responded') {
+                filteredMessages = allMessages.filter(m => m.responseSent);
+            }
+
+            const container = document.getElementById('messages-container');
+
+            if (filteredMessages.length === 0) {
+                container.innerHTML = '<div class="loading">No messages found</div>';
+                return;
+            }
+
+            container.innerHTML = filteredMessages.map(message => createMessageCard(message)).join('');
+        }
+
+        function createMessageCard(message) {
+            const date = new Date(message.createdAt).toLocaleString();
+            const cardClass = message.responseSent ? 'responded' : (!message.isRead ? 'unread' : '');
+            
+            return `
+                <div class="message-card ${cardClass}">
+                    <div class="message-header">
+                        <div class="message-info">
+                            <h3>${message.fullName}</h3>
+                            <div class="email">${message.email}</div>
+                            <div class="date">${date}</div>
+                        </div>
+                        <div class="message-status">
+                            ${!message.isRead ? '<span class="status-badge status-unread">Unread</span>' : ''}
+                            ${message.isRead && !message.responseSent ? '<span class="status-badge status-read">Read</span>' : ''}
+                            ${message.responseSent ? '<span class="status-badge status-responded">Responded</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="message-content">
+                        ${message.message}
+                    </div>
+                    
+                    <div class="message-actions">
+                        ${!message.isRead ? `<button class="btn btn-secondary" onclick="markAsRead(${message.id})">
+                            <i class="fas fa-eye"></i> Mark as Read
+                        </button>` : ''}
+                        
+                        ${!message.responseSent ? `<button class="btn btn-primary" onclick="toggleResponseForm(${message.id})">
+                            <i class="fas fa-reply"></i> Send Response
+                        </button>` : ''}
+                        
+                        ${message.adminNotes ? `<button class="btn btn-secondary" onclick="showNotes(${message.id})">
+                            <i class="fas fa-sticky-note"></i> View Notes
+                        </button>` : ''}
+                    </div>
+                    
+                    <div class="response-form" id="response-form-${message.id}">
+                        <textarea placeholder="Type your response here..." id="response-text-${message.id}"></textarea>
+                        <div class="response-actions">
+                            <button class="btn btn-primary" onclick="sendResponse(${message.id})">
+                                <i class="fas fa-paper-plane"></i> Send Response
+                            </button>
+                            <button class="btn btn-secondary" onclick="toggleResponseForm(${message.id})">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleResponseForm(messageId) {
+            const form = document.getElementById(`response-form-${messageId}`);
+            form.classList.toggle('active');
+        }
+
+        function markAsRead(messageId) {
+            const message = allMessages.find(m => m.id === messageId);
+            if (message) {
+                message.isRead = true;
+                updateStats();
+                displayMessages();
+            }
+        }
+
+        function sendResponse(messageId) {
+            const responseText = document.getElementById(`response-text-${messageId}`).value.trim();
+            
+            if (!responseText) {
+                alert('Please enter a response message');
+                return;
+            }
+
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            btn.disabled = true;
+
+            fetch(`${API_URL}/admin_messages.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    messageId: messageId,
+                    responseText: responseText,
+                    adminEmail: 'support@fitgen.com'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Response sent successfully!');
+                    
+                    const message = allMessages.find(m => m.id === messageId);
+                    if (message) {
+                        message.responseSent = true;
+                        message.isRead = true;
+                    }
+                    
+                    updateStats();
+                    displayMessages();
+                } else {
+                    alert('Failed to send response: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending response:', error);
+                alert('Error sending response');
+            })
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function showNotes(messageId) {
+            const message = allMessages.find(m => m.id === messageId);
+            if (message && message.adminNotes) {
+                alert('Admin Notes:\n' + message.adminNotes);
+            }
+        }
+    </script>
+</body>
+</html>

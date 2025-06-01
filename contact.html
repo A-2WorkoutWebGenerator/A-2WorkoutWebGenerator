@@ -121,12 +121,23 @@
             cursor: pointer;
             transition: all var(--transition-normal);
             margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(24, 210, 89, 0.3);
         }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .contact-image-section {
             flex: 1;
             position: relative;
@@ -210,6 +221,28 @@
             font-size: 0.9rem;
             opacity: 0.9;
         }
+
+        .message-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .message-success {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+
+        .message-error {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
         @media (max-width: 992px) {
             .contact-container {
                 flex-direction: column;
@@ -284,7 +317,7 @@
                         <p>We'd love to hear from you. Send us a message!</p>
                     </div>
 
-                    <form class="contact-form" action="#" method="POST">
+                    <form class="contact-form" id="contact-form">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
                             <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
@@ -300,10 +333,13 @@
                             <textarea id="message" name="message" placeholder="Share your thoughts, questions, or feedback with us..." required></textarea>
                         </div>
 
-                        <button type="submit" class="submit-btn">
-                            <i class="fas fa-paper-plane"></i> Send Message
+                        <button type="submit" class="submit-btn" id="submit-btn">
+                            <i class="fas fa-paper-plane"></i> 
+                            <span>Send Message</span>
                         </button>
                     </form>
+
+                    <div id="message-container"></div>
                 </div>
                 <div class="contact-image-section">
                     <div class="contact-image-frame">
@@ -364,6 +400,77 @@
             </div>
         </footer>
     </div>
+
+    <script>
+        const API_URL = "http://localhost:8081";
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            if (!fullName || !email || !message) {
+                showMessage('Please fill in all fields.', 'error');
+                return;
+            }
+            const submitBtn = document.getElementById('submit-btn');
+            const originalContent = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Sending...</span>';
+
+            fetch(`${API_URL}/submit_contact.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fullName: fullName,
+                    email: email,
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage(data.message, 'success');
+                    
+                    document.getElementById('contact-form').reset();
+                
+                    setTimeout(() => {
+                        hideMessage();
+                    }, 5000);
+                } else {
+                    showMessage(data.message || 'Failed to send message. Please try again.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting contact form:', error);
+                showMessage('Connection error. Please try again later.', 'error');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalContent;
+            });
+        });
+
+        function showMessage(message, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="message-container message-${type}">${message}</div>`;
+            container.style.display = 'block';
+        }
+
+        function hideMessage() {
+            const container = document.getElementById('message-container');
+            container.style.display = 'none';
+        }
+
+        function logout() {
+            localStorage.removeItem("authToken");
+            window.location.href = "WoW.html";
+        }
+    </script>
 
     <script src="kinetotherapy.js"></script>
 </body>

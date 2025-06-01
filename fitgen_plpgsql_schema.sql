@@ -212,6 +212,31 @@ COMMENT ON COLUMN success_stories.is_approved IS 'Whether the story is approved 
 COMMENT ON COLUMN success_stories.ip_address IS 'IP address for spam prevention';
 COMMENT ON COLUMN success_stories.user_agent IS 'Browser info for analytics';
 
+CREATE TABLE contact_messages (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    ip_address INET,
+    user_agent TEXT,
+    response_sent BOOLEAN DEFAULT FALSE,
+    admin_notes TEXT
+);
+
+CREATE INDEX idx_contact_messages_created_at ON contact_messages(created_at DESC);
+CREATE INDEX idx_contact_messages_read ON contact_messages(is_read);
+CREATE INDEX idx_contact_messages_email ON contact_messages(email);
+
+COMMENT ON TABLE contact_messages IS 'Stores contact form submissions from users';
+COMMENT ON COLUMN contact_messages.full_name IS 'Full name of the person contacting';
+COMMENT ON COLUMN contact_messages.email IS 'Email address for response';
+COMMENT ON COLUMN contact_messages.message IS 'The actual message content';
+COMMENT ON COLUMN contact_messages.is_read IS 'Whether admin has read this message';
+COMMENT ON COLUMN contact_messages.response_sent IS 'Whether a response has been sent';
+COMMENT ON COLUMN contact_messages.admin_notes IS 'Internal notes for admin use';
+
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
