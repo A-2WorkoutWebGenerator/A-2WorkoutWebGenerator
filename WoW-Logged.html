@@ -274,34 +274,9 @@
                 <h2>Success Stories</h2>
                 <p>Hear from our satisfied members</p>
             </div>
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                        <p>"FitGen completely transformed my approach to fitness. The personalized workout plans and tracking features helped me lose 15kg in just 4 months!"</p>
-                        <div class="testimonial-author">
-                            <div class="author-image">
-                            </div>
-                            <div class="author-info">
-                                <h4>Andreea M.</h4>
-                                <span>Member since 2023</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                        <p>"As someone who travels frequently, having access to workouts I can do anywhere has been a game-changer. The mobile app is intuitive and the community support is amazing."</p>
-                        <div class="testimonial-author">
-                            <div class="author-image author-image-2">
-                            </div>
-                            <div class="author-info">
-                                <h4>Radu C.</h4>
-                                <span>Member since 2024</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="testimonial-slider" id="testimonials-container">
+                <div class="loading-message">
+                    <p>Loading success stories...</p>
                 </div>
             </div>
             <div class="text-center">
@@ -364,5 +339,109 @@
             </div>
         </footer>
     </div>
+
+    <style>
+        .loading-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .testimonial-author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+    </style>
+
+    <script>
+        const API_URL = "http://localhost:8081";
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTestimonials();
+        });
+
+        function loadTestimonials() {
+            fetch(`${API_URL}/get_stories.php?limit=2&offset=0`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.length > 0) {
+                    displayTestimonials(data.data);
+                } else {
+                    displayFallbackTestimonials();
+                }
+            })
+            .catch(error => {
+                console.error('Error loading testimonials:', error);
+                displayFallbackTestimonials();
+            });
+        }
+
+        function displayTestimonials(stories) {
+            const container = document.getElementById('testimonials-container');
+            container.innerHTML = '';
+
+            stories.forEach(story => {
+                const firstLetter = story.userName.charAt(0).toUpperCase();
+                const testimonial = document.createElement('div');
+                testimonial.className = 'testimonial';
+                
+                testimonial.innerHTML = `
+                    <div class="testimonial-content">
+                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                        <p>"${story.storyText}"</p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-author-avatar">${firstLetter}</div>
+                            <div class="author-info">
+                                <h4>${story.userName}</h4>
+                                <span>${story.achievement}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(testimonial);
+            });
+        }
+        function displayFallbackTestimonials() {
+            const container = document.getElementById('testimonials-container');
+            container.innerHTML = `
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                        <p>"FitGen completely transformed my approach to fitness. The personalized workout plans and tracking features helped me lose 15kg in just 4 months!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-image"></div>
+                            <div class="author-info">
+                                <h4>Demo User</h4>
+                                <span>Sample Achievement</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                        <p>"As someone who travels frequently, having access to workouts I can do anywhere has been a game-changer. The app is intuitive and the community support is amazing."</p>
+                        <div class="testimonial-author">
+                            <div class="author-image"></div>
+                            <div class="author-info">
+                                <h4>Demo User</h4>
+                                <span>Sample Achievement</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
     </body>
 </html>
