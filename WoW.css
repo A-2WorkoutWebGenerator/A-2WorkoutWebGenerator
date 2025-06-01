@@ -837,65 +837,46 @@ section {
 
 .footer-top {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     margin-bottom: 3rem;
+    gap: 2rem;
 }
 
 .footer-brand {
     max-width: 300px;
 }
 
+.footer-brand .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.5px;
+    margin-bottom: 1rem;
+}
+
 .footer-brand p {
-    margin: 1rem 0 2rem;
+    margin: 0;
     color: rgba(255, 255, 255, 0.7);
-}
-
-.social-links {
-    display: flex;
-    gap: 1rem;
-}
-
-.social-links a {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: var(--white);
-    transition: all var(--transition-normal);
-}
-
-.social-links a:hover {
-    background-color: var(--primary);
-    transform: translateY(-3px);
 }
 
 .footer-links {
     display: flex;
-    gap: 4rem;
+    gap: 2rem;
+    justify-content: center;
 }
 
-.footer-links-column h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    color: var(--white);
-}
-
-.footer-links-column ul li {
-    margin-bottom: 0.8rem;
-}
-
-.footer-links-column a {
+.footer-links a {
     color: rgba(255, 255, 255, 0.7);
     transition: all var(--transition-normal);
+    font-size: 1rem;
+    font-weight: 500;
 }
 
-.footer-links-column a:hover {
+.footer-links a:hover {
     color: var(--primary);
-    transform: translateX(5px);
-    display: inline-block;
+    transform: translateY(-2px);
 }
 
 .footer-bottom {
