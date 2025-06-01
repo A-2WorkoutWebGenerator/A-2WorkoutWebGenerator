@@ -780,55 +780,11 @@ section {
     font-size: 0.9rem;
     color: var(--text-light);
 }
-.contacts {
-    background-color: var(--light-bg);
-}
 
-.contact-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4rem;
-    margin-top: 3rem;
-}
-
-.contact-form {
-    flex: 1;
-    min-width: 300px;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-
-input[type="text"],
-input[type="email"],
-textarea {
-    width: 100%;
-    padding: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    transition: border-color var(--transition-normal);
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-textarea:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(24, 210, 89, 0.2);
-}
-
-textarea {
+/*textarea {
     min-height: 150px;
     resize: vertical;
-}
+}*/
 .cta {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: var(--white);

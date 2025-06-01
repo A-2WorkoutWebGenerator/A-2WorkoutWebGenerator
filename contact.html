@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="kinetotherapy.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <title>Contact Us - FitGen</title>
+    <style>
+        .contact-page-content {
+            padding: 4rem 5%;
+            background-color: var(--light-bg);
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 4rem;
+            align-items: stretch;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            min-height: 600px;
+        }
+        .contact-form-section {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .contact-form-header h2 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-form-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .contact-form-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .contact-form {
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e1e1;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: var(--font-primary);
+            transition: all var(--transition-normal);
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(24, 210, 89, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(24, 210, 89, 0.3);
+        }
+        .contact-image-section {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-light), #f0fff4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .contact-image-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            opacity: 0.1;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .contact-image-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            background: var(--primary-dark);
+            opacity: 0.08;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .contact-image-frame {
+            width: 80%;
+            height: 80%;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 2;
+            transition: all var(--transition-normal);
+        }
+
+        .contact-image-frame:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(24, 210, 89, 0.2);
+        }
+
+        .contact-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+
+        .contact-image-frame:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .image-overlay h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-overlay p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        @media (max-width: 992px) {
+            .contact-container {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .contact-form-section {
+                padding: 2rem;
+            }
+
+            .contact-image-section {
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-page-content {
+                padding: 2rem 3%;
+            }
+
+            .contact-form-section {
+                padding: 1.5rem;
+            }
+
+            .contact-form-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW-Logged.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy.html">Physiotherapy</a>
+                        <a href="kinetotherapy.html">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="football.html">Football</a>
+                                <a href="basketball.html">Basketball</a>
+                                <a href="tennis.html">Tennis</a>
+                                <a href="swimming.html">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#champions" class="nav-link">Champions</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="contact.html" class="nav-link active">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="profile.html" class="btn btn-outline">Profile</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+
+        <section class="contact-page-content">
+            <div class="contact-container">
+                <div class="contact-form-section">
+                    <div class="contact-form-header">
+                        <h2>Contact Us</h2>
+                        <p>We'd love to hear from you. Send us a message!</p>
+                    </div>
+
+                    <form class="contact-form" action="#" method="POST">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Tell us what's on your mind</label>
+                            <textarea id="message" name="message" placeholder="Share your thoughts, questions, or feedback with us..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+                <div class="contact-image-section">
+                    <div class="contact-image-frame">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=800&fit=crop&crop=center" alt="Contact FitGen Team">
+                        <div class="image-overlay">
+                            <h3>Ready to Start?</h3>
+                            <p>Join thousands who transformed their fitness with FitGen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Partners</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Community</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="kinetotherapy.js"></script>
+</body>
+</html>
