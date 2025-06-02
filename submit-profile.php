@@ -85,7 +85,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $age = isset($_POST["age"]) ? (int) $_POST["age"] : null;
     $weight = isset($_POST["weight"]) ? (float) $_POST["weight"] : null;
     $goal = isset($_POST["goal"]) ? htmlspecialchars($_POST["goal"]) : '';
-    $activityLevel = isset($_POST["activity_level"]) ? htmlspecialchars($_POST["activity_level"]) : '';
     $injuries = isset($_POST["injuries"]) ? htmlspecialchars($_POST["injuries"]) : '';
 
     $profilePicturePath = null;
@@ -153,7 +152,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             age INTEGER,
             weight FLOAT,
             goal VARCHAR(50),
-            activity_level VARCHAR(50),
             injuries TEXT,
             equipment VARCHAR(50),
             profile_picture_path VARCHAR(255),
@@ -205,8 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 age = $4, 
                 weight = $5,
                 goal = $6, 
-                activity_level = $7, 
-                injuries = $8";
+                injuries = $7";
             
             $params = array(
                 $firstName,
@@ -215,7 +212,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $age,
                 $weight,
                 $goal,
-                $activityLevel,
                 $injuries
             );
             
@@ -236,8 +232,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $response['message'] = "Error updating profile: " . pg_last_error($conn);
             }
         } else {
-            $insertFields = "user_id, first_name, last_name, gender, age, goal, activity_level, injuries";
-            $insertValues = "\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8";
+            $insertFields = "user_id, first_name, last_name, gender, age, goal, injuries";
+            $insertValues = "\$1, \$2, \$3, \$4, \$5, \$6, \$7";
             $params = array(
                 $user_id,
                 $firstName,
@@ -246,7 +242,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $age,
                 $weight,
                 $goal,
-                $activityLevel,
                 $injuries
             );
 
@@ -278,7 +273,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         pg_query_params($conn, $updateEmailQuery, array($email, $user_id));
     }
 
-    $suggestion = generateWorkoutSuggestion($goal, '', $activityLevel, $injuries, $age, $gender);
+    $suggestion = generateWorkoutSuggestion($goal, '', $injuries, $age, $gender);
     $checkQuery = "SELECT id FROM workout_suggestions WHERE user_id = $1 AND suggestion = $2";
     $checkResult = pg_query_params($conn, $checkQuery, [$user_id, json_encode($suggestion)]);
 
@@ -299,7 +294,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     exit();
 }
 
-function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries, $age, $gender) {
+function generateWorkoutSuggestion($goal, $equipment, $injuries, $age, $gender) {
     $suggestion = [];
 
     switch ($goal) {
@@ -359,25 +354,6 @@ function generateWorkoutSuggestion($goal, $equipment, $activityLevel, $injuries,
                 "Flexibility & Mobility - 2 times per week",
                 "Active Recovery - 1 time per week"
             ];
-    }
-
-    switch ($activityLevel) {
-        case 'sedentary':
-            $suggestion['intensity'] = "Start with low intensity and gradually build up.";
-            $suggestion['frequency'] = "Begin with 3 sessions per week.";
-            break;
-        case 'light':
-            $suggestion['intensity'] = "Begin with low to moderate intensity.";
-            $suggestion['frequency'] = "Aim for 3-4 sessions per week.";
-            break;
-        case 'moderate':
-            $suggestion['intensity'] = "Work at moderate intensity with some high-intensity intervals.";
-            $suggestion['frequency'] = "Aim for 4-5 sessions per week.";
-            break;
-        case 'active':
-            $suggestion['intensity'] = "Include moderate to high intensity with adequate recovery.";
-            $suggestion['frequency'] = "5-6 sessions per week with recovery days.";
-            break;
     }
     
     if (!empty($injuries)) {
