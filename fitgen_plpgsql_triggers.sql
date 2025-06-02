@@ -125,14 +125,6 @@ BEGIN
     IF NEW.last_name IS NOT NULL AND trim(NEW.last_name) = '' THEN
         RAISE EXCEPTION 'Last name cannot be empty or only whitespace';
     END IF;
-
-    IF NEW.goal = 'rehab' AND NEW.activity_level = 'active' THEN
-        RAISE WARNING 'High activity level unusual for rehabilitation goal';
-    END IF;
-    
-    IF NEW.equipment = 'full' AND NEW.goal = 'flexibility' THEN
-        RAISE NOTICE 'Full gym equipment may not be necessary for flexibility goals';
-    END IF;
     
     RETURN NEW;
 END;
