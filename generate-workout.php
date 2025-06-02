@@ -31,29 +31,56 @@ if (!$user_id) {
 }
 
 $muscle_group = $input['muscle_group'] ?? null;
-$difficulty   = $input['intensity'] ?? null; 
+$difficulty   = $input['intensity'] ?? null;
 $equipment    = $input['equipment'] ?? null;
-$duration_minutes = $input['duration'] ?? 30; 
+$duration_minutes = $input['duration'] ?? 30;
+$location = $input['location'] ?? 'gym';
 
 $conn = getConnection();
-$sql = "SELECT * FROM fitgen.generate_workout_for_user($1, $2, $3, $4, $5)";
-$result = pg_query_params($conn, $sql, [
-    $user_id, $muscle_group, $difficulty, $equipment, $duration_minutes
-]);
+
+$profile = null;
+$profileRes = pg_query_params($conn, "SELECT * FROM user_profiles WHERE user_id = $1", [$user_id]);
+if ($profileRes) {
+    $profile = pg_fetch_assoc($profileRes);
+}
+$age = $profile['age'] ?? null;
+$gender = $profile['gender'] ?? null;
+$weight = $profile['weight'] ?? null;
+$goal = $profile['goal'] ?? null;
+$activity_level = $profile['activity_level'] ?? null;
+$injuries = $profile['injuries'] ?? null;
+
+$params = [
+    $user_id, $muscle_group, $difficulty, $equipment, $duration_minutes, $location,
+    $age, $weight, $goal, $activity_level, $injuries
+];
+
+$sql = "SELECT * FROM fitgen.generate_workout_for_user($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
+$result = pg_query_params($conn, $sql, $params);
 
 $workout = [];
 if ($result) {
     while ($row = pg_fetch_assoc($result)) {
-        if (isset($row['muscle_groups']) && is_string($row['muscle_groups'])) {
-            $row['muscle_groups'] = json_decode($row['muscle_groups']);
+        if (isset($row['muscle_groups'])) {
+            if (is_string($row['muscle_groups'])) {
+                $row['muscle_groups'] = json_decode($row['muscle_groups'], true);
+            }
         }
         $workout[] = $row;
     }
+
+    foreach ($workout as &$w) {
+        if (isset($w['muscle_groups']) && !is_array($w['muscle_groups']) && !is_null($w['muscle_groups'])) {
+            $w['muscle_groups'] = json_decode($w['muscle_groups'], true);
+        }
+    }
+    unset($w);
+
     if (!empty($workout)) {
         $insertSql = "INSERT INTO user_workouts (user_id, workout) VALUES ($1, $2)";
         pg_query_params($conn, $insertSql, [
             $user_id,
-            json_encode($workout)
+            json_encode($workout, JSON_UNESCAPED_UNICODE)
         ]);
     }
     echo json_encode(['success' => true, 'workout' => $workout]);

@@ -83,6 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = isset($_POST["email"]) ? htmlspecialchars($_POST["email"]) : '';
     $gender = isset($_POST["gender"]) ? htmlspecialchars($_POST["gender"]) : '';
     $age = isset($_POST["age"]) ? (int) $_POST["age"] : null;
+    $weight = isset($_POST["weight"]) ? (float) $_POST["weight"] : null;
     $goal = isset($_POST["goal"]) ? htmlspecialchars($_POST["goal"]) : '';
     $activityLevel = isset($_POST["activity_level"]) ? htmlspecialchars($_POST["activity_level"]) : '';
     $injuries = isset($_POST["injuries"]) ? htmlspecialchars($_POST["injuries"]) : '';
@@ -150,6 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             last_name VARCHAR(100),
             gender VARCHAR(20),
             age INTEGER,
+            weight FLOAT,
             goal VARCHAR(50),
             activity_level VARCHAR(50),
             injuries TEXT,
@@ -201,15 +203,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 last_name = $2, 
                 gender = $3, 
                 age = $4, 
-                goal = $5, 
-                activity_level = $6, 
-                injuries = $7";
+                weight = $5,
+                goal = $6, 
+                activity_level = $7, 
+                injuries = $8";
             
             $params = array(
                 $firstName,
                 $lastName,
                 $gender,
                 $age,
+                $weight,
                 $goal,
                 $activityLevel,
                 $injuries
@@ -240,6 +244,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $lastName,
                 $gender,
                 $age,
+                $weight,
                 $goal,
                 $activityLevel,
                 $injuries
