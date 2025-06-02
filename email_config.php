@@ -293,20 +293,4 @@ class EmailConfig {
         </body>
         </html>";
     }
-
-    /*public static function testEmail($testEmail = null) {
-        $testEmail = $testEmail ?: self::ADMIN_EMAIL;
-        $testSubject = "🧪 FitGen Email Test - " . date('H:i:s');
-        $testBody = "
-        <h2>Email Test Successful! ✅</h2>
-        <p>This test email confirms that the FitGen email system is working properly.</p>
-        <ul>
-            <li><strong>Time:</strong> " . date('Y-m-d H:i:s') . "</li>
-            <li><strong>Server:</strong> " . ($_SERVER['SERVER_NAME'] ?? 'Unknown') . "</li>
-            <li><strong>PHP Version:</strong> " . phpversion() . "</li>
-        </ul>
-        <p>🚀 All systems operational!</p>";
-        
-        return self::sendEmail($testEmail, $testSubject, $testBody);
-    }*/
 }

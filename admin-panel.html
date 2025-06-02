@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | FitGen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #18D259;
+            --primary-dark: #3fcb70;
+            --primary-light: #e6f9ed;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --white: #ffffff;
+            --light-bg: #f9f9f9;
+            --border-color: #e0e0e0;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .admin-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            padding: 0.7rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .tab-btn.active:hover {
+            background: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        .admin-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .messages-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .message-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .message-card.unread {
+            border-left-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .message-card.responded {
+            border-left-color: var(--success);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .message-info h3 {
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .message-info .email {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .message-info .date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .message-status {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-unread {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-read {
+            background: #f8f9fa;
+            color: var(--text-light);
+        }
+
+        .status-responded {
+            background: #d4edda;
+            color: var(--success);
+        }
+
+        .message-content {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .response-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid var(--primary-light);
+            display: none;
+        }
+
+        .response-form.active {
+            display: block;
+        }
+
+        .response-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .response-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .response-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .exercises-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .exercise-category {
+            font-size: 0.8rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .exercise-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .meta-item i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .exercise-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 1rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .muscle-groups {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .muscle-tag {
+            background: #f8f9fa;
+            color: var(--text-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .exercise-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .exercise-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .exercise-form.active {
+            display: block;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-dark);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .admin-tabs {
+                justify-content: center;
+            }
+            
+            .exercises-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .exercises-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .exercise-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1><i class="fas fa-cog"></i> FitGen Admin Panel</h1>
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('messages')">
+                <i class="fas fa-envelope"></i> Messages
+            </button>
+            <button class="tab-btn" onclick="switchTab('exercises')">
+                <i class="fas fa-dumbbell"></i> Exercises
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="messages-tab" class="tab-content active">
+            <div class="admin-stats">
+                <div>Total: <span id="total-count">0</span></div>
+                <div>Unread: <span id="unread-count">0</span></div>
+                <div>Responded: <span id="responded-count">0</span></div>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All Messages</button>
+                <button class="filter-btn" data-filter="unread">Unread</button>
+                <button class="filter-btn" data-filter="responded">Responded</button>
+            </div>
+
+            <div id="messages-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading messages...
+                </div>
+            </div>
+        </div>
+
+        <div id="exercises-tab" class="tab-content">
+            <div class="exercises-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="exercise-search" placeholder="Search exercises...">
+                </div>
+                <button class="btn btn-primary" onclick="showExerciseForm()">
+                    <i class="fas fa-plus"></i> Add New Exercise
+                </button>
+            </div>
+
+
+            <div id="exercise-form" class="exercise-form">
+                <div class="form-header">
+                    <h2 id="form-title"><i class="fas fa-plus"></i> Add New Exercise</h2>
+                    <button class="btn btn-secondary" onclick="hideExerciseForm()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+
+                <form id="exerciseFormElement">
+                    <input type="hidden" id="exercise-id">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="exercise-name">Exercise Name *</label>
+                            <input type="text" id="exercise-name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-category">Category *</label>
+                            <select id="exercise-category" required>
+                                <option value="">Select Category</option>
+                                <option value="1">Physiotherapy</option>
+                                <option value="2">Strength Training</option>
+                                <option value="3">Cardio</option>
+                                <option value="4">Flexibility</option>
+                                <option value="5">Sports</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-difficulty">Difficulty *</label>
+                            <select id="exercise-difficulty" required>
+                                <option value="">Select Difficulty</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-equipment">Equipment Needed *</label>
+                            <select id="exercise-equipment" required>
+                                <option value="">Select Equipment</option>
+                                <option value="none">None</option>
+                                <option value="dumbbells">Dumbbells</option>
+                                <option value="resistance_bands">Resistance Bands</option>
+                                <option value="mat">Exercise Mat</option>
+                                <option value="barbell">Barbell</option>
+                                <option value="kettlebell">Kettlebell</option>
+                                <option value="machine">Gym Machine</option>
+                                <option value="ball">Exercise Ball</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-duration">Duration (minutes)</label>
+                            <input type="number" id="exercise-duration" min="1" max="120">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-calories">Calories per Minute</label>
+                            <input type="number" id="exercise-calories" step="0.1" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-location">Location *</label>
+                            <select id="exercise-location" required>
+                                <option value="">Select Location</option>
+                                <option value="home">Home</option>
+                                <option value="gym">Gym</option>
+                                <option value="outdoors">Outdoors</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-goal">Goal *</label>
+                            <select id="exercise-goal" required>
+                                <option value="">Select Goal</option>
+                                <option value="lose_weight">Lose Weight</option>
+                                <option value="build_muscle">Build Muscle</option>
+                                <option value="flexibility">Flexibility</option>
+                                <option value="endurance">Endurance</option>
+                                <option value="rehab">Rehabilitation</option>
+                                <option value="mobility">Mobility</option>
+                                <option value="posture">Posture</option>
+                                <option value="strength">Strength</option>
+                                <option value="cardio">Cardio</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-min-age">Minimum Age</label>
+                            <input type="number" id="exercise-min-age" min="1" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-max-age">Maximum Age</label>
+                            <input type="number" id="exercise-max-age" min="1" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-gender">Gender</label>
+                            <select id="exercise-gender">
+                                <option value="">Any</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-min-weight">Minimum Weight (kg)</label>
+                            <input type="number" id="exercise-min-weight" step="0.1" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-video-url">Video URL</label>
+                            <input type="url" id="exercise-video-url" placeholder="https://...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exercise-image-url">Image URL</label>
+                            <input type="url" id="exercise-image-url" placeholder="https://...">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="exercise-description">Description *</label>
+                            <textarea id="exercise-description" required placeholder="Describe the exercise..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="exercise-instructions">Instructions *</label>
+                            <textarea id="exercise-instructions" required placeholder="Step-by-step instructions..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="exercise-contraindications">Contraindications</label>
+                            <textarea id="exercise-contraindications" placeholder="Any health conditions or situations where this exercise should be avoided..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Muscle Groups Targeted *</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-chest" value="chest">
+                                    <label for="muscle-chest">Chest</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-back" value="back">
+                                    <label for="muscle-back">Back</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-shoulders" value="shoulders">
+                                    <label for="muscle-shoulders">Shoulders</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-biceps" value="biceps">
+                                    <label for="muscle-biceps">Biceps</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-triceps" value="triceps">
+                                    <label for="muscle-triceps">Triceps</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-core" value="core">
+                                    <label for="muscle-core">Core</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-glutes" value="glutes">
+                                    <label for="muscle-glutes">Glutes</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-quadriceps" value="quadriceps">
+                                    <label for="muscle-quadriceps">Quadriceps</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-hamstrings" value="hamstrings">
+                                    <label for="muscle-hamstrings">Hamstrings</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-calves" value="calves">
+                                    <label for="muscle-calves">Calves</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-forearms" value="forearms">
+                                    <label for="muscle-forearms">Forearms</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="muscle-legs" value="legs">
+                                    <label for="muscle-legs">Legs (General)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Exercise
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-undo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="exercises-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading exercises...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8081";
+        let allMessages = [];
+        let allExercises = [];
+        let currentFilter = 'all';
+        let isEditing = false;
+
+        function checkAdminAuth() {
+            return new Promise((resolve) => {
+                const originalContent = document.body.innerHTML;
+                document.body.innerHTML = `
+                    <div style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-family: 'Segoe UI', sans-serif;
+                        margin: 0;
+                        padding: 0;
+                    ">
+                        <div style="
+                            background: white;
+                            padding: 3rem;
+                            border-radius: 20px;
+                            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                            text-align: center;
+                            min-width: 400px;
+                            animation: slideUp 0.3s ease;
+                        ">
+                            <div style="
+                                background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+                                width: 80px;
+                                height: 80px;
+                                border-radius: 50%;
+                                margin: 0 auto 2rem;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 2rem;
+                            ">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            
+                            <h1 style="
+                                color: #333;
+                                margin-bottom: 0.5rem;
+                                font-size: 2rem;
+                                font-weight: 700;
+                            ">FitGen Admin</h1>
+                            
+                            <p style="
+                                color: #666;
+                                margin-bottom: 2rem;
+                                font-size: 1.1rem;
+                            ">Enter your admin password to continue</p>
+                            
+                            <div style="margin-bottom: 2rem;">
+                                <input type="password" id="admin-password" placeholder="Admin Password" style="
+                                    width: 100%;
+                                    padding: 1rem 1.5rem;
+                                    border: 2px solid #e0e0e0;
+                                    border-radius: 50px;
+                                    font-size: 1.1rem;
+                                    outline: none;
+                                    transition: all 0.3s ease;
+                                    box-sizing: border-box;
+                                ">
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; justify-content: center;">
+                                <button id="login-btn" style="
+                                    background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+                                    color: white;
+                                    border: none;
+                                    padding: 1rem 2rem;
+                                    border-radius: 50px;
+                                    cursor: pointer;
+                                    font-weight: 600;
+                                    font-size: 1rem;
+                                    transition: all 0.3s ease;
+                                    min-width: 120px;
+                                ">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </button>
+                                
+                                <button id="cancel-btn" style="
+                                    background: #6c757d;
+                                    color: white;
+                                    border: none;
+                                    padding: 1rem 2rem;
+                                    border-radius: 50px;
+                                    cursor: pointer;
+                                    font-weight: 600;
+                                    font-size: 1rem;
+                                    transition: all 0.3s ease;
+                                    min-width: 120px;
+                                ">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                            
+                            <div id="error-message" style="
+                                color: #e74c3c;
+                                margin-top: 1rem;
+                                font-weight: 600;
+                                display: none;
+                            ">
+                                <i class="fas fa-exclamation-triangle"></i> Incorrect password. Please try again.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        @keyframes slideUp {
+                            from {
+                                opacity: 0;
+                                transform: translateY(30px);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+                        
+                        #admin-password:focus {
+                            border-color: #18D259 !important;
+                            box-shadow: 0 0 0 3px rgba(24, 210, 89, 0.1) !important;
+                        }
+                        
+                        #login-btn:hover {
+                            transform: translateY(-2px) !important;
+                            box-shadow: 0 10px 20px rgba(24, 210, 89, 0.3) !important;
+                        }
+                        
+                        #cancel-btn:hover {
+                            transform: translateY(-2px) !important;
+                            background: #5a6268 !important;
+                        }
+                    </style>
+                `;
+
+                const passwordInput = document.getElementById('admin-password');
+                const loginBtn = document.getElementById('login-btn');
+                const cancelBtn = document.getElementById('cancel-btn');
+                const errorMessage = document.getElementById('error-message');
+
+                passwordInput.focus();
+
+                const correctPassword = "fitgen_admin_2025";
+
+                function attemptLogin() {
+                    const enteredPassword = passwordInput.value;
+                    
+                    if (enteredPassword === correctPassword) {
+                        document.body.innerHTML = originalContent;
+                        resolve(true);
+                    } else {
+                        errorMessage.style.display = 'block';
+                        passwordInput.style.borderColor = '#e74c3c';
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                        
+                        setTimeout(() => {
+                            errorMessage.style.display = 'none';
+                            passwordInput.style.borderColor = '#e0e0e0';
+                        }, 3000);
+                    }
+                }
+
+                loginBtn.addEventListener('click', attemptLogin);
+                
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        attemptLogin();
+                    }
+                });
+
+                cancelBtn.addEventListener('click', function() {
+                    window.location.href = "WoW-Logged.html";
+                });
+            });
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            if (tabName === 'messages') {
+                loadMessages();
+            } else if (tabName === 'exercises') {
+                loadExercises();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', async function() {
+            const isAuthenticated = await checkAdminAuth();
+            
+            if (!isAuthenticated) {
+                return;
+            }
+            await loadMessages();
+            setupMessageFilters();
+            setupExerciseSearch();
+            setupExerciseForm();
+        });
+        function setupMessageFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    displayMessages();
+                });
+            });
+        }
+
+        function loadMessages() {
+            fetch(`${API_URL}/admin_messages.php`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    allMessages = data.data;
+                    updateMessageStats();
+                    displayMessages();
+                } else {
+                    document.getElementById('messages-container').innerHTML = 
+                        '<div class="loading">Failed to load messages</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+                document.getElementById('messages-container').innerHTML = 
+                    '<div class="loading">Error loading messages</div>';
+            });
+        }
+
+        function updateMessageStats() {
+            const total = allMessages.length;
+            const unread = allMessages.filter(m => !m.isRead).length;
+            const responded = allMessages.filter(m => m.responseSent).length;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('unread-count').textContent = unread;
+            document.getElementById('responded-count').textContent = responded;
+        }
+
+        function displayMessages() {
+            let filteredMessages = allMessages;
+
+            if (currentFilter === 'unread') {
+                filteredMessages = allMessages.filter(m => !m.isRead);
+            } else if (currentFilter === 'responded') {
+                filteredMessages = allMessages.filter(m => m.responseSent);
+            }
+
+            const container = document.getElementById('messages-container');
+
+            if (filteredMessages.length === 0) {
+                container.innerHTML = '<div class="loading">No messages found</div>';
+                return;
+            }
+
+            container.innerHTML = filteredMessages.map(message => createMessageCard(message)).join('');
+        }
+
+        function createMessageCard(message) {
+            const date = new Date(message.createdAt).toLocaleString();
+            const cardClass = message.responseSent ? 'responded' : (!message.isRead ? 'unread' : '');
+            
+            return `
+                <div class="message-card ${cardClass}">
+                    <div class="message-header">
+                        <div class="message-info">
+                            <h3>${message.fullName}</h3>
+                            <div class="email">${message.email}</div>
+                            <div class="date">${date}</div>
+                        </div>
+                        <div class="message-status">
+                            ${!message.isRead ? '<span class="status-badge status-unread">Unread</span>' : ''}
+                            ${message.isRead && !message.responseSent ? '<span class="status-badge status-read">Read</span>' : ''}
+                            ${message.responseSent ? '<span class="status-badge status-responded">Responded</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="message-content">
+                        ${message.message}
+                    </div>
+                    
+                    <div class="message-actions">
+                        ${!message.isRead ? `<button class="btn btn-secondary btn-small" onclick="markAsRead(${message.id})">
+                            <i class="fas fa-eye"></i> Mark as Read
+                        </button>` : ''}
+                        
+                        ${!message.responseSent ? `<button class="btn btn-primary btn-small" onclick="toggleResponseForm(${message.id})">
+                            <i class="fas fa-reply"></i> Send Response
+                        </button>` : ''}
+                    </div>
+                    
+                    <div class="response-form" id="response-form-${message.id}">
+                        <textarea placeholder="Type your response here..." id="response-text-${message.id}"></textarea>
+                        <div class="response-actions">
+                            <button class="btn btn-primary" onclick="sendResponse(${message.id})">
+                                <i class="fas fa-paper-plane"></i> Send Response
+                            </button>
+                            <button class="btn btn-secondary" onclick="toggleResponseForm(${message.id})">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleResponseForm(messageId) {
+            const form = document.getElementById(`response-form-${messageId}`);
+            form.classList.toggle('active');
+        }
+
+        function markAsRead(messageId) {
+            const message = allMessages.find(m => m.id === messageId);
+            if (message) {
+                message.isRead = true;
+                updateMessageStats();
+                displayMessages();
+            }
+        }
+
+        function sendResponse(messageId) {
+            const responseText = document.getElementById(`response-text-${messageId}`).value.trim();
+            
+            if (!responseText) {
+                alert('Please enter a response message');
+                return;
+            }
+
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            btn.disabled = true;
+
+            fetch(`${API_URL}/admin_messages.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    messageId: messageId,
+                    responseText: responseText,
+                    adminEmail: 'support@fitgen.com'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Response sent successfully!');
+                    
+                    const message = allMessages.find(m => m.id === messageId);
+                    if (message) {
+                        message.responseSent = true;
+                        message.isRead = true;
+                    }
+                    
+                    updateMessageStats();
+                    displayMessages();
+                } else {
+                    alert('Failed to send response: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending response:', error);
+                alert('Error sending response');
+            })
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+        function setupExerciseSearch() {
+            document.getElementById('exercise-search').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredExercises = allExercises.filter(exercise => 
+                    exercise.name.toLowerCase().includes(searchTerm) ||
+                    exercise.description.toLowerCase().includes(searchTerm) ||
+                    exercise.muscle_groups.some(muscle => muscle.toLowerCase().includes(searchTerm))
+                );
+                displayExercises(filteredExercises);
+            });
+        }
+
+        function setupExerciseForm() {
+            document.getElementById('exerciseFormElement').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveExercise();
+            });
+        }
+
+        function loadExercises() {
+            fetch(`${API_URL}/admin_exercises.php`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    allExercises = data.data;
+                    displayExercises(allExercises);
+                } else {
+                    document.getElementById('exercises-container').innerHTML = 
+                        '<div class="loading">Failed to load exercises</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading exercises:', error);
+                document.getElementById('exercises-container').innerHTML = 
+                    '<div class="loading">Error loading exercises</div>';
+            });
+        }
+
+        function displayExercises(exercises) {
+            const container = document.getElementById('exercises-container');
+
+            if (exercises.length === 0) {
+                container.innerHTML = '<div class="loading">No exercises found</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="exercises-grid">
+                    ${exercises.map(exercise => createExerciseCard(exercise)).join('')}
+                </div>
+            `;
+        }
+
+        function createExerciseCard(exercise) {
+            const muscleGroups = Array.isArray(exercise.muscle_groups) ? exercise.muscle_groups : [];
+            const categoryNames = {
+                1: 'Physiotherapy',
+                2: 'Strength Training', 
+                3: 'Cardio',
+                4: 'Flexibility',
+                5: 'Sports'
+            };
+
+            return `
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <div>
+                            <div class="exercise-title">${exercise.name}</div>
+                            <div class="exercise-category">${categoryNames[exercise.category_id] || 'Unknown'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-description">
+                        ${exercise.description}
+                    </div>
+                    
+                    <div class="exercise-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-signal"></i>
+                            <span>${exercise.difficulty}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>${exercise.equipment_needed}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>${exercise.duration_minutes || 'N/A'} min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-fire"></i>
+                            <span>${exercise.calories_per_minute || 'N/A'} cal/min</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${exercise.location}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-target"></i>
+                            <span>${exercise.goal}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="muscle-groups">
+                        ${muscleGroups.map(muscle => `<span class="muscle-tag">${muscle}</span>`).join('')}
+                    </div>
+                    
+                    <div class="exercise-actions">
+                        <button class="btn btn-primary btn-small" onclick="editExercise(${exercise.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger btn-small" onclick="deleteExercise(${exercise.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        ${exercise.video_url ? `<a href="${exercise.video_url}" target="_blank" class="btn btn-secondary btn-small">
+                            <i class="fas fa-play"></i> Video
+                        </a>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showExerciseForm() {
+            document.getElementById('exercise-form').classList.add('active');
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus"></i> Add New Exercise';
+            isEditing = false;
+            resetForm();
+        }
+
+        function hideExerciseForm() {
+            document.getElementById('exercise-form').classList.remove('active');
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('exerciseFormElement').reset();
+            document.getElementById('exercise-id').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        }
+
+        function editExercise(exerciseId) {
+            const exercise = allExercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+
+            isEditing = true;
+            document.getElementById('exercise-form').classList.add('active');
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit"></i> Edit Exercise';
+
+            document.getElementById('exercise-id').value = exercise.id;
+            document.getElementById('exercise-name').value = exercise.name;
+            document.getElementById('exercise-category').value = exercise.category_id;
+            document.getElementById('exercise-difficulty').value = exercise.difficulty;
+            document.getElementById('exercise-equipment').value = exercise.equipment_needed;
+            document.getElementById('exercise-duration').value = exercise.duration_minutes || '';
+            document.getElementById('exercise-calories').value = exercise.calories_per_minute || '';
+            document.getElementById('exercise-location').value = exercise.location;
+            document.getElementById('exercise-goal').value = exercise.goal;
+            document.getElementById('exercise-min-age').value = exercise.min_age || '';
+            document.getElementById('exercise-max-age').value = exercise.max_age || '';
+            document.getElementById('exercise-gender').value = exercise.gender || '';
+            document.getElementById('exercise-min-weight').value = exercise.min_weight || '';
+            document.getElementById('exercise-video-url').value = exercise.video_url || '';
+            document.getElementById('exercise-image-url').value = exercise.image_url || '';
+            document.getElementById('exercise-description').value = exercise.description;
+            document.getElementById('exercise-instructions').value = exercise.instructions;
+            document.getElementById('exercise-contraindications').value = exercise.contraindications || '';
+            const muscleGroups = Array.isArray(exercise.muscle_groups) ? exercise.muscle_groups : [];
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = muscleGroups.includes(cb.value);
+            });
+        }
+
+        function saveExercise() {
+            const formData = {
+                id: document.getElementById('exercise-id').value || null,
+                category_id: document.getElementById('exercise-category').value,
+                name: document.getElementById('exercise-name').value,
+                description: document.getElementById('exercise-description').value,
+                instructions: document.getElementById('exercise-instructions').value,
+                duration_minutes: document.getElementById('exercise-duration').value || null,
+                difficulty: document.getElementById('exercise-difficulty').value,
+                equipment_needed: document.getElementById('exercise-equipment').value,
+                video_url: document.getElementById('exercise-video-url').value || null,
+                image_url: document.getElementById('exercise-image-url').value || null,
+                calories_per_minute: document.getElementById('exercise-calories').value || null,
+                location: document.getElementById('exercise-location').value,
+                min_age: document.getElementById('exercise-min-age').value || null,
+                max_age: document.getElementById('exercise-max-age').value || null,
+                gender: document.getElementById('exercise-gender').value || null,
+                min_weight: document.getElementById('exercise-min-weight').value || null,
+                goal: document.getElementById('exercise-goal').value,
+                contraindications: document.getElementById('exercise-contraindications').value || null,
+                muscle_groups: []
+            };
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                formData.muscle_groups.push(cb.value);
+            });
+
+            if (formData.muscle_groups.length === 0) {
+                alert('Please select at least one muscle group');
+                return;
+            }
+
+            const btn = document.querySelector('#exerciseFormElement button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const method = isEditing ? 'PUT' : 'POST';
+            
+            fetch(`${API_URL}/admin_exercises.php`, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(isEditing ? 'Exercise updated successfully!' : 'Exercise created successfully!');
+                    hideExerciseForm();
+                    loadExercises();
+                } else {
+                    alert('Failed to save exercise: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving exercise:', error);
+                alert('Error saving exercise');
+            })
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function deleteExercise(exerciseId) {
+            if (!confirm('Are you sure you want to delete this exercise? This action cannot be undone.')) {
+                return;
+            }
+
+            fetch(`${API_URL}/admin_exercises.php`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: exerciseId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Exercise deleted successfully!');
+                    loadExercises();
+                } else {
+                    alert('Failed to delete exercise: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting exercise:', error);
+                alert('Error deleting exercise');
+            });
+        }
+    </script>
+</body>
+</html>
