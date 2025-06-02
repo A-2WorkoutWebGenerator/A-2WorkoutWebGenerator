@@ -16,7 +16,6 @@ CREATE OR REPLACE FUNCTION fitgen.generate_workout_for_user(
     p_age INTEGER DEFAULT NULL,
     p_weight FLOAT DEFAULT NULL,
     p_goal TEXT DEFAULT NULL,
-    p_activity_level TEXT DEFAULT NULL,
     p_injuries TEXT DEFAULT NULL
 )
 RETURNS TABLE(

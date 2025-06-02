@@ -159,7 +159,6 @@ function populateFormWithData(data) {
             'age': profile.age,
             'weight': profile.weight,
             'goal': profile.goal,
-            'activity_level': profile.activity_level,
             'injuries': profile.injuries
         };
         for (const [fieldId, value] of Object.entries(fields)) {

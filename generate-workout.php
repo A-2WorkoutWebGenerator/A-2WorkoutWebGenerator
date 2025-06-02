@@ -47,15 +47,14 @@ $age = $profile['age'] ?? null;
 $gender = $profile['gender'] ?? null;
 $weight = $profile['weight'] ?? null;
 $goal = $profile['goal'] ?? null;
-$activity_level = $profile['activity_level'] ?? null;
 $injuries = $profile['injuries'] ?? null;
 
 $params = [
     $user_id, $muscle_group, $difficulty, $equipment, $duration_minutes, $location,
-    $age, $weight, $goal, $activity_level, $injuries
+    $age, $weight, $goal, $injuries
 ];
 
-$sql = "SELECT * FROM fitgen.generate_workout_for_user($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
+$sql = "SELECT * FROM fitgen.generate_workout_for_user($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)";
 $result = pg_query_params($conn, $sql, $params);
 
 $workout = [];
