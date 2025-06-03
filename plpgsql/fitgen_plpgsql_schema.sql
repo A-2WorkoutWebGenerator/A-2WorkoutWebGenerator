@@ -5,7 +5,7 @@ CREATE TYPE workout_type AS ENUM ('physiotherapy', 'kinetotherapy', 'sports');
 CREATE TYPE difficulty_level AS ENUM ('beginner', 'intermediate', 'advanced', 'all_levels');
 CREATE TYPE equipment_type AS ENUM ('none', 'basic', 'full');
 CREATE TYPE activity_level AS ENUM ('sedentary', 'light', 'moderate', 'active');
-CREATE TYPE fitness_goal AS ENUM ('lose_weight', 'build_muscle', 'flexibility', 'endurance', 'rehab');
+CREATE TYPE fitness_goal AS ENUM ('lose_weight', 'build_muscle', 'flexibility', 'endurance', 'rehab', 'mobility', 'posture', 'strength', 'cardio');
 CREATE TYPE gender_type AS ENUM ('male', 'female', 'other');
 
 CREATE TABLE IF NOT EXISTS users (
@@ -68,85 +68,63 @@ CREATE TABLE exercises (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES exercise_categories(id) ON DELETE CASCADE
 );
-CREATE TABLE workout_suggestions (
+ALTER TABLE fitgen.exercises ADD COLUMN location TEXT;
+ALTER TABLE fitgen.exercises ADD COLUMN min_age INTEGER;
+ALTER TABLE fitgen.exercises ADD COLUMN max_age INTEGER;
+ALTER TABLE fitgen.exercises ADD COLUMN gender TEXT;
+ALTER TABLE fitgen.exercises ADD COLUMN min_weight FLOAT;
+ALTER TABLE fitgen.exercises ADD COLUMN goal TEXT;
+ALTER TABLE fitgen.exercises ADD COLUMN contraindications TEXT;
+
+INSERT INTO fitgen.exercises (category_id, name, description, instructions, duration_minutes, difficulty, equipment_needed, video_url, image_url, muscle_groups, calories_per_minute, created_at, updated_at, location, min_age, max_age, gender, min_weight, goal, contraindications) VALUES
+(1, 'Pelvic Tilts', 'Gentle exercise to strengthen core and relieve back tension. No equipment needed. Main muscle group: core.', 'Lie on back, tilt pelvis upward', 10, 'beginner', 'none', NULL, NULL, ARRAY['core'], 4.50, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'rehab', 'Avoid if acute lower back pain or recent back surgery'),
+(1, 'Knee-to-Chest Stretch', 'Stretches lower back muscles. No equipment needed. Main muscle group: lower body.', 'Pull knees to chest while lying down', 8, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 3.80, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'flexibility', 'Avoid if recent hip or back surgery'),
+(1, 'Cat-Cow Stretch', 'Improves spine flexibility. No equipment needed. Main muscle group: core.', 'Alternate between arching and rounding spine', 8, 'beginner', 'none', NULL, NULL, ARRAY['core'], 3.50, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'mobility', NULL),
+(1, 'Bridge Exercise', 'Strengthens glutes and lower back. No equipment needed. Main muscle group: lower body.', 'Lift hips while lying on back', 12, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 4.80, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'strength', 'Avoid if recent back or hip surgery'),
+(2, 'Pendulum Swings', 'Gentle shoulder mobility exercise. No equipment needed. Main muscle group: upper body.', 'Let arm hang and swing in circles', 8, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 3.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'mobility', 'Avoid if acute shoulder injury'),
+(2, 'Wall Slides', 'Improves shoulder blade movement. No equipment needed. Main muscle group: upper body.', 'Slide arms up and down against wall', 10, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 4.40, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'mobility', NULL),
+(2, 'External Rotations', 'Strengthens rotator cuff. Requires a resistance band (basic equipment). Main muscle group: upper body.', 'Rotate arm outward with resistance', 10, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 4.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 40, 'strength', 'Avoid if acute rotator cuff tear'),
+(5, 'Wall Posture Alignment', 'Teaches proper standing posture. No equipment needed. Main muscle group: upper body.', 'Stand against wall with proper alignment', 10, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 3.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'posture', NULL),
+(5, 'Scapular Retraction', 'Strengthens upper back muscles. No equipment needed. Main muscle group: upper body.', 'Squeeze shoulder blades together', 8, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 4.10, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'strength', NULL),
+(5, 'Chin Tucks', 'Corrects forward head posture. No equipment needed. Main muscle group: upper body.', 'Pull chin back to align head over shoulders', 6, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 3.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'posture', NULL),
+(3, 'Plank', 'Isometric core strength exercise. No equipment needed. Main muscle group: core.', 'Hold body in straight line, supported on forearms and toes', 30, 'intermediate', 'none', NULL, NULL, ARRAY['core'], 6.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 40, 'strength', 'Avoid if shoulder or core injury'),
+(3, 'Side Plank', 'Targets obliques and stabilizers. No equipment needed. Main muscle group: core.', 'Lie on side, lift hips, support on forearm and foot', 20, 'intermediate', 'none', NULL, NULL, ARRAY['core'], 5.50, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 40, 'strength', 'Avoid if shoulder injury'),
+(4, 'Glute Bridge', 'Activates glutes and hamstrings. No equipment needed. Main muscle group: lower body.', 'Lie on back, feet flat, lift hips', 15, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 5.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'strength', 'Avoid if back or hip pain'),
+(4, 'Bird Dog', 'Improves core stability. No equipment needed. Main muscle group: core.', 'On all fours, extend opposite arm and leg', 12, 'beginner', 'none', NULL, NULL, ARRAY['core'], 5.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'mobility', NULL),
+(1, 'Superman', 'Strengthens lower back. No equipment needed. Main muscle group: core.', 'Lie face down, lift arms and legs simultaneously', 10, 'beginner', 'none', NULL, NULL, ARRAY['core'], 5.10, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'strength', 'Avoid if acute back pain'),
+(2, 'Shoulder Abduction', 'Strengthens deltoids. Requires a pair of dumbbells (basic equipment). Main muscle group: upper body.', 'Lift arm to side up to shoulder height', 10, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 4.80, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 45, 'strength', 'Avoid if acute shoulder injury'),
+(2, 'Shoulder Flexion', 'Improves shoulder mobility. Requires a pair of dumbbells (basic equipment). Main muscle group: upper body.', 'Lift arm forward up to shoulder height', 10, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 4.80, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 45, 'mobility', 'Avoid if acute shoulder injury'),
+(2, 'Reverse Fly', 'Strengthens rear shoulders. Requires a pair of dumbbells (basic equipment). Main muscle group: upper body.', 'Bend forward, raise arms to sides', 12, 'intermediate', 'basic', NULL, NULL, ARRAY['upper body'], 5.30, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 45, 'strength', 'Avoid if shoulder or back injury'),
+(2, 'Banded Pull Apart', 'Strengthens upper back and shoulders. Requires a resistance band (basic equipment). Main muscle group: upper body.', 'Hold band at shoulder height, pull band apart', 10, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 4.60, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 40, 'strength', NULL),
+(5, 'Wall Angels', 'Improves posture and shoulder mobility. No equipment needed. Main muscle group: upper body.', 'Stand against wall, slide arms overhead', 8, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 4.90, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'mobility', NULL),
+(6, 'Squat', 'Compound lower body movement. No equipment needed. Main muscle group: lower body.', 'Stand with feet shoulder-width, squat down and up', 15, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 7.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 40, 'strength', 'Avoid if knee pain'),
+(6, 'Lunge', 'Strengthens legs and improves balance. No equipment needed. Main muscle group: lower body.', 'Step forward, lower back knee toward floor', 12, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 6.80, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 40, 'strength', 'Avoid if knee pain'),
+(6, 'Step Up', 'Builds leg strength and balance. Requires a bench or sturdy platform (basic equipment). Main muscle group: lower body.', 'Step onto elevated surface and back down', 12, 'beginner', 'basic', NULL, NULL, ARRAY['lower body'], 6.50, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 40, 'strength', 'Avoid if knee instability'),
+(6, 'Calf Raise', 'Strengthens calves. No equipment needed. Main muscle group: lower body.', 'Stand and rise onto toes', 8, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 4.70, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'strength', NULL),
+(3, 'Dead Bug', 'Core stability exercise. No equipment needed. Main muscle group: core.', 'Lie on back, move opposite arm and leg away from body', 10, 'beginner', 'none', NULL, NULL, ARRAY['core'], 5.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'mobility', NULL),
+(1, 'Child''s Pose Stretch', 'Stretches lower back and hips. No equipment needed. Main muscle groups: lower body, core.', 'Kneel and sit back on heels, reach arms forward', 8, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 3.50, '2025-06-01 14:15:06.514171', '2025-06-02 15:44:05.062293', 'home', 10, 99, NULL, 35, 'flexibility', 'Avoid if knee injury'),
+(3, 'Mountain Climber', 'Dynamic core and cardio move. No equipment needed. Main muscle group: core.', 'Start in plank, alternate driving knees to chest', 10, 'intermediate', 'none', NULL, NULL, ARRAY['core'], 7.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 45, 'cardio', 'Avoid if wrist or shoulder pain'),
+(3, 'Russian Twist', 'Targets obliques. No equipment needed. Main muscle group: core.', 'Sit, lean back, rotate torso side to side', 8, 'intermediate', 'none', NULL, NULL, ARRAY['core'], 6.30, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 45, 'strength', 'Avoid if lower back pain'),
+(2, 'Band External Rotation', 'Rotator cuff strength exercise. Requires a resistance band (basic equipment). Main muscle group: upper body.', 'Attach band, keep elbow at side, rotate forearm out', 12, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 4.70, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 40, 'strength', 'Avoid if acute shoulder injury'),
+(5, 'Neck Stretch', 'Relieves neck tension. No equipment needed. Main muscle group: upper body.', 'Tilt head toward shoulder, hold, repeat both sides', 6, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 3.00, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'flexibility', NULL),
+(5, 'Thoracic Extension', 'Improves upper back mobility. Requires a chair (basic equipment). Main muscle group: upper body.', 'Sit in chair, arch upper back over support', 10, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 4.10, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'mobility', NULL),
+(5, 'Standing Row', 'Strengthens upper back. Requires resistance band (basic equipment). Main muscle group: upper body.', 'Pull band or cable toward chest from standing', 12, 'beginner', 'basic', NULL, NULL, ARRAY['upper body'], 5.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 45, 'strength', NULL),
+(6, 'Glute Kickback', 'Targets glutes and hamstrings. No equipment needed. Main muscle group: lower body.', 'On all fours, kick leg back and upward', 10, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 5.60, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 40, 'strength', NULL),
+(6, 'Side Lying Leg Lift', 'Strengthens hip abductors. No equipment needed. Main muscle group: lower body.', 'Lie on side, lift top leg upward', 10, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 4.90, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'strength', NULL),
+(6, 'Wall Sit', 'Isometric leg strength. No equipment needed. Main muscle group: lower body.', 'Lean against wall, squat and hold', 10, 'intermediate', 'none', NULL, NULL, ARRAY['lower body'], 6.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 14, 99, NULL, 40, 'strength', 'Avoid if knee pain'),
+(3, 'V-Up', 'Advanced core exercise for abs. No equipment needed. Main muscle group: core.', 'Lie on back, lift arms and legs to touch above body', 8, 'advanced', 'none', NULL, NULL, ARRAY['core'], 7.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 16, 99, NULL, 50, 'strength', 'Avoid if lower back injury'),
+(2, 'Shoulder Press', 'Strengthens shoulders. Requires dumbbells (basic equipment). Main muscle group: upper body.', 'Press dumbbells overhead while seated or standing', 10, 'intermediate', 'basic', NULL, NULL, ARRAY['upper body'], 6.10, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 16, 99, NULL, 50, 'strength', 'Avoid if shoulder pain'),
+(3, 'Hollow Hold', 'Core endurance and stability. No equipment needed. Main muscle group: core.', 'Lie on back, lift legs and shoulders off floor', 12, 'intermediate', 'none', NULL, NULL, ARRAY['core'], 6.60, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 16, 99, NULL, 50, 'strength', 'Avoid if lower back pain'),
+(5, 'Upper Trap Stretch', 'Stretches upper trapezius muscles. No equipment needed. Main muscle group: upper body.', 'Sit or stand, gently pull head to side', 6, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 3.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'flexibility', NULL),
+(1, 'Seated Forward Fold', 'Stretches hamstrings and low back. No equipment needed. Main muscle group: lower body.', 'Sit with legs extended, reach toward toes', 10, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 3.60, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'flexibility', 'Avoid if severe lower back pain');
+
+/*CREATE TABLE workout_suggestions (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     generated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     suggestion JSONB NOT NULL
-);
-CREATE TABLE saved_workouts (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  workout_id VARCHAR(64) NOT NULL,
-  saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY(user_id, workout_id)
-);
-CREATE TABLE workout_routines (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    description TEXT,
-    workout_type workout_type NOT NULL,
-    difficulty difficulty_level NOT NULL,
-    duration_minutes INTEGER CHECK (duration_minutes > 0),
-    frequency_per_week INTEGER CHECK (frequency_per_week >= 1 AND frequency_per_week <= 7),
-    equipment_needed equipment_type DEFAULT 'none',
-    created_by INTEGER, 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
-);
+);*/
 
-CREATE TABLE routine_exercises (
-    id SERIAL PRIMARY KEY,
-    routine_id INTEGER NOT NULL,
-    exercise_id INTEGER NOT NULL,
-    order_index INTEGER NOT NULL,
-    sets INTEGER DEFAULT 1,
-    reps INTEGER,
-    duration_seconds INTEGER,
-    rest_seconds INTEGER DEFAULT 30,
-    FOREIGN KEY (routine_id) REFERENCES workout_routines(id) ON DELETE CASCADE,
-    FOREIGN KEY (exercise_id) REFERENCES exercises(id) ON DELETE CASCADE,
-    UNIQUE(routine_id, order_index)
-);
-
-CREATE TABLE user_saved_routines (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    routine_id INTEGER NOT NULL,
-    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    notes TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (routine_id) REFERENCES workout_routines(id) ON DELETE CASCADE,
-    UNIQUE(user_id, routine_id)
-);
-
-CREATE TABLE workout_sessions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    routine_id INTEGER,
-    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    completed_at TIMESTAMP,
-    duration_minutes INTEGER,
-    calories_burned INTEGER,
-    user_rating INTEGER CHECK (user_rating >= 1 AND user_rating <= 5),
-    notes TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (routine_id) REFERENCES workout_routines(id) ON DELETE SET NULL
-);
-
-CREATE TABLE session_exercises (
-    id SERIAL PRIMARY KEY,
-    session_id INTEGER NOT NULL,
-    exercise_id INTEGER NOT NULL,
-    sets_completed INTEGER DEFAULT 0,
-    reps_completed INTEGER DEFAULT 0,
-    duration_seconds INTEGER DEFAULT 0,
-    calories_burned DECIMAL(6,2) DEFAULT 0,
-    completed BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (session_id) REFERENCES workout_sessions(id) ON DELETE CASCADE,
-    FOREIGN KEY (exercise_id) REFERENCES exercises(id) ON DELETE CASCADE
-);
 
 CREATE TABLE user_stats (
     id SERIAL PRIMARY KEY,
@@ -178,16 +156,16 @@ CREATE TABLE audit_log (
 );
 
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
+
 CREATE INDEX idx_exercises_category_id ON exercises(category_id);
 CREATE INDEX idx_exercises_difficulty ON exercises(difficulty);
 CREATE INDEX idx_exercises_equipment ON exercises(equipment_needed);
-CREATE INDEX idx_workout_routines_type ON workout_routines(workout_type);
-CREATE INDEX idx_workout_routines_difficulty ON workout_routines(difficulty);
+
 CREATE INDEX idx_user_saved_routines_user_id ON user_saved_routines(user_id);
-CREATE INDEX idx_workout_sessions_user_id ON workout_sessions(user_id);
-CREATE INDEX idx_workout_sessions_date ON workout_sessions(started_at);
+
 CREATE INDEX idx_user_stats_user_id ON user_stats(user_id);
 CREATE INDEX idx_user_stats_date ON user_stats(stat_date);
+
 CREATE INDEX idx_audit_log_table_operation ON audit_log(table_name, operation);
 CREATE INDEX idx_audit_log_created_at ON audit_log(created_at);
 
@@ -204,6 +182,7 @@ CREATE TABLE success_stories (
 
 CREATE INDEX idx_success_stories_created_at ON success_stories(created_at DESC);
 CREATE INDEX idx_success_stories_approved ON success_stories(is_approved);
+
 COMMENT ON TABLE success_stories IS 'Stores user submitted success stories for the fitness app';
 COMMENT ON COLUMN success_stories.user_name IS 'Name of the user sharing the story';
 COMMENT ON COLUMN success_stories.achievement IS 'Brief description of what they achieved';
@@ -244,15 +223,7 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-CREATE OR REPLACE FUNCTION calculate_age(birth_date DATE)
-RETURNS INTEGER AS $$
-BEGIN
-    RETURN EXTRACT(YEAR FROM AGE(birth_date));
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error calculating age: %', SQLERRM;
-END;
-$$ LANGUAGE plpgsql;
+
 
 CREATE OR REPLACE FUNCTION validate_email(email_address TEXT)
 RETURNS BOOLEAN AS $$
@@ -272,323 +243,360 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE FUNCTION create_user_profile(
+CREATE OR REPLACE FUNCTION fitgen.generate_workout_for_user(
     p_user_id INTEGER,
-    p_first_name VARCHAR(100),
-    p_last_name VARCHAR(100),
-    p_gender gender_type,
-    p_age INTEGER,
-    p_goal fitness_goal,
-    p_activity_level activity_level,
-    p_injuries TEXT DEFAULT NULL,
-    p_equipment equipment_type DEFAULT 'none'
-)
-RETURNS TABLE(success BOOLEAN, message TEXT, profile_id INTEGER) AS $$
-DECLARE
-    v_profile_id INTEGER;
-    v_existing_profile INTEGER;
-BEGIN
-    IF p_user_id IS NULL THEN
-        RETURN QUERY SELECT FALSE, 'User ID cannot be null', NULL::INTEGER;
-        RETURN;
-    END IF;
-    
-    IF p_age IS NOT NULL AND (p_age < 10 OR p_age > 120) THEN
-        RETURN QUERY SELECT FALSE, 'Age must be between 10 and 120', NULL::INTEGER;
-        RETURN;
-    END IF;
-
-    IF NOT EXISTS (SELECT 1 FROM users WHERE id = p_user_id) THEN
-        RETURN QUERY SELECT FALSE, 'User does not exist', NULL::INTEGER;
-        RETURN;
-    END IF;
-
-    SELECT id INTO v_existing_profile 
-    FROM user_profiles 
-    WHERE user_id = p_user_id;
-    
-    IF v_existing_profile IS NOT NULL THEN
-        UPDATE user_profiles SET
-            first_name = p_first_name,
-            last_name = p_last_name,
-            gender = p_gender,
-            age = p_age,
-            goal = p_goal,
-            activity_level = p_activity_level,
-            injuries = p_injuries,
-            equipment = p_equipment,
-            updated_at = NOW()
-        WHERE id = v_existing_profile;
-        
-        v_profile_id := v_existing_profile;
-        
-        RETURN QUERY SELECT TRUE, 'Profile updated successfully', v_profile_id;
-    ELSE
-        INSERT INTO user_profiles (
-            user_id, first_name, last_name, gender, age, 
-            goal, activity_level, injuries, equipment
-        ) VALUES (
-            p_user_id, p_first_name, p_last_name, p_gender, p_age,
-            p_goal, p_activity_level, p_injuries, p_equipment
-        ) RETURNING id INTO v_profile_id;
-
-        INSERT INTO user_stats (user_id) VALUES (p_user_id);
-        
-        RETURN QUERY SELECT TRUE, 'Profile created successfully', v_profile_id;
-    END IF;
-    
-EXCEPTION
-    WHEN OTHERS THEN
-        RETURN QUERY SELECT FALSE, 'Database error: ' || SQLERRM, NULL::INTEGER;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION get_workout_recommendations(
-    p_user_id INTEGER,
-    p_limit INTEGER DEFAULT 5
+    p_muscle_group TEXT DEFAULT NULL,
+    p_difficulty fitgen.difficulty_level DEFAULT NULL,
+    p_equipment fitgen.equipment_type DEFAULT NULL,
+    p_total_duration INTEGER DEFAULT NULL,
+    p_location TEXT DEFAULT NULL,
+    p_age INTEGER DEFAULT NULL,
+    p_weight FLOAT DEFAULT NULL,
+    p_goal TEXT DEFAULT NULL,
+    p_injuries TEXT DEFAULT NULL
 )
 RETURNS TABLE(
-    routine_id INTEGER,
-    routine_name VARCHAR(200),
+    exercise_id INTEGER,
+    name VARCHAR(200),
     description TEXT,
-    workout_type workout_type,
-    difficulty difficulty_level,
+    instructions TEXT,
     duration_minutes INTEGER,
-    match_score INTEGER
+    difficulty fitgen.difficulty_level,
+    equipment_needed fitgen.equipment_type,
+    video_url VARCHAR(500),
+    image_url VARCHAR(500),
+    muscle_groups JSONB
 ) AS $$
 DECLARE
-    v_user_goal fitness_goal;
-    v_user_equipment equipment_type;
-    v_user_activity activity_level;
-    v_user_injuries TEXT;
+    v_cur_duration INTEGER := 0;
+    v_exercise RECORD;
+    v_selected_ids INTEGER[] := '{}';
+    v_target_groups TEXT[];
 BEGIN
-    SELECT goal, equipment, activity_level, injuries
-    INTO v_user_goal, v_user_equipment, v_user_activity, v_user_injuries
-    FROM user_profiles
-    WHERE user_id = p_user_id;
-    
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'User profile not found for user_id: %', p_user_id;
+    IF p_muscle_group IS NOT NULL AND REGEXP_REPLACE(LOWER(p_muscle_group), '\s+', '', 'g') = 'fullbody' THEN
+        v_target_groups := ARRAY['core', 'upper body', 'lower body'];
+    ELSE
+        v_target_groups := ARRAY[p_muscle_group];
     END IF;
-    
-    RETURN QUERY
-    SELECT 
-        wr.id,
-        wr.name,
-        wr.description,
-        wr.workout_type,
-        wr.difficulty,
-        wr.duration_minutes,
-        (
-            CASE WHEN wr.equipment_needed <= v_user_equipment THEN 30 ELSE 0 END +
-            CASE WHEN wr.workout_type = 'rehab' AND v_user_injuries IS NOT NULL THEN 25 ELSE 0 END +
-            CASE WHEN wr.workout_type = 'physiotherapy' AND v_user_goal = 'rehab' THEN 20 ELSE 0 END +
-            CASE WHEN wr.workout_type = 'sports' AND v_user_goal = 'build_muscle' THEN 15 ELSE 0 END +
-            CASE 
-                WHEN v_user_activity = 'sedentary' AND wr.difficulty = 'beginner' THEN 15
-                WHEN v_user_activity = 'light' AND wr.difficulty IN ('beginner', 'intermediate') THEN 15
-                WHEN v_user_activity = 'moderate' AND wr.difficulty IN ('intermediate', 'advanced') THEN 15
-                WHEN v_user_activity = 'active' AND wr.difficulty = 'advanced' THEN 15
-                ELSE 5
-            END +
-            CASE WHEN wr.duration_minutes BETWEEN 15 AND 45 THEN 10 ELSE 5 END
-        ) AS score
-    FROM workout_routines wr
-    WHERE wr.equipment_needed <= v_user_equipment
-    ORDER BY score DESC, wr.created_at DESC
-    LIMIT p_limit;
-    
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error generating recommendations: %', SQLERRM;
-END;
-$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION calculate_user_statistics(p_user_id INTEGER)
-RETURNS TABLE(
-    total_workouts BIGINT,
-    total_minutes BIGINT,
-    total_calories BIGINT,
-    current_streak INTEGER,
-    longest_streak INTEGER,
-    avg_rating NUMERIC,
-    favorite_workout_type workout_type,
-    workouts_this_month BIGINT,
-    workouts_this_week BIGINT
-) AS $$
-DECLARE
-    v_current_streak INTEGER := 0;
-    v_longest_streak INTEGER := 0;
-    v_streak_count INTEGER := 0;
-    v_check_date DATE;
-    v_favorite_type workout_type;
-BEGIN
-    SELECT 
-        COUNT(*),
-        COALESCE(SUM(duration_minutes), 0),
-        COALESCE(SUM(calories_burned), 0),
-        COALESCE(AVG(user_rating), 0)
-    INTO total_workouts, total_minutes, total_calories, avg_rating
-    FROM workout_sessions
-    WHERE user_id = p_user_id AND completed_at IS NOT NULL;
-    SELECT COUNT(*)
-    INTO workouts_this_month
-    FROM workout_sessions
-    WHERE user_id = p_user_id 
-        AND completed_at IS NOT NULL
-        AND DATE_TRUNC('month', completed_at) = DATE_TRUNC('month', CURRENT_DATE);
-
-    SELECT COUNT(*)
-    INTO workouts_this_week
-    FROM workout_sessions
-    WHERE user_id = p_user_id 
-        AND completed_at IS NOT NULL
-        AND DATE_TRUNC('week', completed_at) = DATE_TRUNC('week', CURRENT_DATE);
-    
-    v_check_date := CURRENT_DATE;
+    FOR v_exercise IN
+        SELECT 
+            e.id, 
+            e.name, 
+            e.description, 
+            e.instructions, 
+            e.duration_minutes,
+            e.difficulty, 
+            e.equipment_needed, 
+            e.video_url, 
+            e.image_url, 
+            to_jsonb(e.muscle_groups) AS muscle_groups
+        FROM fitgen.exercises e
+        WHERE
+            (p_muscle_group IS NULL OR p_muscle_group = '' OR 
+                EXISTS (
+                    SELECT 1 FROM unnest(e.muscle_groups) mg 
+                    WHERE REGEXP_REPLACE(LOWER(mg), '\s+', '', 'g') = ANY(
+                        ARRAY(
+                            SELECT REGEXP_REPLACE(LOWER(g), '\s+', '', 'g') FROM unnest(v_target_groups) g
+                        )
+                    )
+                )
+            )
+            AND (p_difficulty IS NULL OR e.difficulty = p_difficulty OR e.difficulty = 'all_levels')
+            AND (p_equipment IS NULL OR e.equipment_needed = p_equipment)
+            AND (p_location IS NULL OR p_location = '' OR e.location IS NULL OR LOWER(e.location) = LOWER(p_location))
+            AND (p_age IS NULL OR (e.min_age IS NULL OR p_age >= e.min_age) AND (e.max_age IS NULL OR p_age <= e.max_age))
+            AND (p_weight IS NULL OR e.min_weight IS NULL OR p_weight >= e.min_weight)
+            AND (p_goal IS NULL OR p_goal = '' OR e.goal IS NULL OR LOWER(e.goal) = LOWER(p_goal))
+            AND (p_injuries IS NULL OR p_injuries = '' OR e.contraindications IS NULL OR e.contraindications NOT ILIKE '%' || p_injuries || '%')
+        ORDER BY e.duration_minutes DESC, random()
     LOOP
-        IF EXISTS (
-            SELECT 1 FROM workout_sessions 
-            WHERE user_id = p_user_id 
-                AND DATE(completed_at) = v_check_date
-                AND completed_at IS NOT NULL
-        ) THEN
-            v_streak_count := v_streak_count + 1;
-            v_check_date := v_check_date - INTERVAL '1 day';
-        ELSE
+        IF NOT v_exercise.id = ANY(v_selected_ids)
+           AND (p_total_duration IS NULL OR v_cur_duration + v_exercise.duration_minutes <= p_total_duration) THEN
+            v_selected_ids := array_append(v_selected_ids, v_exercise.id);
+            v_cur_duration := v_cur_duration + v_exercise.duration_minutes;
+
+            exercise_id      := v_exercise.id;
+            name             := v_exercise.name;
+            description      := v_exercise.description;
+            instructions     := v_exercise.instructions;
+            duration_minutes := v_exercise.duration_minutes;
+            difficulty       := v_exercise.difficulty;
+            equipment_needed := v_exercise.equipment_needed;
+            video_url        := v_exercise.video_url;
+            image_url        := v_exercise.image_url;
+            muscle_groups    := v_exercise.muscle_groups;
+            RETURN NEXT;
+        END IF;
+        IF p_total_duration IS NOT NULL AND v_cur_duration >= p_total_duration THEN
             EXIT;
         END IF;
     END LOOP;
-    
-    current_streak := v_streak_count;
 
-    longest_streak := GREATEST(current_streak, v_streak_count);
-    
-    SELECT wr.workout_type
-    INTO favorite_workout_type
-    FROM workout_sessions ws
-    JOIN workout_routines wr ON ws.routine_id = wr.id
-    WHERE ws.user_id = p_user_id AND ws.completed_at IS NOT NULL
-    GROUP BY wr.workout_type
-    ORDER BY COUNT(*) DESC
-    LIMIT 1;
-    
-    RETURN QUERY SELECT 
-        calculate_user_statistics.total_workouts,
-        calculate_user_statistics.total_minutes,
-        calculate_user_statistics.total_calories,
-        calculate_user_statistics.current_streak,
-        calculate_user_statistics.longest_streak,
-        calculate_user_statistics.avg_rating,
-        calculate_user_statistics.favorite_workout_type,
-        calculate_user_statistics.workouts_this_month,
-        calculate_user_statistics.workouts_this_week;
-    
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error calculating user statistics: %', SQLERRM;
+    IF p_total_duration IS NOT NULL AND v_cur_duration < p_total_duration THEN
+        FOR v_exercise IN
+            SELECT 
+                e.id, 
+                e.name, 
+                e.description, 
+                e.instructions, 
+                e.duration_minutes,
+                e.difficulty, 
+                e.equipment_needed, 
+                e.video_url, 
+                e.image_url, 
+                to_jsonb(e.muscle_groups) AS muscle_groups
+            FROM fitgen.exercises e
+            WHERE
+                (p_muscle_group IS NULL OR p_muscle_group = '' OR 
+                    EXISTS (
+                        SELECT 1 FROM unnest(e.muscle_groups) mg 
+                        WHERE REGEXP_REPLACE(LOWER(mg), '\s+', '', 'g') = ANY(
+                            ARRAY(
+                                SELECT REGEXP_REPLACE(LOWER(g), '\s+', '', 'g') FROM unnest(v_target_groups) g
+                            )
+                        )
+                    )
+                )
+                AND (p_difficulty IS NULL OR e.difficulty = p_difficulty OR e.difficulty = 'all_levels')
+                AND (p_equipment IS NULL OR e.equipment_needed = p_equipment)
+                AND (p_location IS NULL OR p_location = '' OR e.location IS NULL OR LOWER(e.location) = LOWER(p_location))
+                AND (p_age IS NULL OR (e.min_age IS NULL OR p_age >= e.min_age) AND (e.max_age IS NULL OR p_age <= e.max_age))
+                AND (p_weight IS NULL OR e.min_weight IS NULL OR p_weight >= e.min_weight)
+                AND (p_goal IS NULL OR p_goal = '' OR e.goal IS NULL OR LOWER(e.goal) = LOWER(p_goal))
+                AND (p_injuries IS NULL OR p_injuries = '' OR e.contraindications IS NULL OR e.contraindications NOT ILIKE '%' || p_injuries || '%')
+                AND NOT e.id = ANY(v_selected_ids)
+            ORDER BY e.duration_minutes ASC, random()
+            LIMIT 1
+        LOOP
+            exercise_id      := v_exercise.id;
+            name             := v_exercise.name;
+            description      := v_exercise.description;
+            instructions     := v_exercise.instructions;
+            duration_minutes := v_exercise.duration_minutes;
+            difficulty       := v_exercise.difficulty;
+            equipment_needed := v_exercise.equipment_needed;
+            video_url        := v_exercise.video_url;
+            image_url        := v_exercise.image_url;
+            muscle_groups    := v_exercise.muscle_groups;
+            RETURN NEXT;
+            EXIT;
+        END LOOP;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_user_leaderboard(
-    p_period VARCHAR(10) DEFAULT 'month', 
-    p_metric VARCHAR(20) DEFAULT 'workouts',
-    p_limit INTEGER DEFAULT 10
+
+
+CREATE OR REPLACE FUNCTION fitgen.get_champions_leaderboard(
+    p_age_group TEXT DEFAULT NULL,
+    p_gender TEXT DEFAULT NULL,
+    p_goal TEXT DEFAULT NULL,
+    p_limit INTEGER DEFAULT 50
 )
 RETURNS TABLE(
-    rank INTEGER,
     user_id INTEGER,
-    username VARCHAR(50),
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    metric_value BIGINT
+    username TEXT,
+    first_name TEXT,
+    last_name TEXT,
+    age INTEGER,
+    gender TEXT,
+    goal TEXT,
+    profile_picture_path TEXT,
+    total_workouts BIGINT,
+    active_days BIGINT,
+    total_duration NUMERIC,
+    activity_score NUMERIC,
+    rank_position BIGINT
 ) AS $$
-DECLARE
-    v_date_filter TEXT;
-    v_metric_column TEXT;
-    v_query TEXT;
 BEGIN
-    IF p_period NOT IN ('week', 'month', 'year', 'all') THEN
-        RAISE EXCEPTION 'Invalid period. Must be: week, month, year, all';
-    END IF;
-    
-    IF p_metric NOT IN ('workouts', 'minutes', 'calories') THEN
-        RAISE EXCEPTION 'Invalid metric. Must be: workouts, minutes, calories';
-    END IF;
-    CASE p_period
-        WHEN 'week' THEN v_date_filter := 'AND DATE_TRUNC(''week'', ws.completed_at) = DATE_TRUNC(''week'', CURRENT_DATE)';
-        WHEN 'month' THEN v_date_filter := 'AND DATE_TRUNC(''month'', ws.completed_at) = DATE_TRUNC(''month'', CURRENT_DATE)';
-        WHEN 'year' THEN v_date_filter := 'AND DATE_TRUNC(''year'', ws.completed_at) = DATE_TRUNC(''year'', CURRENT_DATE)';
-        ELSE v_date_filter := '';
-    END CASE;
-    
-    CASE p_metric
-        WHEN 'workouts' THEN v_metric_column := 'COUNT(*)';
-        WHEN 'minutes' THEN v_metric_column := 'COALESCE(SUM(ws.duration_minutes), 0)';
-        WHEN 'calories' THEN v_metric_column := 'COALESCE(SUM(ws.calories_burned), 0)';
-    END CASE;
-    
-    v_query := FORMAT('
+    RETURN QUERY
+    WITH user_stats AS (
         SELECT 
-            ROW_NUMBER() OVER (ORDER BY %s DESC) as rank,
-            u.id,
-            u.username,
-            COALESCE(up.first_name, '''') as first_name,
-            COALESCE(up.last_name, '''') as last_name,
-            %s as metric_value
-        FROM users u
-        LEFT JOIN user_profiles up ON u.id = up.user_id
-        LEFT JOIN workout_sessions ws ON u.id = ws.user_id AND ws.completed_at IS NOT NULL %s
-        GROUP BY u.id, u.username, up.first_name, up.last_name
-        HAVING %s > 0
-        ORDER BY metric_value DESC
-        LIMIT %s',
-        v_metric_column, v_metric_column, v_date_filter, v_metric_column, p_limit
-    );
-    
-    RETURN QUERY EXECUTE v_query;
-    
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error generating leaderboard: %', SQLERRM;
+            u.id::INTEGER as user_id,
+            u.username::TEXT,
+            COALESCE(up.first_name, '')::TEXT as first_name,
+            COALESCE(up.last_name, '')::TEXT as last_name,
+            up.age::INTEGER,
+            CASE 
+                WHEN up.gender IS NOT NULL THEN up.gender::TEXT
+                ELSE NULL
+            END as gender,
+            CASE 
+                WHEN up.goal IS NOT NULL THEN up.goal::TEXT
+                ELSE NULL
+            END as goal,
+            COALESCE(up.profile_picture_path, '')::TEXT as profile_picture_path,
+            COUNT(uw.id) as total_workouts,
+            CASE 
+                WHEN COUNT(uw.id) > 0 THEN COUNT(DISTINCT DATE(uw.generated_at))
+                ELSE 0::BIGINT
+            END as active_days,
+            COALESCE(
+                SUM(
+                    CASE 
+                        WHEN uw.workout IS NOT NULL AND jsonb_typeof(uw.workout) = 'array' THEN 
+                            (
+                                SELECT SUM(
+                                    CASE 
+                                        WHEN exercise ? 'duration_minutes' 
+                                        AND exercise->>'duration_minutes' ~ '^[0-9]+(\.[0-9]+)?$'
+                                        THEN (exercise->>'duration_minutes')::NUMERIC
+                                        ELSE 0
+                                    END
+                                )
+                                FROM jsonb_array_elements(uw.workout) as exercise
+                            )
+                        ELSE 0
+                    END
+                ), 0
+            ) as total_duration
+        FROM fitgen.users u
+        LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
+        LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
+        WHERE 
+            (p_age_group IS NULL OR p_age_group = '' OR 
+             CASE p_age_group
+                WHEN 'youth' THEN up.age BETWEEN 12 AND 25
+                WHEN 'adult' THEN up.age BETWEEN 26 AND 45  
+                WHEN 'senior' THEN up.age > 45
+                ELSE TRUE
+             END)
+            AND (p_gender IS NULL OR p_gender = '' OR up.gender::TEXT = p_gender)
+            AND (p_goal IS NULL OR p_goal = '' OR up.goal::TEXT = p_goal)
+        GROUP BY u.id, u.username, up.first_name, up.last_name, up.age, up.gender, up.goal, up.profile_picture_path
+        HAVING COUNT(uw.id) > 0
+    ),
+    ranked_users AS (
+        SELECT 
+            us.*,
+            (us.total_workouts * 10 + us.active_days * 15 + us.total_duration * 0.5) as activity_score,
+            ROW_NUMBER() OVER (
+                ORDER BY (us.total_workouts * 10 + us.active_days * 15 + us.total_duration * 0.5) DESC
+            ) as rank_position
+        FROM user_stats us
+    )
+    SELECT 
+        ru.user_id,
+        ru.username,
+        ru.first_name,
+        ru.last_name,
+        ru.age,
+        COALESCE(ru.gender, '') as gender,
+        COALESCE(ru.goal, '') as goal,
+        ru.profile_picture_path,
+        ru.total_workouts,
+        ru.active_days,
+        ru.total_duration,
+        ROUND(ru.activity_score, 2) as activity_score,
+        ru.rank_position
+    FROM ranked_users ru
+    ORDER BY ru.activity_score DESC
+    LIMIT COALESCE(p_limit, 50);
 END;
 $$ LANGUAGE plpgsql;
-CREATE OR REPLACE FUNCTION save_user_routine(
-    p_user_id INTEGER,
-    p_routine_id INTEGER,
-    p_notes TEXT DEFAULT NULL
-)
-RETURNS TABLE(success BOOLEAN, message TEXT) AS $$
+
+CREATE OR REPLACE FUNCTION fitgen.get_champions_stats()
+RETURNS TABLE(
+    total_active_users INTEGER,
+    total_workouts_generated BIGINT,
+    total_workout_minutes NUMERIC,
+    average_workouts_per_user NUMERIC,
+    most_active_age_group TEXT,
+    most_popular_goal TEXT
+) AS $$
 BEGIN
-
-    IF p_user_id IS NULL OR p_routine_id IS NULL THEN
-        RETURN QUERY SELECT FALSE, 'User ID and Routine ID cannot be null';
-        RETURN;
-    END IF;
-
-    IF NOT EXISTS (SELECT 1 FROM users WHERE id = p_user_id) THEN
-        RETURN QUERY SELECT FALSE, 'User does not exist';
-        RETURN;
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM workout_routines WHERE id = p_routine_id) THEN
-        RETURN QUERY SELECT FALSE, 'Workout routine does not exist';
-        RETURN;
-    END IF;
-
-    BEGIN
-        INSERT INTO user_saved_routines (user_id, routine_id, notes)
-        VALUES (p_user_id, p_routine_id, p_notes);
-        
-        RETURN QUERY SELECT TRUE, 'Routine saved successfully';
-        
-    EXCEPTION
-        WHEN unique_violation THEN
-            RETURN QUERY SELECT FALSE, 'Routine already saved by this user';
-        WHEN OTHERS THEN
-            RETURN QUERY SELECT FALSE, 'Error saving routine: ' || SQLERRM;
-    END;
-    
+    RETURN QUERY
+    WITH stats AS (
+        SELECT 
+            COUNT(DISTINCT u.id)::INTEGER as active_users,
+            COUNT(uw.id) as total_workouts,
+            COALESCE(
+                SUM(
+                    CASE 
+                        WHEN uw.workout IS NOT NULL AND jsonb_typeof(uw.workout) = 'array' THEN 
+                            (
+                                SELECT SUM(
+                                    CASE 
+                                        WHEN exercise ? 'duration_minutes' 
+                                        AND exercise->>'duration_minutes' ~ '^[0-9]+(\.[0-9]+)?$'
+                                        THEN (exercise->>'duration_minutes')::NUMERIC
+                                        ELSE 0
+                                    END
+                                )
+                                FROM jsonb_array_elements(uw.workout) as exercise
+                            )
+                        ELSE 0
+                    END
+                ), 0
+            ) as total_minutes
+        FROM fitgen.users u
+        LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
+        LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
+        WHERE uw.id IS NOT NULL
+    ),
+    age_groups AS (
+        SELECT 
+            CASE 
+                WHEN up.age BETWEEN 12 AND 25 THEN 'youth'
+                WHEN up.age BETWEEN 26 AND 45 THEN 'adult'
+                WHEN up.age > 45 THEN 'senior'
+                ELSE 'unknown'
+            END as age_group,
+            COUNT(*) as group_count
+        FROM fitgen.user_profiles up
+        JOIN fitgen.user_workouts uw ON up.user_id = uw.user_id
+        WHERE up.age IS NOT NULL
+        GROUP BY 
+            CASE 
+                WHEN up.age BETWEEN 12 AND 25 THEN 'youth'
+                WHEN up.age BETWEEN 26 AND 45 THEN 'adult'
+                WHEN up.age > 45 THEN 'senior'
+                ELSE 'unknown'
+            END
+        ORDER BY group_count DESC
+        LIMIT 1
+    ),
+    popular_goals AS (
+        SELECT up.goal::TEXT as goal, COUNT(*) as goal_count
+        FROM fitgen.user_profiles up
+        JOIN fitgen.user_workouts uw ON up.user_id = uw.user_id
+        WHERE up.goal IS NOT NULL
+        GROUP BY up.goal::TEXT
+        ORDER BY goal_count DESC
+        LIMIT 1
+    )
+    SELECT 
+        COALESCE(s.active_users, 0)::INTEGER,
+        COALESCE(s.total_workouts, 0),
+        COALESCE(s.total_minutes, 0),
+        CASE 
+            WHEN s.active_users > 0 THEN ROUND(s.total_workouts::NUMERIC / s.active_users, 2)
+            ELSE 0::NUMERIC
+        END as avg_workouts,
+        COALESCE(ag.age_group, 'unknown')::TEXT as most_active_age,
+        COALESCE(pg.goal, 'unknown')::TEXT as most_popular_goal
+    FROM stats s
+    LEFT JOIN age_groups ag ON true
+    LEFT JOIN popular_goals pg ON true;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE VIEW fitgen.champions_quick_stats AS
+SELECT 
+    u.id,
+    u.username,
+    COALESCE(up.first_name, '') as first_name,
+    COALESCE(up.last_name, '') as last_name,
+    COUNT(uw.id) as workout_count,
+    COUNT(DISTINCT DATE(uw.generated_at)) as active_days,
+    MAX(uw.generated_at) as last_workout,
+    (COUNT(uw.id) * 10 + COUNT(DISTINCT DATE(uw.generated_at)) * 15) as base_score
+FROM fitgen.users u
+LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
+LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
+WHERE uw.id IS NOT NULL
+GROUP BY u.id, u.username, up.first_name, up.last_name
+ORDER BY base_score DESC;
+
