@@ -251,7 +251,7 @@ function getSimpleStats($conn) {
     }
 }
 
-function generateAdvancedPDF($champions, $filters, $stats) {
+function generatePDF($champions, $filters, $stats) {
     $html = "
     <!DOCTYPE html>
     <html>
@@ -543,7 +543,7 @@ try {
     pg_close($conn);
 
     if ($format === 'pdf') {
-        $html = generateAdvancedPDF($champions, $filters, $stats);
+        $html = generatePDF($champions, $filters, $stats);
         header('Content-Type: text/html; charset=UTF-8');
         header('Content-Disposition: inline; filename="fitgen_champions_' . date('Y-m-d_H-i') . '.html"');
         echo $html;
