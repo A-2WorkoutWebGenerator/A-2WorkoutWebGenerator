@@ -42,7 +42,6 @@ function getChampionsSimple($conn, $filters = []) {
         $limit = (int)($filters['limit'] ?? 25);
 
         debugLog("Calling PL/pgSQL function with params", [$age_group, $gender, $goal, $limit]);
-
         $query = "SELECT * FROM fitgen.get_champions_leaderboard($1, $2, $3, $4)";
         $params = [$age_group, $gender, $goal, $limit];
 
@@ -85,7 +84,6 @@ function getChampionsSimple($conn, $filters = []) {
 
     } catch (Exception $e) {
         debugLog("Exception in getChampionsSimple", $e->getMessage());
-        
         return getChampionsFallback($conn, $filters);
     }
 }
@@ -203,7 +201,25 @@ function getSimpleStats($conn) {
             SELECT 
                 COUNT(DISTINCT u.id) as total_users,
                 COUNT(uw.id) as total_workouts,
-                0 as total_minutes
+                COALESCE(
+                    SUM(
+                        CASE 
+                            WHEN uw.workout IS NOT NULL AND jsonb_typeof(uw.workout) = 'array' THEN 
+                                (
+                                    SELECT SUM(
+                                        CASE 
+                                            WHEN exercise ? 'duration_minutes' 
+                                            AND exercise->>'duration_minutes' ~ '^[0-9]+(\.[0-9]+)?$'
+                                            THEN (exercise->>'duration_minutes')::NUMERIC
+                                            ELSE 0
+                                        END
+                                    )
+                                    FROM jsonb_array_elements(uw.workout) as exercise
+                                )
+                            ELSE 0
+                        END
+                    ), 0
+                ) as total_minutes
             FROM fitgen.users u
             LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
             LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
@@ -217,6 +233,9 @@ function getSimpleStats($conn) {
         }
 
         $row = pg_fetch_assoc($result);
+        
+        debugLog("Stats calculation", $row);
+        
         return [
             'total_active_users' => (int)$row['total_users'],
             'total_workouts_generated' => (int)$row['total_workouts'],
@@ -232,6 +251,265 @@ function getSimpleStats($conn) {
     }
 }
 
+function generateAdvancedPDF($champions, $filters, $stats) {
+    $html = "
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='UTF-8'>
+        <title>FitGen Champions Leaderboard - Advanced Report</title>
+        <style>
+            body { 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                margin: 0; 
+                padding: 20px; 
+                background: #f8f9fa;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+            .header { 
+                text-align: center; 
+                margin-bottom: 40px; 
+                border-bottom: 3px solid #18D259;
+                padding-bottom: 20px;
+            }
+            .logo { 
+                color: #18D259; 
+                font-size: 32px; 
+                font-weight: bold; 
+                margin-bottom: 10px;
+            }
+            .subtitle {
+                color: #666;
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            .generated-info {
+                color: #888;
+                font-size: 14px;
+            }
+            
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                margin: 30px 0;
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+            }
+            .stat-card {
+                text-align: center;
+                padding: 15px;
+                background: white;
+                border-radius: 6px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+            .stat-value {
+                font-size: 24px;
+                font-weight: bold;
+                color: #18D259;
+                margin-bottom: 5px;
+            }
+            .stat-label {
+                font-size: 12px;
+                color: #666;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .filters { 
+                background: #e6f9ed; 
+                padding: 20px; 
+                margin-bottom: 30px; 
+                border-radius: 8px;
+                border-left: 4px solid #18D259;
+            }
+            .filters h3 {
+                margin: 0 0 15px 0;
+                color: #18D259;
+            }
+            .filter-item {
+                display: inline-block;
+                background: white;
+                padding: 8px 15px;
+                margin: 5px;
+                border-radius: 20px;
+                font-size: 14px;
+                border: 1px solid #18D259;
+            }
+            
+            table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin-top: 30px; 
+                background: white;
+            }
+            th, td { 
+                padding: 12px 8px; 
+                text-align: center; 
+                border-bottom: 1px solid #eee; 
+                font-size: 14px;
+            }
+            th { 
+                background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%); 
+                color: white; 
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            tr:nth-child(even) {
+                background: #f8f9fa;
+            }
+            tr:hover {
+                background: #e6f9ed;
+            }
+            
+            .rank { 
+                font-weight: bold; 
+                font-size: 16px;
+            }
+            .rank.top-3 {
+                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+                color: #333;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto;
+            }
+            .rank.rank-1 { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); }
+            .rank.rank-2 { background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%); }
+            .rank.rank-3 { background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%); }
+            
+            .user-name {
+                font-weight: 600;
+                color: #333;
+            }
+            .activity-score {
+                font-weight: bold;
+                color: #18D259;
+            }
+            
+            .footer { 
+                margin-top: 40px; 
+                text-align: center; 
+                color: #666;
+                font-size: 14px;
+                border-top: 1px solid #eee;
+                padding-top: 20px;
+            }
+            .footer-logo {
+                color: #18D259;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            
+            @media print {
+                body { background: white; }
+                .container { 
+                    box-shadow: none; 
+                    margin: 0;
+                    padding: 20px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <div class='logo'>💪 FitGen Champions</div>
+                <div class='subtitle'>Most Active Users Leaderboard</div>
+                <div class='generated-info'>Generated on " . date('F j, Y \a\t g:i A') . "</div>
+            </div>";
+
+    if ($stats) {
+        $html .= "
+            <div class='stats-grid'>
+                <div class='stat-card'>
+                    <div class='stat-value'>{$stats['total_active_users']}</div>
+                    <div class='stat-label'>Active Users</div>
+                </div>
+                <div class='stat-card'>
+                    <div class='stat-value'>{$stats['total_workouts_generated']}</div>
+                    <div class='stat-label'>Total Workouts</div>
+                </div>
+                <div class='stat-card'>
+                    <div class='stat-value'>" . number_format($stats['total_workout_minutes']) . "</div>
+                    <div class='stat-label'>Total Minutes</div>
+                </div>
+            </div>";
+    }
+    if (!empty(array_filter($filters))) {
+        $html .= "<div class='filters'><h3>Applied Filters</h3>";
+        foreach ($filters as $key => $value) {
+            if (!empty($value)) {
+                $label = ucfirst(str_replace('_', ' ', $key));
+                $html .= "<span class='filter-item'>{$label}: " . htmlspecialchars($value) . "</span>";
+            }
+        }
+        $html .= "</div>";
+    }
+    $html .= "
+        <table>
+            <thead>
+                <tr>
+                    <th style='width: 60px;'>Rank</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Goal</th>
+                    <th>Workouts</th>
+                    <th>Active Days</th>
+                    <th>Duration (min)</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>";
+
+    foreach ($champions as $champion) {
+        $rank = $champion['rank'];
+        $name = trim($champion['first_name'] . ' ' . $champion['last_name']) ?: $champion['username'];
+        $rankClass = $rank <= 3 ? "top-3 rank-{$rank}" : '';
+        
+        $html .= "
+            <tr>
+                <td><div class='rank {$rankClass}'>{$rank}</div></td>
+                <td class='user-name'>" . htmlspecialchars($name) . "</td>
+                <td>" . ($champion['age'] ?: 'N/A') . "</td>
+                <td>" . ($champion['gender'] ?: 'N/A') . "</td>
+                <td>" . ($champion['goal'] ? ucwords(str_replace('_', ' ', $champion['goal'])) : 'N/A') . "</td>
+                <td>{$champion['stats']['total_workouts']}</td>
+                <td>{$champion['stats']['active_days']}</td>
+                <td>{$champion['stats']['total_duration']}</td>
+                <td class='activity-score'>{$champion['stats']['activity_score']}</td>
+            </tr>";
+    }
+
+    $html .= "
+            </tbody>
+        </table>
+        
+        <div class='footer'>
+            <div class='footer-logo'>FitGen</div>
+            <p>Transform Your Workout Experience</p>
+            <p>© 2025 FitGen. All rights reserved.</p>
+        </div>
+    </div>
+    </body>
+    </html>";
+
+    return $html;
+}
+
 try {
     debugLog("Champions API called", $_GET);
 
@@ -239,6 +517,7 @@ try {
     if (!$conn) {
         throw new Exception('Database connection failed');
     }
+
     $testQuery = "SELECT 1 as test";
     $testResult = pg_query($conn, $testQuery);
     if (!$testResult) {
@@ -257,34 +536,17 @@ try {
     $format = $_GET['format'] ?? 'json';
 
     debugLog("Processing request", ['filters' => $filters, 'format' => $format]);
+
     $champions = getChampionsSimple($conn, $filters);
     $stats = getSimpleStats($conn);
 
     pg_close($conn);
 
     if ($format === 'pdf') {
-        echo "<!DOCTYPE html><html><head><title>Champions</title></head><body>";
-        echo "<h1>FitGen Champions</h1>";
-        echo "<p>Generated on " . date('Y-m-d H:i:s') . "</p>";
-        
-        if (!empty($champions)) {
-            echo "<table border='1'>";
-            echo "<tr><th>Rank</th><th>Name</th><th>Workouts</th><th>Score</th></tr>";
-            foreach ($champions as $champion) {
-                $name = trim($champion['first_name'] . ' ' . $champion['last_name']) ?: $champion['username'];
-                echo "<tr>";
-                echo "<td>" . $champion['rank'] . "</td>";
-                echo "<td>" . htmlspecialchars($name) . "</td>";
-                echo "<td>" . $champion['stats']['total_workouts'] . "</td>";
-                echo "<td>" . $champion['stats']['activity_score'] . "</td>";
-                echo "</tr>";
-            }
-            echo "</table>";
-        } else {
-            echo "<p>No champions data available</p>";
-        }
-        
-        echo "</body></html>";
+        $html = generateAdvancedPDF($champions, $filters, $stats);
+        header('Content-Type: text/html; charset=UTF-8');
+        header('Content-Disposition: inline; filename="fitgen_champions_' . date('Y-m-d_H-i') . '.html"');
+        echo $html;
         
     } else {
         echo json_encode([
