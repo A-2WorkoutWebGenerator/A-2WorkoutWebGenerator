@@ -243,6 +243,13 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION calculate_age(birth_year INTEGER)
+RETURNS INTEGER AS $$
+BEGIN
+    RETURN EXTRACT(YEAR FROM CURRENT_DATE) - birth_year;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION fitgen.generate_workout_for_user(
     p_user_id INTEGER,
     p_muscle_group TEXT DEFAULT NULL,
