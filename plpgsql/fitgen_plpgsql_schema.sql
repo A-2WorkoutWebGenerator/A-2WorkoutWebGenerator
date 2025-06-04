@@ -600,3 +600,262 @@ WHERE uw.id IS NOT NULL
 GROUP BY u.id, u.username, up.first_name, up.last_name
 ORDER BY base_score DESC;
 
+
+
+CREATE OR REPLACE FUNCTION fitgen.get_user_statistics(p_user_id INTEGER)
+RETURNS TABLE(
+    total_workouts BIGINT,
+    this_month_workouts BIGINT,
+    this_week_workouts BIGINT,
+    total_exercises BIGINT,
+    total_duration_minutes NUMERIC,
+    avg_workout_duration NUMERIC,
+    most_popular_muscle_group TEXT,
+    most_used_difficulty TEXT,
+    most_used_equipment TEXT,
+    workout_streak_days INTEGER,
+    last_workout_date TIMESTAMP,
+    monthly_chart_data JSONB,
+    muscle_group_stats JSONB,
+    difficulty_stats JSONB,
+    recent_workouts JSONB
+) AS $$
+DECLARE
+    v_result RECORD;
+BEGIN
+    SELECT 
+        COUNT(uw.id) as total_workouts,
+        COUNT(CASE WHEN uw.generated_at >= date_trunc('month', CURRENT_DATE) THEN 1 END) as this_month_workouts,
+        COUNT(CASE WHEN uw.generated_at >= date_trunc('week', CURRENT_DATE) THEN 1 END) as this_week_workouts,
+        
+        COALESCE(SUM(
+            CASE 
+                WHEN uw.workout IS NOT NULL AND jsonb_typeof(uw.workout) = 'array' 
+                THEN jsonb_array_length(uw.workout)
+                ELSE 0
+            END
+        ), 0) as total_exercises,
+
+        COALESCE(SUM(
+            CASE 
+                WHEN uw.workout IS NOT NULL AND jsonb_typeof(uw.workout) = 'array' THEN 
+                    (
+                        SELECT SUM(
+                            CASE 
+                                WHEN exercise ? 'duration_minutes' 
+                                AND exercise->>'duration_minutes' ~ '^[0-9]+(\.[0-9]+)?$'
+                                THEN (exercise->>'duration_minutes')::NUMERIC
+                                ELSE 0
+                            END
+                        )
+                        FROM jsonb_array_elements(uw.workout) as exercise
+                    )
+                ELSE 0
+            END
+        ), 0) as total_duration,
+        
+        MAX(uw.generated_at) as last_workout
+        
+    INTO v_result
+    FROM fitgen.user_workouts uw
+    WHERE uw.user_id = p_user_id;
+    
+    total_workouts := COALESCE(v_result.total_workouts, 0);
+    this_month_workouts := COALESCE(v_result.this_month_workouts, 0);
+    this_week_workouts := COALESCE(v_result.this_week_workouts, 0);
+    total_exercises := COALESCE(v_result.total_exercises, 0);
+    total_duration_minutes := COALESCE(v_result.total_duration, 0);
+    last_workout_date := v_result.last_workout;
+    
+    IF total_workouts > 0 THEN
+        avg_workout_duration := ROUND(total_duration_minutes / total_workouts, 1);
+    ELSE
+        avg_workout_duration := 0;
+    END IF;
+
+    SELECT muscle_group INTO most_popular_muscle_group
+    FROM (
+        SELECT 
+            jsonb_array_elements_text(exercise->'muscle_groups') as muscle_group,
+            COUNT(*) as usage_count
+        FROM fitgen.user_workouts uw,
+             jsonb_array_elements(uw.workout) as exercise
+        WHERE uw.user_id = p_user_id
+        AND exercise ? 'muscle_groups'
+        AND jsonb_typeof(exercise->'muscle_groups') = 'array'
+        GROUP BY muscle_group
+        ORDER BY usage_count DESC
+        LIMIT 1
+    ) popular_muscle;
+    
+    SELECT difficulty INTO most_used_difficulty
+    FROM (
+        SELECT 
+            exercise->>'difficulty' as difficulty,
+            COUNT(*) as usage_count
+        FROM fitgen.user_workouts uw,
+             jsonb_array_elements(uw.workout) as exercise
+        WHERE uw.user_id = p_user_id
+        AND exercise ? 'difficulty'
+        AND exercise->>'difficulty' IS NOT NULL
+        GROUP BY difficulty
+        ORDER BY usage_count DESC
+        LIMIT 1
+    ) popular_difficulty;
+    
+    SELECT equipment INTO most_used_equipment
+    FROM (
+        SELECT 
+            exercise->>'equipment_needed' as equipment,
+            COUNT(*) as usage_count
+        FROM fitgen.user_workouts uw,
+             jsonb_array_elements(uw.workout) as exercise
+        WHERE uw.user_id = p_user_id
+        AND exercise ? 'equipment_needed'
+        AND exercise->>'equipment_needed' IS NOT NULL
+        GROUP BY equipment
+        ORDER BY usage_count DESC
+        LIMIT 1
+    ) popular_equipment;
+    
+    WITH workout_dates AS (
+        SELECT DISTINCT DATE(generated_at) as workout_date
+        FROM fitgen.user_workouts
+        WHERE user_id = p_user_id
+        ORDER BY workout_date DESC
+    ),
+    date_gaps AS (
+        SELECT 
+            workout_date,
+            workout_date - LAG(workout_date, 1, workout_date) OVER (ORDER BY workout_date DESC) as gap
+        FROM workout_dates
+    ),
+    streak_groups AS (
+        SELECT 
+            workout_date,
+            SUM(CASE WHEN gap > 1 THEN 1 ELSE 0 END) OVER (ORDER BY workout_date DESC) as streak_group
+        FROM date_gaps
+    )
+    SELECT COUNT(*) INTO workout_streak_days
+    FROM streak_groups
+    WHERE streak_group = 0;
+    
+    workout_streak_days := COALESCE(workout_streak_days, 0);
+    
+    SELECT jsonb_agg(
+        jsonb_build_object(
+            'month', month_name,
+            'workouts', workout_count
+        ) ORDER BY month_date
+    ) INTO monthly_chart_data
+    FROM (
+        SELECT 
+            TO_CHAR(month_date, 'Mon YYYY') as month_name,
+            month_date,
+            COALESCE(workout_count, 0) as workout_count
+        FROM (
+            SELECT generate_series(
+                date_trunc('month', CURRENT_DATE - INTERVAL '11 months'),
+                date_trunc('month', CURRENT_DATE),
+                '1 month'::INTERVAL
+            ) as month_date
+        ) months
+        LEFT JOIN (
+            SELECT 
+                date_trunc('month', generated_at) as month,
+                COUNT(*) as workout_count
+            FROM fitgen.user_workouts
+            WHERE user_id = p_user_id
+            AND generated_at >= date_trunc('month', CURRENT_DATE - INTERVAL '11 months')
+            GROUP BY date_trunc('month', generated_at)
+        ) monthly_stats ON months.month_date = monthly_stats.month
+        ORDER BY month_date
+    ) monthly_data;
+    
+    SELECT jsonb_agg(
+        jsonb_build_object(
+            'muscle_group', muscle_group,
+            'count', usage_count,
+            'percentage', ROUND((usage_count * 100.0 / total_exercises), 1)
+        ) ORDER BY usage_count DESC
+    ) INTO muscle_group_stats
+    FROM (
+        SELECT 
+            jsonb_array_elements_text(exercise->'muscle_groups') as muscle_group,
+            COUNT(*) as usage_count
+        FROM fitgen.user_workouts uw,
+             jsonb_array_elements(uw.workout) as exercise
+        WHERE uw.user_id = p_user_id
+        AND exercise ? 'muscle_groups'
+        AND jsonb_typeof(exercise->'muscle_groups') = 'array'
+        GROUP BY muscle_group
+        ORDER BY usage_count DESC
+        LIMIT 8
+    ) muscle_stats;
+    
+    SELECT jsonb_agg(
+        jsonb_build_object(
+            'difficulty', difficulty,
+            'count', usage_count,
+            'percentage', ROUND((usage_count * 100.0 / total_exercises), 1)
+        ) ORDER BY usage_count DESC
+    ) INTO difficulty_stats
+    FROM (
+        SELECT 
+            exercise->>'difficulty' as difficulty,
+            COUNT(*) as usage_count
+        FROM fitgen.user_workouts uw,
+             jsonb_array_elements(uw.workout) as exercise
+        WHERE uw.user_id = p_user_id
+        AND exercise ? 'difficulty'
+        AND exercise->>'difficulty' IS NOT NULL
+        GROUP BY difficulty
+        ORDER BY usage_count DESC
+    ) diff_stats;
+    SELECT jsonb_agg(
+        jsonb_build_object(
+            'date', TO_CHAR(generated_at, 'DD Mon YYYY'),
+            'exercises_count', jsonb_array_length(workout),
+            'total_duration', (
+                SELECT SUM(
+                    CASE 
+                        WHEN exercise ? 'duration_minutes' 
+                        AND exercise->>'duration_minutes' ~ '^[0-9]+(\.[0-9]+)?$'
+                        THEN (exercise->>'duration_minutes')::NUMERIC
+                        ELSE 0
+                    END
+                )
+                FROM jsonb_array_elements(workout) as exercise
+            ),
+            'exercises', (
+                SELECT jsonb_agg(
+                    jsonb_build_object(
+                        'name', exercise->>'name',
+                        'duration', exercise->>'duration_minutes',
+                        'difficulty', exercise->>'difficulty'
+                    )
+                )
+                FROM jsonb_array_elements(workout) as exercise
+            )
+        ) ORDER BY generated_at DESC
+    ) INTO recent_workouts
+    FROM (
+        SELECT workout, generated_at
+        FROM fitgen.user_workouts
+        WHERE user_id = p_user_id
+        ORDER BY generated_at DESC
+        LIMIT 5
+    ) recent;
+    
+    most_popular_muscle_group := COALESCE(most_popular_muscle_group, 'N/A');
+    most_used_difficulty := COALESCE(most_used_difficulty, 'N/A');
+    most_used_equipment := COALESCE(most_used_equipment, 'N/A');
+    monthly_chart_data := COALESCE(monthly_chart_data, '[]'::jsonb);
+    muscle_group_stats := COALESCE(muscle_group_stats, '[]'::jsonb);
+    difficulty_stats := COALESCE(difficulty_stats, '[]'::jsonb);
+    recent_workouts := COALESCE(recent_workouts, '[]'::jsonb);
+    
+    RETURN NEXT;
+END;
+$$ LANGUAGE plpgsql;
+

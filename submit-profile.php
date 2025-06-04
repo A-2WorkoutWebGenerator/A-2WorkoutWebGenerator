@@ -232,8 +232,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $response['message'] = "Error updating profile: " . pg_last_error($conn);
             }
         } else {
-            $insertFields = "user_id, first_name, last_name, gender, age, goal, injuries";
-            $insertValues = "\$1, \$2, \$3, \$4, \$5, \$6, \$7";
+            $insertFields = "user_id, first_name, last_name, gender, age, weight, goal, injuries";
+            $insertValues = "\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8";
             $params = array(
                 $user_id,
                 $firstName,
