@@ -384,6 +384,10 @@ BEGIN
             EXIT;
         END LOOP;
     END IF;
+    EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'generate_workout_for_user error: %', SQLERRM;
+        RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

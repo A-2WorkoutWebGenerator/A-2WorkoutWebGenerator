@@ -6,7 +6,18 @@ error_reporting(E_ALL);
 require_once 'db_connection.php';
 require_once 'jwt_utils.php';
 
-error_log("SUBMIT PROFILE REQUEST RECEIVED: " . json_encode($_POST));
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+error_log("SUBMIT PROFILE REQUEST RECEIVED - POST: " . json_encode($_POST));
+error_log("FILES: " . json_encode($_FILES));
 
 function getBearerToken() {
     if (function_exists('getallheaders')) {
@@ -14,7 +25,6 @@ function getBearerToken() {
         if ($headers) {
             foreach ($headers as $key => $value) {
                 if (strtolower($key) === 'authorization') {
-                    error_log("Found authorization header: " . $value);
                     if (preg_match('/Bearer\s(\S+)/', $value, $matches)) {
                         return $matches[1];
                     }
@@ -22,7 +32,6 @@ function getBearerToken() {
             }
         }
     }
-
     $authHeaders = [
         'HTTP_AUTHORIZATION',
         'REDIRECT_HTTP_AUTHORIZATION',
@@ -30,18 +39,14 @@ function getBearerToken() {
     ];
     foreach ($authHeaders as $header) {
         if (isset($_SERVER[$header])) {
-            error_log("Found $header: " . $_SERVER[$header]);
             if (preg_match('/Bearer\s(\S+)/', $_SERVER[$header], $matches)) {
                 return $matches[1];
             }
         }
     }
-
     if (isset($_POST['auth_token']) && !empty($_POST['auth_token'])) {
-        error_log("Found auth_token in POST: " . $_POST['auth_token']);
         return $_POST['auth_token'];
     }
-
     return null;
 }
 
@@ -57,12 +62,10 @@ function getUserIdFromJWT($token) {
     return false;
 }
 
-$response = array();
-$response['success'] = false;
+$response = ['success' => false];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $auth_token = getBearerToken();
-    error_log("Auth token extracted: " . ($auth_token ? $auth_token : "none"));
 
     if (!$auth_token) {
         $response['message'] = "Authentication required. Please log in.";
@@ -76,7 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo json_encode($response);
         exit();
     }
-    error_log("Token verified successfully. User ID: " . $user_id);
 
     $firstName = isset($_POST["first_name"]) ? htmlspecialchars($_POST["first_name"]) : '';
     $lastName = isset($_POST["last_name"]) ? htmlspecialchars($_POST["last_name"]) : '';
@@ -87,49 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $goal = isset($_POST["goal"]) ? htmlspecialchars($_POST["goal"]) : '';
     $injuries = isset($_POST["injuries"]) ? htmlspecialchars($_POST["injuries"]) : '';
 
-    $profilePicturePath = null;
-    if (isset($_FILES["profile_pic"]) && $_FILES["profile_pic"]["error"] == 0) {
-        $allowed = ["jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png"];
-        $filename = $_FILES["profile_pic"]["name"];
-        $filetype = $_FILES["profile_pic"]["type"];
-        $filesize = $_FILES["profile_pic"]["size"];
-
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if (!array_key_exists($ext, $allowed)) {
-            $response['message'] = "Invalid file format. Please use JPG, JPEG, GIF or PNG.";
-            echo json_encode($response);
-            exit();
-        }
-        
-        $maxsize = 5 * 1024 * 1024;
-        if ($filesize > $maxsize) {
-            $response['message'] = "File size exceeds the limit (5MB).";
-            echo json_encode($response);
-            exit();
-        }
-
-        if (in_array($filetype, $allowed)) {
-            $uploadDir = "uploads/profile_pics/";
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-            
-            $newFilename = uniqid() . "-" . $filename;
-            $uploadPath = $uploadDir . $newFilename;
-
-            if (move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $uploadPath)) {
-                $profilePicturePath = $uploadPath;
-            } else {
-                $response['message'] = "Error uploading file.";
-                echo json_encode($response);
-                exit();
-            }
-        } else {
-            $response['message'] = "Invalid file type.";
-            echo json_encode($response);
-            exit();
-        }
-    }
+    $removePic = isset($_POST["remove_pic"]) ? ($_POST["remove_pic"] === "1") : false;
 
     $conn = getConnection();
     if ($conn === false) {
@@ -137,7 +97,82 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo json_encode($response);
         exit();
     }
-    
+
+    $existingProfileQuery = "SELECT profile_picture_path FROM user_profiles WHERE user_id = $1";
+    $existingResult = pg_query_params($conn, $existingProfileQuery, array($user_id));
+    $oldProfilePicture = null;
+    if ($existingResult && pg_num_rows($existingResult) > 0) {
+        $existingRow = pg_fetch_assoc($existingResult);
+        $oldProfilePicture = $existingRow['profile_picture_path'];
+    }
+
+    $profilePicturePath = null;
+    $shouldUpdatePicture = false;
+
+    if (isset($_FILES["profile_pic"]) && $_FILES["profile_pic"]["error"] == 0) {
+        $allowed = ["jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png"];
+        $filename = $_FILES["profile_pic"]["name"];
+        $filetype = $_FILES["profile_pic"]["type"];
+        $filesize = $_FILES["profile_pic"]["size"];
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        if (!array_key_exists($ext, $allowed)) {
+            $response['message'] = "Invalid file format. Please use JPG, JPEG, GIF or PNG.";
+            echo json_encode($response);
+            pg_close($conn);
+            exit();
+        }
+        
+        $maxsize = 5 * 1024 * 1024;
+        if ($filesize > $maxsize) {
+            $response['message'] = "File size exceeds the limit (5MB).";
+            echo json_encode($response);
+            pg_close($conn);
+            exit();
+        }
+        
+        if (in_array($filetype, $allowed)) {
+            $uploadDir = "uploads/profile_pics/";
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $newFilename = $user_id . "_" . time() . "_" . uniqid() . "." . $ext;
+            $uploadPath = $uploadDir . $newFilename;
+
+            if (move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $uploadPath)) {
+                $profilePicturePath = $uploadPath;
+                $shouldUpdatePicture = true;
+                if ($oldProfilePicture && file_exists($oldProfilePicture)) {
+                    unlink($oldProfilePicture);
+                }
+                $profilePicturePath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $profilePicturePath);
+                $profilePicturePath = ltrim($profilePicturePath, '/');
+                $profilePicturePath = substr($profilePicturePath, 0, 255);
+                error_log("PROFILE PIC PATH SAVED TO DB: " . $profilePicturePath);
+            } else {
+                $response['message'] = "Error uploading file.";
+                echo json_encode($response);
+                pg_close($conn);
+                exit();
+            }
+        } else {
+            $response['message'] = "Invalid file type.";
+            echo json_encode($response);
+            pg_close($conn);
+            exit();
+        }
+    }
+
+    if ($removePic) {
+        $shouldUpdatePicture = true;
+        $profilePicturePath = null;
+
+        if ($oldProfilePicture && file_exists($oldProfilePicture)) {
+            unlink($oldProfilePicture);
+        }
+    }
+
     $checkTableQuery = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'user_profiles')";
     $tableResult = pg_query($conn, $checkTableQuery);
 
@@ -159,9 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
-        
         CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
-        
         CREATE OR REPLACE FUNCTION update_modified_column()
         RETURNS TRIGGER AS $$
         BEGIN
@@ -169,43 +202,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             RETURN NEW;
         END;
         $$ language 'plpgsql';
-        
         CREATE TRIGGER update_user_profiles_modtime
             BEFORE UPDATE ON user_profiles
             FOR EACH ROW
             EXECUTE PROCEDURE update_modified_column();
         ";
-        
         $createResult = pg_query($conn, $createTableQuery);
-        
+
         if (!$createResult) {
             error_log("Eroare la crearea tabelului user_profiles: " . pg_last_error($conn));
             $response['message'] = "Database setup error. Please contact the administrator.";
             echo json_encode($response);
+            pg_close($conn);
             exit();
         }
-        
-        error_log("Tabelul user_profiles a fost creat cu succes.");
     }
-    
+
     $checkQuery = "SELECT id FROM user_profiles WHERE user_id = $1";
     $result = pg_query_params($conn, $checkQuery, array($user_id));
-    
+
     if ($result) {
         if (pg_num_rows($result) > 0) {
             $row = pg_fetch_assoc($result);
             $profileId = $row['id'];
-            
-            $updateQuery = "UPDATE user_profiles SET 
-                first_name = $1, 
-                last_name = $2, 
-                gender = $3, 
-                age = $4, 
-                weight = $5,
-                goal = $6, 
-                injuries = $7";
-            
-            $params = array(
+
+            $updateFields = [
+                "first_name = $1",
+                "last_name = $2",
+                "gender = $3",
+                "age = $4",
+                "weight = $5",
+                "goal = $6",
+                "injuries = $7"
+            ];
+            $params = [
                 $firstName,
                 $lastName,
                 $gender,
@@ -213,28 +243,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $weight,
                 $goal,
                 $injuries
-            );
-            
-            if ($profilePicturePath) {
-                $updateQuery .= ", profile_picture_path = $" . (count($params) + 1);
-                $params[] = $profilePicturePath;
+            ];
+
+            if ($shouldUpdatePicture) {
+                $updateFields[] = "profile_picture_path = $" . (count($params) + 1);
+                $params[] = $profilePicturePath; 
             }
-            
-            $updateQuery .= " WHERE id = $" . (count($params) + 1);
+
+            $updateQuery = "UPDATE user_profiles SET " . implode(", ", $updateFields) . " WHERE id = $" . (count($params) + 1);
             $params[] = $profileId;
-            
+
+            error_log("UPDATE: $updateQuery");
+            error_log("PARAMS: " . json_encode($params));
+
             $result = pg_query_params($conn, $updateQuery, $params);
-            
+
             if ($result) {
                 $response['success'] = true;
                 $response['message'] = "Profile updated successfully!";
+                if ($shouldUpdatePicture) {
+                    $response['profile_picture_path'] = $profilePicturePath;
+                }
             } else {
                 $response['message'] = "Error updating profile: " . pg_last_error($conn);
+                error_log("Update error: " . pg_last_error($conn));
             }
         } else {
             $insertFields = "user_id, first_name, last_name, gender, age, weight, goal, injuries";
-            $insertValues = "\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8";
-            $params = array(
+            $insertValues = "$1, $2, $3, $4, $5, $6, $7, $8";
+            $params = [
                 $user_id,
                 $firstName,
                 $lastName,
@@ -243,48 +280,51 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $weight,
                 $goal,
                 $injuries
-            );
+            ];
 
-            if ($profilePicturePath) {
+            if ($shouldUpdatePicture && $profilePicturePath !== null) {
                 $insertFields .= ", profile_picture_path";
-                $insertValues .= ", \$" . (count($params) + 1);
+                $insertValues .= ", $" . (count($params) + 1);
                 $params[] = $profilePicturePath;
             }
 
             $insertQuery = "INSERT INTO user_profiles ($insertFields) VALUES ($insertValues)";
-            
+            error_log("INSERT: $insertQuery");
+            error_log("PARAMS: " . json_encode($params));
+
             $result = pg_query_params($conn, $insertQuery, $params);
-            
+
             if ($result) {
                 $response['success'] = true;
                 $response['message'] = "Profile created successfully!";
+                if ($shouldUpdatePicture && $profilePicturePath !== null) {
+                    $response['profile_picture_path'] = $profilePicturePath;
+                }
             } else {
                 $response['message'] = "Error creating profile: " . pg_last_error($conn);
+                error_log("Insert error: " . pg_last_error($conn));
             }
         }
-    } else {
-        $response['message'] = "Error checking profile: " . pg_last_error($conn);
-        echo json_encode($response);
-        exit();
     }
-
     if (!empty($email)) {
         $updateEmailQuery = "UPDATE users SET email = $1 WHERE id = $2";
-        pg_query_params($conn, $updateEmailQuery, array($email, $user_id));
+        $emailResult = pg_query_params($conn, $updateEmailQuery, array($email, $user_id));
+        if (!$emailResult) {
+            error_log("Email update error: " . pg_last_error($conn));
+        }
     }
 
     $suggestion = generateWorkoutSuggestion($goal, '', $injuries, $age, $gender);
     $checkQuery = "SELECT id FROM workout_suggestions WHERE user_id = $1 AND suggestion = $2";
     $checkResult = pg_query_params($conn, $checkQuery, [$user_id, json_encode($suggestion)]);
 
-    if (pg_num_rows($checkResult) == 0) {
+    if ($checkResult && pg_num_rows($checkResult) == 0) {
         $insertSuggestionQuery = "INSERT INTO workout_suggestions (user_id, generated_at, suggestion) VALUES ($1, NOW(), $2)";
         pg_query_params($conn, $insertSuggestionQuery, [$user_id, json_encode($suggestion)]);
     }
     $response['suggestion'] = $suggestion;
+    
     pg_close($conn);
-
-    header("Content-Type: application/json");
     echo json_encode($response);
     exit();
 
@@ -296,7 +336,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 function generateWorkoutSuggestion($goal, $equipment, $injuries, $age, $gender) {
     $suggestion = [];
-
     switch ($goal) {
         case 'lose_weight':
             $suggestion['title'] = "Weight Loss Program";
@@ -355,7 +394,7 @@ function generateWorkoutSuggestion($goal, $equipment, $injuries, $age, $gender) 
                 "Active Recovery - 1 time per week"
             ];
     }
-    
+
     if (!empty($injuries)) {
         $suggestion['caution'] = "Due to your reported injuries/conditions, please take the following precautions: 
         1. Start slowly and focus on proper form
