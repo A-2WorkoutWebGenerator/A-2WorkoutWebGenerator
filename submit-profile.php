@@ -15,13 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-// DEBUGGING: Log toate datele primite
-error_log("=== SUBMIT PROFILE DEBUG START ===");
-error_log("POST DATA: " . json_encode($_POST));
-error_log("FILES DATA: " . json_encode($_FILES));
-error_log("REQUEST METHOD: " . $_SERVER['REQUEST_METHOD']);
-
 function getBearerToken() {
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
@@ -69,7 +62,6 @@ $response = ['success' => false];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $auth_token = getBearerToken();
-    error_log("AUTH TOKEN: " . ($auth_token ? "FOUND" : "NOT FOUND"));
 
     if (!$auth_token) {
         $response['message'] = "Authentication required. Please log in.";
@@ -78,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $user_id = getUserIdFromJWT($auth_token);
-    error_log("USER ID FROM JWT: " . $user_id);
     
     if (!$user_id) {
         $response['message'] = "Invalid or expired token. Please log in again.";
@@ -96,7 +87,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $injuries = isset($_POST["injuries"]) ? htmlspecialchars($_POST["injuries"]) : '';
 
     $removePic = isset($_POST["remove_pic"]) ? ($_POST["remove_pic"] === "1") : false;
-    error_log("REMOVE PIC: " . ($removePic ? "YES" : "NO"));
 
     $conn = getConnection();
     if ($conn === false) {
@@ -104,8 +94,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo json_encode($response);
         exit();
     }
-
-    // Obține poza existentă
     $existingProfileQuery = "SELECT profile_picture_path FROM user_profiles WHERE user_id = $1";
     $existingResult = pg_query_params($conn, $existingProfileQuery, array($user_id));
     $oldProfilePicture = null;
@@ -113,13 +101,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $existingRow = pg_fetch_assoc($existingResult);
         $oldProfilePicture = $existingRow['profile_picture_path'];
     }
-    error_log("OLD PROFILE PICTURE: " . ($oldProfilePicture ? $oldProfilePicture : "NONE"));
 
     $profilePicturePath = null;
     $shouldUpdatePicture = false;
-
-    // DEBUGGING: Verifică dacă avem fișier pentru upload
-    error_log("=== FILE UPLOAD CHECK ===");
     if (isset($_FILES["profile_pic"])) {
         error_log("profile_pic FILE EXISTS");
         error_log("File error code: " . $_FILES["profile_pic"]["error"]);
@@ -130,19 +114,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         error_log("NO profile_pic FILE IN REQUEST");
     }
-
-    // Procesează imaginea dacă există
     if (isset($_FILES["profile_pic"]) && $_FILES["profile_pic"]["error"] == UPLOAD_ERR_OK) {
-        error_log("=== PROCESSING UPLOAD ===");
         
         $allowed = ["jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png"];
         $filename = $_FILES["profile_pic"]["name"];
         $filetype = $_FILES["profile_pic"]["type"];
         $filesize = $_FILES["profile_pic"]["size"];
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-        error_log("File extension: " . $ext);
-        error_log("File type: " . $filetype);
 
         if (!array_key_exists($ext, $allowed)) {
             $response['message'] = "Invalid file format. Please use JPG, JPEG, GIF or PNG.";
@@ -151,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit();
         }
         
-        $maxsize = 10 * 1024 * 1024; // 10MB
+        $maxsize = 10 * 1024 * 1024;
         if ($filesize > $maxsize) {
             $response['message'] = "File size exceeds the limit (10MB).";
             echo json_encode($response);
@@ -161,29 +139,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         if (in_array($filetype, $allowed)) {
             $uploadDir = "uploads/profile_pics/";
-            
-            // Creează directorul dacă nu există
             if (!file_exists($uploadDir)) {
                 if (!mkdir($uploadDir, 0755, true)) {
-                    error_log("FAILED TO CREATE UPLOAD DIRECTORY: " . $uploadDir);
                     $response['message'] = "Error creating upload directory.";
                     echo json_encode($response);
                     pg_close($conn);
                     exit();
                 }
-                error_log("CREATED UPLOAD DIRECTORY: " . $uploadDir);
             }
 
             $newFilename = $user_id . "_" . time() . "_" . uniqid() . "." . $ext;
             $uploadPath = $uploadDir . $newFilename;
-            
-            error_log("ATTEMPTING TO MOVE FILE TO: " . $uploadPath);
-            error_log("FROM TEMP PATH: " . $_FILES["profile_pic"]["tmp_name"]);
-
+        
             if (move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $uploadPath)) {
-                error_log("FILE SUCCESSFULLY MOVED TO: " . $uploadPath);
-                
-                // Șterge vechea poză dacă există
                 if ($oldProfilePicture && file_exists($oldProfilePicture)) {
                     if (unlink($oldProfilePicture)) {
                         error_log("OLD PROFILE PICTURE DELETED: " . $oldProfilePicture);
@@ -191,17 +159,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         error_log("FAILED TO DELETE OLD PICTURE: " . $oldProfilePicture);
                     }
                 }
-                
-                // Pregătește calea pentru baza de date
                 $profilePicturePath = $uploadPath;
                 $shouldUpdatePicture = true;
                 
-                // DEBUGGING: Verifică calea finală
-                error_log("FINAL PROFILE PICTURE PATH FOR DB: " . $profilePicturePath);
-                error_log("SHOULD UPDATE PICTURE: " . ($shouldUpdatePicture ? "YES" : "NO"));
-                
             } else {
-                error_log("FAILED TO MOVE UPLOADED FILE");
                 $response['message'] = "Error uploading file.";
                 echo json_encode($response);
                 pg_close($conn);
@@ -214,17 +175,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit();
         }
     } else if (isset($_FILES["profile_pic"]) && $_FILES["profile_pic"]["error"] != UPLOAD_ERR_NO_FILE) {
-        // Alte erori de upload
-        error_log("UPLOAD ERROR: " . $_FILES["profile_pic"]["error"]);
         $response['message'] = "Upload error code: " . $_FILES["profile_pic"]["error"];
         echo json_encode($response);
         pg_close($conn);
         exit();
     }
-
-    // Procesează ștergerea pozei
     if ($removePic) {
-        error_log("=== REMOVING PROFILE PICTURE ===");
         $shouldUpdatePicture = true;
         $profilePicturePath = null;
 
@@ -236,13 +192,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
     }
-
-    // Verifică dacă tabelul există
     $checkTableQuery = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'user_profiles')";
     $tableResult = pg_query($conn, $checkTableQuery);
 
     if (!$tableResult || pg_fetch_result($tableResult, 0, 0) === 'f') {
-        error_log("CREATING user_profiles TABLE");
         $createTableQuery = "
         CREATE TABLE user_profiles (
             id SERIAL PRIMARY KEY,
@@ -276,22 +229,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $createResult = pg_query($conn, $createTableQuery);
 
         if (!$createResult) {
-            error_log("ERROR CREATING TABLE: " . pg_last_error($conn));
             $response['message'] = "Database setup error.";
             echo json_encode($response);
             pg_close($conn);
             exit();
         }
     }
-
-    // Verifică dacă profilul există
     $checkQuery = "SELECT id FROM user_profiles WHERE user_id = $1";
     $result = pg_query_params($conn, $checkQuery, array($user_id));
 
     if ($result) {
         if (pg_num_rows($result) > 0) {
-            // UPDATE
-            error_log("=== UPDATING EXISTING PROFILE ===");
             $row = pg_fetch_assoc($result);
             $profileId = $row['id'];
 
@@ -317,32 +265,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($shouldUpdatePicture) {
                 $updateFields[] = "profile_picture_path = $" . (count($params) + 1);
                 $params[] = $profilePicturePath;
-                error_log("ADDING PICTURE TO UPDATE - PATH: " . ($profilePicturePath ? $profilePicturePath : "NULL"));
             }
 
             $updateQuery = "UPDATE user_profiles SET " . implode(", ", $updateFields) . " WHERE id = $" . (count($params) + 1);
             $params[] = $profileId;
 
-            error_log("UPDATE QUERY: " . $updateQuery);
-            error_log("UPDATE PARAMS: " . json_encode($params));
-
             $result = pg_query_params($conn, $updateQuery, $params);
 
             if ($result) {
-                error_log("PROFILE UPDATED SUCCESSFULLY");
                 $response['success'] = true;
                 $response['message'] = "Profile updated successfully!";
                 if ($shouldUpdatePicture) {
                     $response['profile_picture_path'] = $profilePicturePath;
-                    error_log("RETURNING PICTURE PATH: " . ($profilePicturePath ? $profilePicturePath : "NULL"));
                 }
             } else {
-                error_log("UPDATE FAILED: " . pg_last_error($conn));
                 $response['message'] = "Error updating profile: " . pg_last_error($conn);
             }
         } else {
-            // INSERT
-            error_log("=== CREATING NEW PROFILE ===");
             $insertFields = "user_id, first_name, last_name, gender, age, weight, goal, injuries";
             $insertValues = "$1, $2, $3, $4, $5, $6, $7, $8";
             $params = [
@@ -360,13 +299,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $insertFields .= ", profile_picture_path";
                 $insertValues .= ", $" . (count($params) + 1);
                 $params[] = $profilePicturePath;
-                error_log("ADDING PICTURE TO INSERT - PATH: " . ($profilePicturePath ? $profilePicturePath : "NULL"));
             }
 
             $insertQuery = "INSERT INTO user_profiles ($insertFields) VALUES ($insertValues)";
-            
-            error_log("INSERT QUERY: " . $insertQuery);
-            error_log("INSERT PARAMS: " . json_encode($params));
 
             $result = pg_query_params($conn, $insertQuery, $params);
 
@@ -376,19 +311,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $response['message'] = "Profile created successfully!";
                 if ($shouldUpdatePicture) {
                     $response['profile_picture_path'] = $profilePicturePath;
-                    error_log("RETURNING PICTURE PATH: " . ($profilePicturePath ? $profilePicturePath : "NULL"));
                 }
             } else {
-                error_log("INSERT FAILED: " . pg_last_error($conn));
                 $response['message'] = "Error creating profile: " . pg_last_error($conn);
             }
         }
     } else {
-        error_log("QUERY FAILED: " . pg_last_error($conn));
         $response['message'] = "Database query error.";
     }
-    
-    // Update email dacă este furnizat
     if (!empty($email)) {
         $updateEmailQuery = "UPDATE users SET email = $1 WHERE id = $2";
         $emailResult = pg_query_params($conn, $updateEmailQuery, array($email, $user_id));
@@ -398,8 +328,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             error_log("EMAIL UPDATED SUCCESSFULLY");
         }
     }
-
-    // Generează sugestie de workout
     $suggestion = generateWorkoutSuggestion($goal, '', $injuries, $age, $gender);
     $checkQuery = "SELECT id FROM workout_suggestions WHERE user_id = $1 AND suggestion = $2";
     $checkResult = pg_query_params($conn, $checkQuery, [$user_id, json_encode($suggestion)]);
@@ -407,12 +335,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($checkResult && pg_num_rows($checkResult) == 0) {
         $insertSuggestionQuery = "INSERT INTO workout_suggestions (user_id, generated_at, suggestion) VALUES ($1, NOW(), $2)";
         pg_query_params($conn, $insertSuggestionQuery, [$user_id, json_encode($suggestion)]);
-        error_log("WORKOUT SUGGESTION ADDED");
     }
     $response['suggestion'] = $suggestion;
     
     pg_close($conn);
-    error_log("=== SUBMIT PROFILE DEBUG END ===");
     echo json_encode($response);
     exit();
 
