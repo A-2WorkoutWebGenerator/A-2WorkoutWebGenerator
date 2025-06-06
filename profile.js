@@ -667,6 +667,14 @@ function generateWorkout() {
     const duration = document.getElementById('duration').value;
     const equipment = document.getElementById('equipment_pref').value;
     const location = document.getElementById('location').value;
+    if (!duration || duration < 10) {
+        showMessage('Please enter a valid workout duration (minimum 10 minutes)', 'error');
+        return;
+    }
+    const submitButton = document.querySelector('#preferences-form button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
 
     fetch('generate-workout.php', {
         method: 'POST',
@@ -685,10 +693,35 @@ function generateWorkout() {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            showAllSuggestions(data.workout);
+            showTemporaryNotification('Workout generated successfully! Redirecting to My Workouts...', 'success');
+            if (data.workout) {
+                localStorage.setItem('latestWorkout', JSON.stringify(data.workout));
+            }
+            setTimeout(() => {
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+                
+                const workoutsLink = document.querySelector('[data-section="workouts"]');
+                const workoutsSection = document.getElementById('workouts');
+                
+                if (workoutsLink) workoutsLink.classList.add('active');
+                if (workoutsSection) workoutsSection.classList.add('active');
+                loadWorkoutSuggestions();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            }, 1500);
+            
         } else {
-            showMessage(data.message, "error");
+            showMessage(data.message || 'Error generating workout', "error");
         }
+    })
+    .catch(error => {
+        console.error('Error generating workout:', error);
+        showMessage('Connection error. Please try again.', 'error');
+    })
+    .finally(() => {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
     });
 }
 
