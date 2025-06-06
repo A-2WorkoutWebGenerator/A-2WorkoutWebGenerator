@@ -409,6 +409,368 @@
                 </div>
             `;
         }
+        // Adaugă această funcție în scriptul existent din WoW-Logged.html
+
+function checkAndShowAdminButton() {
+    const token = localStorage.getItem('authToken');
+    
+    if (!token) return;
+    
+    try {
+        // Decodificăm JWT pentru a verifica isAdmin
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        
+        if (payload.isAdmin) {
+            // Găsim navigation bar-ul
+            const navButtons = document.querySelector('.nav-buttons');
+            
+            if (navButtons && !document.querySelector('.admin-panel-btn')) {
+                // Creăm butonul Admin Panel
+                const adminButton = document.createElement('a');
+                adminButton.href = 'admin-panel.html';
+                adminButton.innerHTML = '<i class="fas fa-cog"></i> Admin Panel';
+                adminButton.className = 'btn btn-outline admin-panel-btn';
+                
+                // Stiluri custom pentru butonul admin
+                adminButton.style.cssText = `
+                    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+                    color: white !important;
+                    border: 2px solid #e74c3c !important;
+                    margin-left: 0.5rem;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+                `;
+                
+                // Hover effects
+                adminButton.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.4)';
+                    this.style.background = 'linear-gradient(135deg, #c0392b 0%, #a93226 100%)';
+                });
+                
+                adminButton.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 2px 8px rgba(231, 76, 60, 0.3)';
+                    this.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+                });
+                
+                // Adăugăm butonul în navigation
+                navButtons.insertBefore(adminButton, navButtons.firstChild);
+                
+                console.log('Admin Panel button added to navigation');
+            }
+        }
+    } catch (error) {
+        console.error('Error checking admin status:', error);
+    }
+}
+
+// Funcție pentru verificarea login-ului și afișarea butonului admin
+function handleLoginSuccess(response) {
+    if (response.success) {
+        localStorage.setItem('authToken', response.token);
+        
+        // Verifică și afișează butonul admin dacă este necesar
+        checkAndShowAdminButton();
+        
+        // Redirect sau alte acțiuni după login
+        // window.location.href = 'profile.html'; // uncomment dacă vrei redirect
+    }
+}
+
+// Funcție pentru încărcarea campioanelor (din scriptul original)
+function loadChampions() {
+    const container = document.querySelector('.podium-container');
+    
+    fetch(`${API_URL}/get_champions.php`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data.length > 0) {
+            displayChampions(data.data.slice(0, 3)); // Top 3
+        } else {
+            displayFallbackChampions();
+        }
+    })
+    .catch(error => {
+        console.error('Error loading champions:', error);
+        displayFallbackChampions();
+    });
+}
+
+function displayChampions(champions) {
+    const container = document.querySelector('.podium-container');
+    
+    // Ordonare pentru podium: 2nd, 1st, 3rd
+    const podiumOrder = [champions[1], champions[0], champions[2]].filter(Boolean);
+    
+    let podiumHTML = '<div class="podium">';
+    
+    podiumOrder.forEach((champion, index) => {
+        const position = index === 1 ? 1 : (index === 0 ? 2 : 3);
+        const height = position === 1 ? 'tall' : (position === 2 ? 'medium' : 'short');
+        const medal = position === 1 ? '🥇' : (position === 2 ? '🥈' : '🥉');
+        
+        podiumHTML += `
+            <div class="podium-place ${height}">
+                <div class="champion-info">
+                    <div class="champion-avatar">${champion.username.charAt(0).toUpperCase()}</div>
+                    <h3>${champion.username}</h3>
+                    <p>${champion.total_workouts} workouts</p>
+                    <span class="medal">${medal}</span>
+                </div>
+                <div class="podium-base">
+                    <span>${position}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    podiumHTML += '</div>';
+    container.innerHTML = podiumHTML;
+}
+
+function displayFallbackChampions() {
+    const container = document.querySelector('.podium-container');
+    container.innerHTML = `
+        <div class="podium">
+            <div class="podium-place medium">
+                <div class="champion-info">
+                    <div class="champion-avatar">D</div>
+                    <h3>Demo User 2</h3>
+                    <p>45 workouts</p>
+                    <span class="medal">🥈</span>
+                </div>
+                <div class="podium-base">
+                    <span>2</span>
+                </div>
+            </div>
+            <div class="podium-place tall">
+                <div class="champion-info">
+                    <div class="champion-avatar">C</div>
+                    <h3>Champion User</h3>
+                    <p>67 workouts</p>
+                    <span class="medal">🥇</span>
+                </div>
+                <div class="podium-base">
+                    <span>1</span>
+                </div>
+            </div>
+            <div class="podium-place short">
+                <div class="champion-info">
+                    <div class="champion-avatar">T</div>
+                    <h3>Third Place</h3>
+                    <p>32 workouts</p>
+                    <span class="medal">🥉</span>
+                </div>
+                <div class="podium-base">
+                    <span>3</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Event listeners și inițializare
+document.addEventListener('DOMContentLoaded', function() {
+    // Verifică și afișează butonul admin la încărcarea paginii
+    checkAndShowAdminButton();
+    
+    // Încarcă testimonials și campioni
+    loadTestimonials();
+    loadChampions();
+    
+    // Mobile menu toggle (dacă există)
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (mobileToggle && navLinks) {
+        mobileToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+    }
+});
+
+// Funcție pentru logout (dacă nu există deja)
+function logout() {
+    localStorage.removeItem('authToken');
+    
+    // Elimină butonul admin dacă există
+    const adminButton = document.querySelector('.admin-panel-btn');
+    if (adminButton) {
+        adminButton.remove();
+    }
+    
+    // Redirect la pagina de login
+    window.location.href = 'login.html';
+}
+
+// Stiluri CSS pentru podium (adaugă în head sau CSS file)
+const podiumStyles = `
+<style>
+.podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 2rem;
+}
+
+.podium-place {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.podium-place:hover {
+    transform: translateY(-5px);
+}
+
+.podium-place.tall {
+    order: 2;
+}
+
+.podium-place.medium {
+    order: 1;
+}
+
+.podium-place.short {
+    order: 3;
+}
+
+.champion-info {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    min-width: 150px;
+}
+
+.champion-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.champion-info h3 {
+    margin: 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.champion-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.medal {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.podium-base {
+    width: 80px;
+    background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.podium-place.tall .podium-base {
+    height: 80px;
+}
+
+.podium-place.medium .podium-base {
+    height: 60px;
+}
+
+.podium-place.short .podium-base {
+    height: 40px;
+}
+
+.loading-champions {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.loading-champions i {
+    font-size: 2rem;
+    color: #18D259;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .podium {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .podium-place {
+        margin-bottom: 1rem;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .podium-place.tall,
+    .podium-place.medium,
+    .podium-place.short {
+        order: initial;
+    }
+    
+    .podium-base {
+        width: 100%;
+    }
+}
+</style>
+`;
+
+// Adaugă stilurile la document (doar dacă nu există deja)
+if (!document.querySelector('#podium-styles')) {
+    const styleElement = document.createElement('div');
+    styleElement.id = 'podium-styles';
+    styleElement.innerHTML = podiumStyles;
+    document.head.appendChild(styleElement);
+}
+
+// Funcție pentru smooth scroll (dacă nu există)
+function smoothScrollTo(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+// Event listeners pentru linkurile de navigare
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        smoothScrollTo(targetId);
+    });
+});
+
+console.log('WoW-Logged.html scripts loaded successfully with admin functionality');
     </script>
     </body>
 </html>

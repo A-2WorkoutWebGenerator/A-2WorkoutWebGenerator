@@ -63,13 +63,16 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
                 $response['message'] = $row['message'];
                 $user_id = $row['user_id'];
 
-                $response['token'] = create_jwt($user_id, $username, $email);
+                // Includem isAdmin = false pentru userii noi
+                $response['token'] = create_jwt($user_id, $username, $email, false);
+                $response['isAdmin'] = false;
             } else {
                 $response['message'] = $row['message'];
             }
         } else {
-            $insert_query = "INSERT INTO users (username, email, password, created_at, updated_at)
-                            VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id";
+            // Modificăm INSERT pentru a include isAdmin = FALSE implicit
+            $insert_query = "INSERT INTO users (username, email, password, isAdmin, created_at, updated_at)
+                            VALUES ($1, $2, $3, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id";
             error_log("Executing query: " . $insert_query . " with values: " . $username . ", " . $email . ", [password]");
             $result = pg_query_params($conn, $insert_query, array($username, $email, $hashed_password));
             
@@ -78,7 +81,8 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
                 error_log("Insert successful, returned ID: " . $row['id']);
                 $response['success'] = true;
                 $response['message'] = "Registration successful!";
-                $response['token'] = create_jwt($row['id'], $username, $email);
+                $response['token'] = create_jwt($row['id'], $username, $email, false);
+                $response['isAdmin'] = false;
             } else {
                 $error_message = pg_last_error($conn);
                 error_log("Insert failed with error: " . $error_message);

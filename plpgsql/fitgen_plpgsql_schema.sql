@@ -16,6 +16,26 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+ALTER TABLE fitgen.users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
+UPDATE fitgen.users SET isAdmin = TRUE WHERE username = 'aramaAndreea';
+SET search_path TO fitgen;
+CREATE OR REPLACE FUNCTION validate_email(email_address TEXT)
+RETURNS BOOLEAN AS $$
+BEGIN
+    IF email_address IS NULL OR email_address = '' THEN
+        RETURN FALSE;
+    END IF;
+
+    IF email_address ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Email validation error: %', SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS auth_tokens (
     id SERIAL PRIMARY KEY,

@@ -883,184 +883,141 @@
 
         function checkAdminAuth() {
             return new Promise((resolve) => {
-                const originalContent = document.body.innerHTML;
-                document.body.innerHTML = `
+                const token = localStorage.getItem('authToken');
+                
+                if (!token) {
+                    showAccessDenied();
+                    resolve(false);
+                    return;
+                }
+                
+                try {
+                    // Decodificăm JWT pentru a verifica isAdmin
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    
+                    if (!payload.isAdmin) {
+                        showAccessDenied();
+                        resolve(false);
+                        return;
+                    }
+                    
+                    // Verificăm și dacă token-ul nu a expirat
+                    if (payload.exp && payload.exp < Date.now() / 1000) {
+                        showAccessDenied("Session expired. Please login again.");
+                        resolve(false);
+                        return;
+                    }
+                    
+                    resolve(true);
+                    
+                } catch (error) {
+                    console.error('Error verifying admin token:', error);
+                    showAccessDenied();
+                    resolve(false);
+                }
+            });
+        }
+
+        function showAccessDenied(message = "Access Denied - Admin privileges required") {
+            document.body.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-family: 'Segoe UI', sans-serif;
+                    margin: 0;
+                    padding: 0;
+                ">
                     <div style="
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        font-family: 'Segoe UI', sans-serif;
-                        margin: 0;
-                        padding: 0;
+                        background: white;
+                        padding: 3rem;
+                        border-radius: 20px;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                        text-align: center;
+                        min-width: 400px;
+                        animation: slideUp 0.3s ease;
                     ">
                         <div style="
-                            background: white;
-                            padding: 3rem;
-                            border-radius: 20px;
-                            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                            text-align: center;
-                            min-width: 400px;
-                            animation: slideUp 0.3s ease;
+                            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                            height: 80px;
+                            border-radius: 50%;
+                            margin: 0 auto 2rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 2rem;
                         ">
-                            <div style="
-                                background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
-                                width: 80px;
-                                height: 80px;
-                                border-radius: 50%;
-                                margin: 0 auto 2rem;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        
+                        <h1 style="
+                            color: #e74c3c;
+                            margin-bottom: 1rem;
+                            font-size: 2rem;
+                            font-weight: 700;
+                        ">403 - Access Denied</h1>
+                        
+                        <p style="
+                            color: #666;
+                            margin-bottom: 2rem;
+                            font-size: 1.1rem;
+                            line-height: 1.5;
+                        ">${message}</p>
+                        
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button onclick="window.location.href='login.html'" style="
+                                background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
                                 color: white;
-                                font-size: 2rem;
-                            ">
-                                <i class="fas fa-dumbbell"></i>
-                            </div>
-                            
-                            <h1 style="
-                                color: #333;
-                                margin-bottom: 0.5rem;
-                                font-size: 2rem;
-                                font-weight: 700;
-                            ">FitGen Admin</h1>
-                            
-                            <p style="
-                                color: #666;
-                                margin-bottom: 2rem;
-                                font-size: 1.1rem;
-                            ">Enter your admin password to continue</p>
-                            
-                            <div style="margin-bottom: 2rem;">
-                                <input type="password" id="admin-password" placeholder="Admin Password" style="
-                                    width: 100%;
-                                    padding: 1rem 1.5rem;
-                                    border: 2px solid #e0e0e0;
-                                    border-radius: 50px;
-                                    font-size: 1.1rem;
-                                    outline: none;
-                                    transition: all 0.3s ease;
-                                    box-sizing: border-box;
-                                ">
-                            </div>
-                            
-                            <div style="display: flex; gap: 1rem; justify-content: center;">
-                                <button id="login-btn" style="
-                                    background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
-                                    color: white;
-                                    border: none;
-                                    padding: 1rem 2rem;
-                                    border-radius: 50px;
-                                    cursor: pointer;
-                                    font-weight: 600;
-                                    font-size: 1rem;
-                                    transition: all 0.3s ease;
-                                    min-width: 120px;
-                                ">
-                                    <i class="fas fa-sign-in-alt"></i> Login
-                                </button>
-                                
-                                <button id="cancel-btn" style="
-                                    background: #6c757d;
-                                    color: white;
-                                    border: none;
-                                    padding: 1rem 2rem;
-                                    border-radius: 50px;
-                                    cursor: pointer;
-                                    font-weight: 600;
-                                    font-size: 1rem;
-                                    transition: all 0.3s ease;
-                                    min-width: 120px;
-                                ">
-                                    <i class="fas fa-times"></i> Cancel
-                                </button>
-                            </div>
-                            
-                            <div id="error-message" style="
-                                color: #e74c3c;
-                                margin-top: 1rem;
+                                border: none;
+                                padding: 1rem 2rem;
+                                border-radius: 50px;
+                                cursor: pointer;
                                 font-weight: 600;
-                                display: none;
+                                font-size: 1rem;
+                                transition: all 0.3s ease;
+                                min-width: 120px;
                             ">
-                                <i class="fas fa-exclamation-triangle"></i> Incorrect password. Please try again.
-                            </div>
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                            
+                            <button onclick="window.location.href='WoW-Logged.html'" style="
+                                background: #6c757d;
+                                color: white;
+                                border: none;
+                                padding: 1rem 2rem;
+                                border-radius: 50px;
+                                cursor: pointer;
+                                font-weight: 600;
+                                font-size: 1rem;
+                                transition: all 0.3s ease;
+                                min-width: 120px;
+                            ">
+                                <i class="fas fa-home"></i> Home
+                            </button>
                         </div>
                     </div>
-                    
-                    <style>
-                        @keyframes slideUp {
-                            from {
-                                opacity: 0;
-                                transform: translateY(30px);
-                            }
-                            to {
-                                opacity: 1;
-                                transform: translateY(0);
-                            }
-                        }
-                        
-                        #admin-password:focus {
-                            border-color: #18D259 !important;
-                            box-shadow: 0 0 0 3px rgba(24, 210, 89, 0.1) !important;
-                        }
-                        
-                        #login-btn:hover {
-                            transform: translateY(-2px) !important;
-                            box-shadow: 0 10px 20px rgba(24, 210, 89, 0.3) !important;
-                        }
-                        
-                        #cancel-btn:hover {
-                            transform: translateY(-2px) !important;
-                            background: #5a6268 !important;
-                        }
-                    </style>
-                `;
-
-                const passwordInput = document.getElementById('admin-password');
-                const loginBtn = document.getElementById('login-btn');
-                const cancelBtn = document.getElementById('cancel-btn');
-                const errorMessage = document.getElementById('error-message');
-
-                passwordInput.focus();
-
-                const correctPassword = "fitgen_admin_2025";
-
-                function attemptLogin() {
-                    const enteredPassword = passwordInput.value;
-                    
-                    if (enteredPassword === correctPassword) {
-                        document.body.innerHTML = originalContent;
-                        resolve(true);
-                    } else {
-                        errorMessage.style.display = 'block';
-                        passwordInput.style.borderColor = '#e74c3c';
-                        passwordInput.value = '';
-                        passwordInput.focus();
-                        
-                        setTimeout(() => {
-                            errorMessage.style.display = 'none';
-                            passwordInput.style.borderColor = '#e0e0e0';
-                        }, 3000);
-                    }
-                }
-
-                loginBtn.addEventListener('click', attemptLogin);
+                </div>
                 
-                passwordInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        attemptLogin();
+                <style>
+                    @keyframes slideUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(30px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
                     }
-                });
-
-                cancelBtn.addEventListener('click', function() {
-                    window.location.href = "WoW-Logged.html";
-                });
-            });
+                </style>
+            `;
         }
 
         function switchTab(tabName) {
@@ -1090,6 +1047,7 @@
             setupExerciseForm();
         });
 
+        // Restul funcțiilor rămân la fel...
         function setupMessageFilters() {
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
