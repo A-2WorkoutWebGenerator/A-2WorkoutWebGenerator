@@ -1,10 +1,192 @@
 const useAjaxSubmit = true;
+function compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8, maxSizeKB = 2000) {
+    return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+            let { width, height } = img;
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = (width * maxHeight) / height;
+                    height = maxHeight;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            let currentQuality = quality;
+            
+            const tryCompress = () => {
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        reject(new Error('Failed to compress image'));
+                        return;
+                    }
+                    
+                    const sizeKB = blob.size / 1024;
+                    console.log(`Compressed to ${Math.round(sizeKB)}KB with quality ${currentQuality}`);
+                    if (sizeKB <= maxSizeKB || currentQuality <= 0.1) {
+                        resolve(blob);
+                    } else {
+                        currentQuality -= 0.1;
+                        tryCompress();
+                    }
+                }, 'image/jpeg', currentQuality);
+            };
+            
+            tryCompress();
+        };
+        
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = URL.createObjectURL(file);
+    });
+}
+
+function checkFileSize(file, maxSizeKB = 2048) {
+    const sizeKB = file.size / 1024;
+    console.log(`File size: ${Math.round(sizeKB)}KB`);
+    return sizeKB <= maxSizeKB;
+}
+function showCompressionProgress(show = true) {
+    let progressContainer = document.getElementById('compression-progress');
+    
+    if (show) {
+        if (!progressContainer) {
+            progressContainer = document.createElement('div');
+            progressContainer.id = 'compression-progress';
+            progressContainer.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    text-align: center;
+                    min-width: 300px;
+                ">
+                    <div style="margin-bottom: 15px;">
+                        <i class="fas fa-compress-arrows-alt" style="font-size: 2em; color: #3498db;"></i>
+                    </div>
+                    <h3 style="margin: 10px 0; color: #2c3e50;">Compressing Image...</h3>
+                    <p style="color: #7f8c8d; margin: 10px 0;">Please wait while we optimize your image</p>
+                    <div style="
+                        width: 100%;
+                        height: 6px;
+                        background: #ecf0f1;
+                        border-radius: 3px;
+                        overflow: hidden;
+                        margin: 15px 0;
+                    ">
+                        <div style="
+                            width: 100%;
+                            height: 100%;
+                            background: linear-gradient(90deg, #3498db, #2980b9);
+                            animation: progress 2s ease-in-out infinite;
+                        "></div>
+                    </div>
+                </div>
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 9999;
+                "></div>
+                <style>
+                    @keyframes progress {
+                        0% { transform: translateX(-100%); }
+                        50% { transform: translateX(0%); }
+                        100% { transform: translateX(100%); }
+                    }
+                </style>
+            `;
+            document.body.appendChild(progressContainer);
+        }
+        progressContainer.style.display = 'block';
+    } else {
+        if (progressContainer) {
+            progressContainer.style.display = 'none';
+            setTimeout(() => {
+                if (progressContainer.parentNode) {
+                    progressContainer.parentNode.removeChild(progressContainer);
+                }
+            }, 300);
+        }
+    }
+}
+function showCompressionResult(originalSizeKB, finalSizeKB) {
+    const savings = Math.round(((originalSizeKB - finalSizeKB) / originalSizeKB) * 100);
+    const message = `Image compressed successfully! 
+    Original: ${Math.round(originalSizeKB)}KB → Compressed: ${Math.round(finalSizeKB)}KB
+    Space saved: ${savings}%`;
+    
+    showTemporaryNotification(message, 'success');
+}
+
+function showTemporaryNotification(message, type = 'info') {
+    let notification = document.querySelector('.profile-temp-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'profile-temp-notification';
+        notification.style.position = "fixed";
+        notification.style.top = "30px";
+        notification.style.right = "30px";
+        notification.style.zIndex = "9999";
+        notification.style.padding = "16px 24px";
+        notification.style.borderRadius = "8px";
+        notification.style.fontWeight = "500";
+        notification.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+        notification.style.maxWidth = "400px";
+        notification.style.transition = "all 0.3s ease";
+        document.body.appendChild(notification);
+    }
+    
+    if (type === 'success') {
+        notification.style.background = "#d4edda";
+        notification.style.color = "#155724";
+        notification.style.border = "1px solid #c3e6cb";
+    } else if (type === 'error') {
+        notification.style.background = "#f8d7da";
+        notification.style.color = "#721c24";
+        notification.style.border = "1px solid #f5c6cb";
+    } else {
+        notification.style.background = "#d1ecf1";
+        notification.style.color = "#0c5460";
+        notification.style.border = "1px solid #bee5eb";
+    }
+    
+    notification.innerHTML = message.replace(/\n/g, '<br>');
+    notification.style.display = "block";
+    notification.style.opacity = "1";
+
+    setTimeout(() => {
+        notification.style.opacity = "0";
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 300);
+    }, 5000);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     initializeNavigation();
     initializeProfilePhoto();
-    initializeProfileForm();
+    initializeProfileForm(); 
     loadWorkoutSuggestions();
     document.querySelector('[data-section="workouts"]').addEventListener('click', () => {
         loadWorkoutSuggestions();
@@ -79,19 +261,88 @@ function initializeNavigation() {
         });
     });
 }
-
 function initializeProfilePhoto() {
     const profilePic = document.getElementById('profile_pic');
     const profilePreview = document.getElementById('profile_preview');
     
     if (profilePic && profilePreview) {
-        profilePic.addEventListener('change', (event) => {
+        profilePic.addEventListener('change', async (event) => {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profilePreview.src = e.target.result;
-                };
+            if (!file) return;
+            
+            console.log('File selected:', file.name, 'Size:', Math.round(file.size / 1024) + 'KB');
+            
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                showMessage('Please select a valid image file (JPG, PNG, GIF)', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            const originalSizeKB = file.size / 1024;
+            console.log(`Original image size: ${Math.round(originalSizeKB)}KB`);
+            
+            let processedFile = file;
+        
+            if (!checkFileSize(file, 2048)) {
+                try {
+                    console.log('File too large, starting compression...');
+                    showCompressionProgress(true);
+                    
+                    console.log('Trying compression level 1...');
+                    processedFile = await compressImage(file, 1200, 1200, 0.8, 2000);
+                    
+                    if (!checkFileSize(processedFile, 2048)) {
+                        console.log('Still too large, trying compression level 2...');
+                        processedFile = await compressImage(file, 1000, 1000, 0.6, 1800);
+                    }
+
+                    if (!checkFileSize(processedFile, 2048)) {
+                        console.log('Still too large, trying compression level 3...');
+                        processedFile = await compressImage(file, 800, 800, 0.4, 1500);
+                    }
+                    
+                    showCompressionProgress(false);
+                    
+                    const finalSizeKB = processedFile.size / 1024;
+                    console.log(`Final compressed size: ${Math.round(finalSizeKB)}KB`);
+                    
+                    if (!checkFileSize(processedFile, 2048)) {
+                        showMessage('Unable to compress image enough. Please try a different image or reduce quality manually.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+                    
+                    showCompressionResult(originalSizeKB, finalSizeKB);
+                    
+                } catch (error) {
+                    showCompressionProgress(false);
+                    console.error('Compression error:', error);
+                    showMessage('Error compressing image. Please try a smaller file.', 'error');
+                    event.target.value = '';
+                    return;
+                }
+            } else {
+                console.log('Image size OK, no compression needed');
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profilePreview.src = e.target.result;
+            };
+            
+            if (processedFile !== file) {
+                reader.readAsDataURL(processedFile);
+                const dt = new DataTransfer();
+                const compressedFile = new File([processedFile], 
+                    file.name.replace(/\.[^/.]+$/, '_compressed.jpg'), {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                });
+                dt.items.add(compressedFile);
+                event.target.files = dt.files;
+                
+                console.log('File replaced with compressed version');
+            } else {
                 reader.readAsDataURL(file);
             }
         });
@@ -194,7 +445,6 @@ function calculateAgeFromBirthYear(birthYear) {
     const currentYear = new Date().getFullYear();
     return currentYear - birthYear;
 }
-
 function initializeProfileForm() {
     const profileForm = document.getElementById('profile-form');
     if (profileForm) {
@@ -218,26 +468,68 @@ function initializeProfileForm() {
                 const originalText = submitButton.textContent;
                 submitButton.disabled = true;
                 submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                let totalSize = 0;
+                for (let pair of formData.entries()) {
+                    if (pair[1] instanceof File) {
+                        totalSize += pair[1].size;
+                    } else {
+                        totalSize += new Blob([pair[1]]).size;
+                    }
+                }
+                
+                const totalSizeKB = totalSize / 1024;
+                console.log(`Total form size: ${Math.round(totalSizeKB)}KB`);
+                if (totalSizeKB > 2048) {
+                    showMessage('Form data is too large. Please use a smaller image.', 'error');
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    return;
+                }
                 
                 fetch('submit-profile.php', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showMessage(data.message || "Profile saved successfully!", "success");
-                        if (data.suggestion) {
-                            showWorkoutSuggestion(data.suggestion);
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            showMessage(data.message || "Profile saved successfully!", "success");
+                            if (data.suggestion) {
+                                showWorkoutSuggestion(data.suggestion);
+                            }
+                            loadUserProfile();
+                        } else {
+                            showMessage(data.message || "Error saving profile!", "error");
                         }
-                        loadUserProfile();
-                    } else {
-                        showMessage(data.message || "Error saving profile!", "error");
+                    } catch (jsonError) {
+                        console.error("JSON parse error:", jsonError);
+                        console.error("Raw response:", text);
+                        
+                        if (text.includes('POST Content-Length') || text.includes('exceeds the limit')) {
+                            showMessage('Image is too large for server. Please try a smaller image.', 'error');
+                        } else if (text.includes('headers already sent')) {
+                            showMessage('Server configuration error. Please try again.', 'error');
+                        } else {
+                            showMessage('Server error occurred. Please try again.', 'error');
+                        }
                     }
                 })
                 .catch(error => {
                     console.error("Error submitting profile:", error);
-                    showMessage("Connection error. Please try again later.", "error");
+                    if (error.message.includes('413')) {
+                        showMessage('Image too large. Please compress further.', 'error');
+                    } else if (error.message.includes('500')) {
+                        showMessage('Server error. Please try again later.', 'error');
+                    } else {
+                        showMessage("Connection error. Please try again later.", "error");
+                    }
                 })
                 .finally(() => {
                     submitButton.disabled = false;
@@ -247,6 +539,7 @@ function initializeProfileForm() {
         });
     }
 }
+
 function showMessage(message, type) {
     let messageElement = document.querySelector('.message-container');
     
@@ -365,36 +658,6 @@ function showAllSuggestions(suggestions) {
             </div>
         `;
     });
-}
-
-function showTemporaryNotification(message) {
-    let notification = document.querySelector('.profile-temp-notification');
-    if (!notification) {
-        notification = document.createElement('div');
-        notification.className = 'profile-temp-notification';
-        notification.style.position = "fixed";
-        notification.style.top = "30px";
-        notification.style.right = "30px";
-        notification.style.zIndex = "9999";
-        notification.style.background = "#fffbe6";
-        notification.style.color = "#8e7300";
-        notification.style.border = "1px solid #ffe066";
-        notification.style.padding = "14px 24px";
-        notification.style.borderRadius = "8px";
-        notification.style.fontWeight = "500";
-        notification.style.boxShadow = "0 2px 10px rgba(0,0,0,0.08)";
-        document.body.appendChild(notification);
-    }
-    notification.innerHTML = message;
-    notification.style.display = "block";
-    notification.style.opacity = "1";
-
-    setTimeout(() => {
-        notification.style.opacity = "0";
-        setTimeout(() => {
-            notification.style.display = "none";
-        }, 400);
-    }, 4000);
 }
 
 function generateWorkout() {
