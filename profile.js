@@ -159,11 +159,19 @@ function populateFormWithData(data) {
             'first_name': profile.first_name,
             'last_name': profile.last_name,
             'gender': profile.gender,
-            'age': profile.age,
             'weight': profile.weight,
             'goal': profile.goal,
             'injuries': profile.injuries
         };
+        if (profile.age) {
+            const currentYear = new Date().getFullYear();
+            const birthYear = currentYear - profile.age;
+            const birthYearField = document.getElementById('birth_year');
+            if (birthYearField) {
+                birthYearField.value = birthYear;
+            }
+        }
+        
         for (const [fieldId, value] of Object.entries(fields)) {
             const field = document.getElementById(fieldId);
             if (field && value !== undefined && value !== null) field.value = value;
@@ -182,6 +190,11 @@ function populateFormWithData(data) {
     }
 }
 
+function calculateAgeFromBirthYear(birthYear) {
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+}
+
 function initializeProfileForm() {
     const profileForm = document.getElementById('profile-form');
     if (profileForm) {
@@ -190,10 +203,17 @@ function initializeProfileForm() {
                 e.preventDefault();
 
                 const formData = new FormData(profileForm);
+                const birthYear = document.getElementById('birth_year').value;
+                if (birthYear) {
+                    const age = calculateAgeFromBirthYear(parseInt(birthYear));
+                    formData.append('age', age);
+                }
+
                 const authToken = localStorage.getItem("authToken");
                 if (authToken && !formData.has('auth_token')) {
                     formData.append('auth_token', authToken);
                 }
+                
                 const submitButton = profileForm.querySelector('button[type="submit"]');
                 const originalText = submitButton.textContent;
                 submitButton.disabled = true;
@@ -227,7 +247,6 @@ function initializeProfileForm() {
         });
     }
 }
-
 function showMessage(message, type) {
     let messageElement = document.querySelector('.message-container');
     
