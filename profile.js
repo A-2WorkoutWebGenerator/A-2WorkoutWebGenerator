@@ -183,6 +183,7 @@ function showTemporaryNotification(message, type = 'info') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    initializeResponsiveMenu()
     checkAuth();
     initializeNavigation();
     initializeProfilePhoto();
@@ -1005,4 +1006,61 @@ function drawMonthlyChart(monthlyData) {
     ctx.moveTo(30, height - 30);
     ctx.lineTo(30, 30);
     ctx.stroke();
+}
+function initializeResponsiveMenu() {
+    if (!document.querySelector('.mobile-header')) {
+        const mobileHeader = document.createElement('div');
+        mobileHeader.className = 'mobile-header';
+        mobileHeader.innerHTML = `
+            <div class="mobile-logo">
+                <a href="WoW-Logged.html">FitGen</a>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        `;
+        const dashboard = document.querySelector('.dashboard');
+        dashboard.insertBefore(mobileHeader, dashboard.firstChild);
+    }
+    
+    if (!document.querySelector('.overlay')) {
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.id = 'overlay';
+        document.body.appendChild(overlay);
+    }
+    
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    function toggleMenu() {
+        hamburger.classList.toggle('active');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+    }
+    
+    function closeMenu() {
+        hamburger.classList.remove('active');
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', closeMenu);
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                closeMenu();
+            }
+        });
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeMenu();
+        }
+    });
 }
