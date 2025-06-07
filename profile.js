@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeProfilePhoto();
     initializeProfileForm(); 
     loadWorkoutSuggestions();
+    fetchRSSLink();
     document.querySelector('[data-section="workouts"]').addEventListener('click', () => {
         loadWorkoutSuggestions();
     });
@@ -203,6 +204,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function fetchRSSLink() {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    fetch('get-rss-link.php', {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.rss_link) {
+            const rssLink = document.getElementById('rss-link');
+            if (rssLink) rssLink.href = data.rss_link;
+        }
+    });
+}
 
 function checkAuth() {
     const token = localStorage.getItem("authToken");

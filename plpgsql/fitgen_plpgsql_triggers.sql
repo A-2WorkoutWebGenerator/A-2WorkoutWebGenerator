@@ -33,23 +33,24 @@ DECLARE
 BEGIN
 
     BEGIN
-        v_user_id := current_setting('app.current_user_id')::INTEGER;
+        IF TG_TABLE_NAME = 'users' THEN
+            IF TG_OP = 'DELETE' THEN
+                v_user_id := OLD.id;
+            ELSE
+                v_user_id := NEW.id;
+            END IF;
+        ELSIF TG_TABLE_NAME = 'user_profiles' THEN
+            IF TG_OP = 'DELETE' THEN
+                v_user_id := OLD.user_id;
+            ELSE
+                v_user_id := NEW.user_id;
+            END IF;
+        ELSE
+            v_user_id := NULL;
+        END IF;
     EXCEPTION
         WHEN OTHERS THEN
-
-            IF TG_OP = 'DELETE' THEN
-                IF OLD.user_id IS NOT NULL THEN
-                    v_user_id := OLD.user_id;
-                ELSIF TG_TABLE_NAME = 'users' THEN
-                    v_user_id := OLD.id;
-                END IF;
-            ELSE
-                IF NEW.user_id IS NOT NULL THEN
-                    v_user_id := NEW.user_id;
-                ELSIF TG_TABLE_NAME = 'users' THEN
-                    v_user_id := NEW.id;
-                END IF;
-            END IF;
+            v_user_id := NULL;
     END;
 
     BEGIN
@@ -108,6 +109,10 @@ CREATE TRIGGER audit_user_saved_routines_trigger
 
 CREATE TRIGGER audit_workout_sessions_trigger
     AFTER INSERT OR UPDATE OR DELETE ON workout_sessions
+    FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
+
+CREATE TRIGGER audit_exercises_trigger
+    AFTER INSERT OR UPDATE OR DELETE ON exercises
     FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
 
 CREATE OR REPLACE FUNCTION validate_user_profile()

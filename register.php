@@ -55,7 +55,9 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
         $hashed_password = password_hash($data->password, PASSWORD_DEFAULT);
         $plpgsql_query = "SELECT * FROM register_user($1, $2, $3)";
         $plpgsql_result = pg_query_params($conn, $plpgsql_query, array($username, $email, $hashed_password));
-        
+
+        $user_id = null;
+
         if ($plpgsql_result && pg_num_rows($plpgsql_result) > 0) {
             $row = pg_fetch_assoc($plpgsql_result);
             if ($row['success'] === 't') {
@@ -63,14 +65,12 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
                 $response['message'] = $row['message'];
                 $user_id = $row['user_id'];
 
-                // Includem isAdmin = false pentru userii noi
                 $response['token'] = create_jwt($user_id, $username, $email, false);
                 $response['isAdmin'] = false;
             } else {
                 $response['message'] = $row['message'];
             }
         } else {
-            // Modificăm INSERT pentru a include isAdmin = FALSE implicit
             $insert_query = "INSERT INTO users (username, email, password, isAdmin, created_at, updated_at)
                             VALUES ($1, $2, $3, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id";
             error_log("Executing query: " . $insert_query . " with values: " . $username . ", " . $email . ", [password]");
@@ -81,13 +81,22 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
                 error_log("Insert successful, returned ID: " . $row['id']);
                 $response['success'] = true;
                 $response['message'] = "Registration successful!";
-                $response['token'] = create_jwt($row['id'], $username, $email, false);
+                $user_id = $row['id'];
+                $response['token'] = create_jwt($user_id, $username, $email, false);
                 $response['isAdmin'] = false;
             } else {
                 $error_message = pg_last_error($conn);
                 error_log("Insert failed with error: " . $error_message);
                 $response['message'] = "Registration failed: " . $error_message;
             }
+        }
+
+        if ($user_id) {
+            $rss_token = bin2hex(random_bytes(32));
+            $update_query = "UPDATE users SET rss_token = $1 WHERE id = $2";
+            pg_query_params($conn, $update_query, array($rss_token, $user_id));
+            $response['rss_token'] = $rss_token;
+            $response['rss_link']  = "https://localhost:8081/rss.php?token={$rss_token}";
         }
     }
     
