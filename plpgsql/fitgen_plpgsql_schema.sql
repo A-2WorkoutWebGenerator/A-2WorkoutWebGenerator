@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 ALTER TABLE fitgen.users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
+ALTER TABLE fitgen.users ADD COLUMN rss_token VARCHAR(64);
 UPDATE fitgen.users SET isAdmin = TRUE WHERE username = 'aramaAndreea';
 SET search_path TO fitgen;
 CREATE OR REPLACE FUNCTION validate_email(email_address TEXT)
