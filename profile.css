@@ -938,3 +938,246 @@ button[type="submit"]:hover {
         padding: 40px 20px;
     }
 }
+#preferences {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#preferences h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+#preferences h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border-radius: 2px;
+}
+
+#preferences-form {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fffa 100%);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.1);
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: end;
+}
+
+#preferences-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #43e97b);
+    border-radius: 20px 20px 0 0;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+#preferences-form label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#preferences-form label[for="muscle_group"]::before {
+    content: '💪';
+    font-size: 1rem;
+}
+
+#preferences-form label[for="intensity"]::before {
+    content: '🔥';
+    font-size: 1rem;
+}
+
+#preferences-form label[for="duration"]::before {
+    content: '⏱️';
+    font-size: 1rem;
+}
+
+#preferences-form label[for="equipment_pref"]::before {
+    content: '🏋️';
+    font-size: 1rem;
+}
+
+#preferences-form label[for="location"]::before {
+    content: '📍';
+    font-size: 1rem;
+}
+
+#preferences-form select,
+#preferences-form input[type="number"] {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    transition: all 0.3s ease;
+    appearance: none;
+    position: relative;
+}
+
+#preferences-form select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+#preferences-form select:focus,
+#preferences-form input[type="number"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.15);
+    background: #ffffff;
+    outline: none;
+    transform: translateY(-2px);
+}
+
+#preferences-form input[type="number"] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 18px;
+    padding-right: 40px;
+}
+
+#preferences-form button {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--primary), #27ae60, #2ecc71);
+    color: white;
+    padding: 16px 32px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+#preferences-form button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+#preferences-form button:hover {
+    background: linear-gradient(135deg, #27ae60, #2ecc71, #58d68d);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(46, 204, 113, 0.4);
+}
+
+#preferences-form button:hover::before {
+    left: 100%;
+}
+
+#preferences-form button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+}
+
+.form-group:hover label {
+    color: var(--primary);
+    transform: translateX(2px);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#preferences-form .form-group {
+    animation: slideUp 0.6s ease forwards;
+}
+
+#preferences-form .form-group:nth-child(1) { animation-delay: 0.1s; }
+#preferences-form .form-group:nth-child(2) { animation-delay: 0.2s; }
+#preferences-form .form-group:nth-child(3) { animation-delay: 0.3s; }
+#preferences-form .form-group:nth-child(4) { animation-delay: 0.4s; }
+#preferences-form .form-group:nth-child(5) { animation-delay: 0.5s; }
+#preferences-form button { animation-delay: 0.6s; }
+
+@media (max-width: 768px) {
+    #preferences {
+        padding: 15px;
+    }
+    
+    #preferences-form {
+        grid-template-columns: 1fr;
+        padding: 25px 20px;
+        gap: 18px;
+    }
+    
+    #preferences h2 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    
+    #preferences-form button {
+        padding: 14px 28px;
+        font-size: 15px;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    #preferences-form {
+        padding: 20px 15px;
+        gap: 15px;
+    }
+    
+    #preferences-form select,
+    #preferences-form input[type="number"] {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+    
+    #preferences-form label {
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+    }
+}
