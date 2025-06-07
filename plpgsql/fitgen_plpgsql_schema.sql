@@ -890,3 +890,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+ALTER TABLE fitgen.success_stories 
+ADD COLUMN IF NOT EXISTS rejection_reason TEXT;
+
+UPDATE fitgen.success_stories 
+SET is_approved = NULL 
+WHERE is_approved = true;
+

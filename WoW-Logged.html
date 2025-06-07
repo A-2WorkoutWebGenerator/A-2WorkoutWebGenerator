@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <link rel="stylesheet" href="WoW.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <script src="admin-utils.js"></script>
         <title>Workout Web Generator</title>
     </head>
     <body>
@@ -190,21 +191,29 @@
                 <a href="#" class="btn btn-primary">Browse All Workouts</a>
             </div>
         </section>
-        <section id="champions" class="champions">
-            <div class="section-header">
-                <h2>Our Champions</h2>
-                <p>The most active members who lead by example</p>
-            </div>
-            
-            <div class="podium-container">
-                <div class="loading-champions">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Loading champions...</p>
+        <section id="champions" class="homepage-champions">
+            <div class="homepage-champions-background">
+                <div class="container">
+                    <div class="homepage-champions-content">
+                        <div class="homepage-champions-text">
+                            <h2>Our Champions</h2>
+                            <p>The most active members who lead by example</p>
+                            
+                            <div class="homepage-champions-cta">
+                                <a href="champions.html" class="btn btn-primary btn-large">
+                                    <i class="fas fa-trophy"></i> View Full Leaderboard
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="homepage-champions-list">
+                            <div class="homepage-loading-champions">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading champions...</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="text-center">
-                <a href="champions.html" class="btn btn-primary">View Full Leaderboard</a>
             </div>
         </section>
         <section id="gallery" class="gallery">
@@ -409,7 +418,6 @@
                 </div>
             `;
         }
-        // Adaugă această funcție în scriptul existent din WoW-Logged.html
 
 function checkAndShowAdminButton() {
     const token = localStorage.getItem('authToken');
@@ -417,21 +425,17 @@ function checkAndShowAdminButton() {
     if (!token) return;
     
     try {
-        // Decodificăm JWT pentru a verifica isAdmin
         const payload = JSON.parse(atob(token.split('.')[1]));
         
         if (payload.isAdmin) {
-            // Găsim navigation bar-ul
             const navButtons = document.querySelector('.nav-buttons');
             
             if (navButtons && !document.querySelector('.admin-panel-btn')) {
-                // Creăm butonul Admin Panel
                 const adminButton = document.createElement('a');
                 adminButton.href = 'admin-panel.html';
                 adminButton.innerHTML = '<i class="fas fa-cog"></i> Admin Panel';
                 adminButton.className = 'btn btn-outline admin-panel-btn';
-                
-                // Stiluri custom pentru butonul admin
+            
                 adminButton.style.cssText = `
                     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
                     color: white !important;
@@ -440,8 +444,6 @@ function checkAndShowAdminButton() {
                     transition: all 0.3s ease;
                     box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
                 `;
-                
-                // Hover effects
                 adminButton.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-2px)';
                     this.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.4)';
@@ -453,8 +455,6 @@ function checkAndShowAdminButton() {
                     this.style.boxShadow = '0 2px 8px rgba(231, 76, 60, 0.3)';
                     this.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
                 });
-                
-                // Adăugăm butonul în navigation
                 navButtons.insertBefore(adminButton, navButtons.firstChild);
                 
                 console.log('Admin Panel button added to navigation');
@@ -465,69 +465,115 @@ function checkAndShowAdminButton() {
     }
 }
 
-// Funcție pentru verificarea login-ului și afișarea butonului admin
 function handleLoginSuccess(response) {
     if (response.success) {
         localStorage.setItem('authToken', response.token);
-        
-        // Verifică și afișează butonul admin dacă este necesar
         checkAndShowAdminButton();
-        
-        // Redirect sau alte acțiuni după login
-        // window.location.href = 'profile.html'; // uncomment dacă vrei redirect
     }
 }
-
-// Funcție pentru încărcarea campioanelor (din scriptul original)
 function loadChampions() {
-    const container = document.querySelector('.podium-container');
+    console.log('Loading homepage champions...');
+    const container = document.querySelector('.homepage-champions-list');
     
-    fetch(`${API_URL}/get_champions.php`)
-    .then(response => response.json())
+    if (!container) {
+        console.error('Homepage champions container not found!');
+        return;
+    }
+    
+    fetch(`${API_URL}/champions.php?limit=3`)
+    .then(response => {
+        console.log('Champions API response status:', response.status);
+        return response.json();
+    })
     .then(data => {
-        if (data.success && data.data.length > 0) {
-            displayChampions(data.data.slice(0, 3)); // Top 3
+        console.log('Champions API data:', data);
+        if (data.success && data.data && data.data.length > 0) {
+            displayHomepageChampions(data.data.slice(0, 3));
         } else {
-            displayFallbackChampions();
+            console.log('No champions data, showing fallback');
+            displayHomepageFallback();
         }
     })
     .catch(error => {
         console.error('Error loading champions:', error);
-        displayFallbackChampions();
+        displayHomepageFallback();
     });
 }
-
-function displayChampions(champions) {
-    const container = document.querySelector('.podium-container');
+function displayHomepageChampions(champions) {
+    console.log('Displaying homepage champions leaderboard:', champions);
+    const container = document.querySelector('.homepage-champions-list');
     
-    // Ordonare pentru podium: 2nd, 1st, 3rd
-    const podiumOrder = [champions[1], champions[0], champions[2]].filter(Boolean);
+    if (!container) {
+        console.error('Homepage champions container not found!');
+        return;
+    }
     
-    let podiumHTML = '<div class="podium">';
+    let listHTML = '';
     
-    podiumOrder.forEach((champion, index) => {
-        const position = index === 1 ? 1 : (index === 0 ? 2 : 3);
-        const height = position === 1 ? 'tall' : (position === 2 ? 'medium' : 'short');
-        const medal = position === 1 ? '🥇' : (position === 2 ? '🥈' : '🥉');
+    champions.forEach((champion, index) => {
+        const rank = champion.rank || (index + 1);
+        const name = getChampionDisplayName(champion);
+        const avatar = getChampionAvatar(champion);
+        const hasProfilePic = champion.profile_picture && champion.profile_picture.trim() !== '';
+        const stats = champion.stats || {
+            total_workouts: champion.total_workouts || 0,
+            active_days: champion.active_days || 0,
+            total_duration: champion.total_duration || 0,
+            activity_score: champion.activity_score || 0
+        };
+        const details = [];
+        if (champion.age) details.push(`${champion.age} years old`);
+        if (champion.gender) details.push(champion.gender);
+        if (champion.goal) details.push(formatGoal(champion.goal));
         
-        podiumHTML += `
-            <div class="podium-place ${height}">
-                <div class="champion-info">
-                    <div class="champion-avatar">${champion.username.charAt(0).toUpperCase()}</div>
-                    <h3>${champion.username}</h3>
-                    <p>${champion.total_workouts} workouts</p>
-                    <span class="medal">${medal}</span>
+        listHTML += `
+            <div class="homepage-champion-item rank-${rank}">
+                <div class="homepage-champion-rank">${rank}</div>
+                
+                <div class="homepage-champion-avatar ${hasProfilePic ? 'has-image' : ''}">
+                    ${hasProfilePic 
+                        ? `<img src="${champion.profile_picture}" alt="${name}" onerror="this.parentElement.innerHTML='${avatar}'; this.parentElement.classList.remove('has-image');">` 
+                        : avatar
+                    }
                 </div>
-                <div class="podium-base">
-                    <span>${position}</span>
+                
+                <div class="homepage-champion-info">
+                    <div class="homepage-champion-name">${name}</div>
+                    <div class="homepage-champion-details">
+                        ${details.length > 0 ? details.join(' • ') : 'Fitness enthusiast'}
+                    </div>
+                </div>
+                
+                <div class="homepage-champion-score">
+                    <span class="homepage-champion-score-value">${Math.round(stats.activity_score)}</span>
+                    <span class="homepage-champion-score-label">Score</span>
                 </div>
             </div>
         `;
     });
     
-    podiumHTML += '</div>';
-    container.innerHTML = podiumHTML;
+    container.innerHTML = listHTML;
+    console.log('Homepage champions leaderboard updated successfully');
 }
+
+function formatGoal(goal) {
+    return goal.replace(/_/g, ' ')
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+
+function getChampionDisplayName(champion) {
+    const fullName = `${champion.first_name || ''} ${champion.last_name || ''}`.trim();
+    return fullName || champion.username || 'Anonymous';
+}
+
+function getChampionAvatar(champion) {
+    const name = getChampionDisplayName(champion);
+    return name.charAt(0).toUpperCase();
+}
+
 
 function displayFallbackChampions() {
     const container = document.querySelector('.podium-container');
@@ -570,16 +616,12 @@ function displayFallbackChampions() {
     `;
 }
 
-// Event listeners și inițializare
 document.addEventListener('DOMContentLoaded', function() {
-    // Verifică și afișează butonul admin la încărcarea paginii
     checkAndShowAdminButton();
     
-    // Încarcă testimonials și campioni
     loadTestimonials();
     loadChampions();
     
-    // Mobile menu toggle (dacă există)
     const mobileToggle = document.querySelector('.mobile-toggle');
     const navLinks = document.querySelector('.nav-links');
     
@@ -589,160 +631,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Funcție pentru logout (dacă nu există deja)
 function logout() {
     localStorage.removeItem('authToken');
-    
-    // Elimină butonul admin dacă există
+
     const adminButton = document.querySelector('.admin-panel-btn');
     if (adminButton) {
         adminButton.remove();
     }
-    
-    // Redirect la pagina de login
     window.location.href = 'login.html';
 }
 
-// Stiluri CSS pentru podium (adaugă în head sau CSS file)
-const podiumStyles = `
-<style>
-.podium {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 1rem;
-    margin: 2rem 0;
-    padding: 2rem;
-}
-
-.podium-place {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.podium-place:hover {
-    transform: translateY(-5px);
-}
-
-.podium-place.tall {
-    order: 2;
-}
-
-.podium-place.medium {
-    order: 1;
-}
-
-.podium-place.short {
-    order: 3;
-}
-
-.champion-info {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
-    min-width: 150px;
-}
-
-.champion-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 auto 1rem;
-}
-
-.champion-info h3 {
-    margin: 0.5rem 0;
-    color: #333;
-    font-size: 1.1rem;
-}
-
-.champion-info p {
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.medal {
-    font-size: 1.5rem;
-    margin-top: 0.5rem;
-    display: block;
-}
-
-.podium-base {
-    width: 80px;
-    background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
-    color: white;
-    border-radius: 8px 8px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.podium-place.tall .podium-base {
-    height: 80px;
-}
-
-.podium-place.medium .podium-base {
-    height: 60px;
-}
-
-.podium-place.short .podium-base {
-    height: 40px;
-}
-
-.loading-champions {
-    text-align: center;
-    padding: 2rem;
-    color: #666;
-}
-
-.loading-champions i {
-    font-size: 2rem;
-    color: #18D259;
-    margin-bottom: 1rem;
-}
-
-@media (max-width: 768px) {
-    .podium {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .podium-place {
-        margin-bottom: 1rem;
-        width: 100%;
-        max-width: 200px;
-    }
-    
-    .podium-place.tall,
-    .podium-place.medium,
-    .podium-place.short {
-        order: initial;
-    }
-    
-    .podium-base {
-        width: 100%;
-    }
-}
-</style>
-`;
-
-// Adaugă stilurile la document (doar dacă nu există deja)
 if (!document.querySelector('#podium-styles')) {
     const styleElement = document.createElement('div');
     styleElement.id = 'podium-styles';
@@ -750,7 +648,6 @@ if (!document.querySelector('#podium-styles')) {
     document.head.appendChild(styleElement);
 }
 
-// Funcție pentru smooth scroll (dacă nu există)
 function smoothScrollTo(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -761,7 +658,6 @@ function smoothScrollTo(elementId) {
     }
 }
 
-// Event listeners pentru linkurile de navigare
 document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
@@ -769,8 +665,6 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
         smoothScrollTo(targetId);
     });
 });
-
-console.log('WoW-Logged.html scripts loaded successfully with admin functionality');
     </script>
     </body>
 </html>
