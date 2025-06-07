@@ -77,9 +77,8 @@ try {
     if (!$conn) {
         throw new Exception('Database connection failed');
     }
-
-    $query = "INSERT INTO success_stories (user_name, achievement, story_text, ip_address, user_agent) 
-              VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at";
+    $query = "INSERT INTO success_stories (user_name, achievement, story_text, ip_address, user_agent, is_approved)
+              VALUES ($1, $2, $3, $4, $5, NULL) RETURNING id, created_at";
     
     $result = pg_query_params($conn, $query, [
         $userName,
@@ -96,9 +95,11 @@ try {
     $row = pg_fetch_assoc($result);
 
     pg_close($conn);
+    error_log("New success story submitted by: $userName - waiting for admin approval");
+    
     echo json_encode([
         'success' => true,
-        'message' => 'Story submitted successfully!',
+        'message' => 'Story submitted successfully! It will be reviewed by our team before being published.',
         'data' => [
             'id' => $row['id'],
             'created_at' => $row['created_at']
