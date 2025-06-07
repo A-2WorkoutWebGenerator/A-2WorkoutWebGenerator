@@ -1181,3 +1181,361 @@ button[type="submit"]:hover {
         margin-bottom: 6px;
     }
 }
+
+#workouts {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#workouts h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+#workouts h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    border-radius: 2px;
+}
+
+#workout-suggestion-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.workout-suggestion {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.12);
+    border: 2px solid rgba(46, 204, 113, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    max-height: 400px;
+}
+
+.workout-suggestion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #2ecc71, #27ae60, #16a085);
+    border-radius: 16px 16px 0 0;
+}
+
+.workout-suggestion:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(46, 204, 113, 0.2);
+    border-color: var(--primary);
+}
+
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.workout-date {
+    font-size: 0.85rem;
+    color: #27ae60;
+    font-weight: 600;
+    background: linear-gradient(135deg, #e8f7ed, #d5f4e6);
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.workout-date::before {
+    content: '📅';
+    font-size: 0.75rem;
+}
+
+.workout-new-badge {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 3px 10px rgba(46, 204, 113, 0.4);
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(1); box-shadow: 0 3px 10px rgba(46, 204, 113, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 5px 15px rgba(46, 204, 113, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 3px 10px rgba(46, 204, 113, 0.4); }
+}
+
+.workout-suggestion ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.workout-suggestion ul::-webkit-scrollbar {
+    width: 4px;
+}
+
+.workout-suggestion ul::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.workout-suggestion ul::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border-radius: 2px;
+}
+
+.workout-suggestion ul::-webkit-scrollbar-thumb:hover {
+    background: #27ae60;
+}
+
+.workout-suggestion li {
+    background: linear-gradient(135deg, #ffffff, #f8fffe);
+    padding: 12px 15px;
+    border-radius: 10px;
+    border-left: 4px solid #2ecc71;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.1);
+    transition: all 0.25s ease;
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.workout-suggestion li::after {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+.workout-suggestion li:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.15);
+    border-left-color: #27ae60;
+    background: linear-gradient(135deg, #ffffff, #f0fff4);
+}
+
+.workout-suggestion li:nth-child(3n+1) {
+    border-left-color: #2ecc71;
+}
+
+.workout-suggestion li:nth-child(3n+2) {
+    border-left-color: #27ae60;
+}
+
+.workout-suggestion li:nth-child(3n+3) {
+    border-left-color: #16a085;
+}
+
+.workout-suggestion li strong {
+    color: #1e6b3b;
+    font-size: 1rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.workout-suggestion li br + em,
+.workout-suggestion li em {
+    color: #2c5530;
+    font-style: normal;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    display: block;
+    margin-top: 3px;
+    padding: 6px 8px;
+    background: rgba(46, 204, 113, 0.08);
+    border-radius: 6px;
+    border-left: 2px solid rgba(46, 204, 113, 0.3);
+}
+
+.no-workouts-message,
+.workouts-loading,
+.workouts-error {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 40px 30px;
+    background: linear-gradient(135deg, #f0fff4, #ffffff);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(46, 204, 113, 0.1);
+    border: 2px dashed rgba(46, 204, 113, 0.3);
+}
+
+.no-workouts-message i {
+    font-size: 3rem;
+    color: #2ecc71;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.no-workouts-message p {
+    font-size: 1rem;
+    color: #27ae60;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.no-workouts-message a {
+    color: white;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 25px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+}
+
+.no-workouts-message a:hover {
+    background: linear-gradient(135deg, #27ae60, #219a52);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+}
+
+.workouts-loading i {
+    font-size: 2.5rem;
+    color: #2ecc71;
+    animation: spin-green 2s linear infinite;
+    margin-bottom: 15px;
+    display: block;
+}
+
+@keyframes spin-green {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.workouts-loading p {
+    font-size: 1rem;
+    color: #27ae60;
+    font-weight: 500;
+}
+
+.workouts-error {
+    background: linear-gradient(135deg, #fff5f5, #ffffff);
+    border-color: #e74c3c;
+}
+
+.workouts-error i {
+    color: #e74c3c;
+}
+
+.workouts-error p {
+    color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+    #workouts {
+        padding: 15px;
+    }
+    
+    #workouts h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    
+    #workout-suggestion-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .workout-suggestion {
+        padding: 15px;
+        max-height: 350px;
+    }
+    
+    .workout-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    
+    .workout-suggestion li {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .workout-suggestion li::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    #workout-suggestion-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .workout-suggestion {
+        padding: 12px;
+        border-radius: 12px;
+        max-height: 320px;
+    }
+    
+    .workout-suggestion li {
+        padding: 8px 10px;
+    }
+    
+    .workout-suggestion li strong {
+        font-size: 0.9rem;
+    }
+    
+    .workout-suggestion li em {
+        font-size: 0.75rem;
+        padding: 4px 6px;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.workout-suggestion {
+    animation: slideInUp 0.6s ease forwards;
+}
+
+.workout-suggestion:nth-child(1) { animation-delay: 0.1s; }
+.workout-suggestion:nth-child(2) { animation-delay: 0.2s; }
+.workout-suggestion:nth-child(3) { animation-delay: 0.3s; }
+.workout-suggestion:nth-child(4) { animation-delay: 0.4s; }
