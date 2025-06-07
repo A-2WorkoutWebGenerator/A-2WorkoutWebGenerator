@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <link rel="stylesheet" href="WoW.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <script src="admin-utils.js"></script>
         <title>Workout Web Generator</title>
     </head>
     <body>
@@ -409,7 +410,6 @@
                 </div>
             `;
         }
-        // Adaugă această funcție în scriptul existent din WoW-Logged.html
 
 function checkAndShowAdminButton() {
     const token = localStorage.getItem('authToken');
@@ -417,21 +417,17 @@ function checkAndShowAdminButton() {
     if (!token) return;
     
     try {
-        // Decodificăm JWT pentru a verifica isAdmin
         const payload = JSON.parse(atob(token.split('.')[1]));
         
         if (payload.isAdmin) {
-            // Găsim navigation bar-ul
             const navButtons = document.querySelector('.nav-buttons');
             
             if (navButtons && !document.querySelector('.admin-panel-btn')) {
-                // Creăm butonul Admin Panel
                 const adminButton = document.createElement('a');
                 adminButton.href = 'admin-panel.html';
                 adminButton.innerHTML = '<i class="fas fa-cog"></i> Admin Panel';
                 adminButton.className = 'btn btn-outline admin-panel-btn';
-                
-                // Stiluri custom pentru butonul admin
+            
                 adminButton.style.cssText = `
                     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
                     color: white !important;
@@ -440,8 +436,6 @@ function checkAndShowAdminButton() {
                     transition: all 0.3s ease;
                     box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
                 `;
-                
-                // Hover effects
                 adminButton.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-2px)';
                     this.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.4)';
@@ -453,8 +447,6 @@ function checkAndShowAdminButton() {
                     this.style.boxShadow = '0 2px 8px rgba(231, 76, 60, 0.3)';
                     this.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
                 });
-                
-                // Adăugăm butonul în navigation
                 navButtons.insertBefore(adminButton, navButtons.firstChild);
                 
                 console.log('Admin Panel button added to navigation');
@@ -465,20 +457,12 @@ function checkAndShowAdminButton() {
     }
 }
 
-// Funcție pentru verificarea login-ului și afișarea butonului admin
 function handleLoginSuccess(response) {
     if (response.success) {
         localStorage.setItem('authToken', response.token);
-        
-        // Verifică și afișează butonul admin dacă este necesar
         checkAndShowAdminButton();
-        
-        // Redirect sau alte acțiuni după login
-        // window.location.href = 'profile.html'; // uncomment dacă vrei redirect
     }
 }
-
-// Funcție pentru încărcarea campioanelor (din scriptul original)
 function loadChampions() {
     const container = document.querySelector('.podium-container');
     
@@ -486,7 +470,7 @@ function loadChampions() {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.data.length > 0) {
-            displayChampions(data.data.slice(0, 3)); // Top 3
+            displayChampions(data.data.slice(0, 3));
         } else {
             displayFallbackChampions();
         }
@@ -499,8 +483,6 @@ function loadChampions() {
 
 function displayChampions(champions) {
     const container = document.querySelector('.podium-container');
-    
-    // Ordonare pentru podium: 2nd, 1st, 3rd
     const podiumOrder = [champions[1], champions[0], champions[2]].filter(Boolean);
     
     let podiumHTML = '<div class="podium">';
@@ -570,16 +552,11 @@ function displayFallbackChampions() {
     `;
 }
 
-// Event listeners și inițializare
 document.addEventListener('DOMContentLoaded', function() {
-    // Verifică și afișează butonul admin la încărcarea paginii
     checkAndShowAdminButton();
     
-    // Încarcă testimonials și campioni
     loadTestimonials();
     loadChampions();
-    
-    // Mobile menu toggle (dacă există)
     const mobileToggle = document.querySelector('.mobile-toggle');
     const navLinks = document.querySelector('.nav-links');
     
@@ -589,22 +566,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Funcție pentru logout (dacă nu există deja)
 function logout() {
     localStorage.removeItem('authToken');
-    
-    // Elimină butonul admin dacă există
+
     const adminButton = document.querySelector('.admin-panel-btn');
     if (adminButton) {
         adminButton.remove();
     }
-    
-    // Redirect la pagina de login
     window.location.href = 'login.html';
 }
 
-// Stiluri CSS pentru podium (adaugă în head sau CSS file)
 const podiumStyles = `
 <style>
 .podium {
@@ -741,8 +712,6 @@ const podiumStyles = `
 }
 </style>
 `;
-
-// Adaugă stilurile la document (doar dacă nu există deja)
 if (!document.querySelector('#podium-styles')) {
     const styleElement = document.createElement('div');
     styleElement.id = 'podium-styles';
@@ -750,7 +719,6 @@ if (!document.querySelector('#podium-styles')) {
     document.head.appendChild(styleElement);
 }
 
-// Funcție pentru smooth scroll (dacă nu există)
 function smoothScrollTo(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -761,7 +729,6 @@ function smoothScrollTo(elementId) {
     }
 }
 
-// Event listeners pentru linkurile de navigare
 document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();

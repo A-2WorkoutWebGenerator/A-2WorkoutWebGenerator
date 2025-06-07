@@ -372,7 +372,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             .faq-item.active .faq-answer {
                 padding: 0 25px 20px;
-                /* Înălțimea maximă va fi setată dinamic prin JavaScript */
             }
             
             .faq-item.active .faq-question {

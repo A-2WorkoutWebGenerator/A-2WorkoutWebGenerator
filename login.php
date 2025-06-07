@@ -20,7 +20,6 @@ $response = array();
 $response['success'] = false;
 
 try {
-    // Debugging: log că am intrat în script
     error_log("LOGIN: Script started");
     
     $input = file_get_contents("php://input");
@@ -56,17 +55,14 @@ try {
     
     $username = htmlspecialchars(strip_tags($data->username));
     error_log("LOGIN: Looking for user: " . $username);
-    
-    // Verificăm dacă coloana isAdmin există
+
     $check_column_query = "SELECT column_name FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'isadmin'";
     $column_result = pg_query($conn, $check_column_query);
     
     if (pg_num_rows($column_result) > 0) {
-        // Coloana există, folosim query-ul cu isAdmin
         $query = "SELECT id, username, email, password, isAdmin FROM users WHERE username = $1";
         error_log("LOGIN: Using query with isAdmin column");
     } else {
-        // Coloana nu există, folosim query-ul fără isAdmin
         $query = "SELECT id, username, email, password FROM users WHERE username = $1";
         error_log("LOGIN: Using query without isAdmin column (will default to false)");
     }
@@ -90,7 +86,6 @@ try {
         if (password_verify($data->password, $user['password'])) {
             error_log("LOGIN: Password verified successfully");
             
-            // Determinăm isAdmin
             $isAdmin = false;
             if (isset($user['isadmin'])) {
                 $isAdmin = ($user['isadmin'] === 't' || $user['isadmin'] === true || $user['isadmin'] === '1');
@@ -101,7 +96,6 @@ try {
             $response['success'] = true;
             $response['message'] = "Login successful!";
             
-            // Creăm JWT token
             try {
                 $response['token'] = create_jwt($user['id'], $user['username'], $user['email'], $isAdmin);
                 $response['isAdmin'] = $isAdmin;

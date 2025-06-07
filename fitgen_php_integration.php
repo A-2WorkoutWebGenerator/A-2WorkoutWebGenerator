@@ -535,7 +535,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && basename($_SERVER['SCRIPT_NAME']) ==
         if (isset($_GET['format']) && $_GET['format'] === 'pdf') {
             header("Content-Type: application/pdf");
             header("Content-Disposition: attachment; filename=user_report.pdf");
-            //to implement pdf
             echo "PDF generation not implemented yet";
             return;
         }
