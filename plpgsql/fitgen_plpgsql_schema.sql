@@ -899,3 +899,20 @@ UPDATE fitgen.success_stories
 SET is_approved = NULL 
 WHERE is_approved = true;
 
+
+ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255) UNIQUE;
+ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS profile_picture_url VARCHAR(500);
+ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE;
+ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP;
+
+SET search_path TO fitgen;
+CREATE TABLE IF NOT EXISTS login_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES fitgen.users(id),
+    login_method VARCHAR(20) DEFAULT 'normal',
+    ip_address INET,
+    user_agent TEXT,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+

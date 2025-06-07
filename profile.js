@@ -263,7 +263,7 @@ function checkAuth() {
 }
 
 function initializeNavigation() {
-    const menuItems = document.querySelectorAll('.nav-link');
+    const menuItems = document.querySelectorAll('.nav-link:not(.external-link)');
     const sections = document.querySelectorAll('.section');
     
     menuItems.forEach(item => {
@@ -1070,7 +1070,7 @@ function initializeResponsiveMenu() {
     hamburger.addEventListener('click', toggleMenu);
     overlay.addEventListener('click', closeMenu);
     
-    document.querySelectorAll('.nav-link').forEach(link => {
+    document.querySelectorAll('.nav-link:not(.external-link)').forEach(link => {
         link.addEventListener('click', () => {
             if (window.innerWidth <= 768) {
                 closeMenu();

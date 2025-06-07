@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Login - FitGen</title>
-    <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div class="particles-container">
@@ -51,16 +51,16 @@
                             <div class="input-group">
                                 <label for="username">Username</label>
                                 <div class="input-field">
-                                    <i class="icon fas fa-user"></i>
                                     <input type="text" id="username" name="username" placeholder="Enter your username" required />
+                                    <i class="icon fas fa-user"></i>
                                 </div>
                             </div>
                             
                             <div class="input-group">
                                 <label for="password">Password</label>
                                 <div class="input-field">
-                                    <i class="icon fas fa-lock"></i>
                                     <input type="password" id="password" name="password" placeholder="Enter your password" required />
+                                    <i class="icon fas fa-lock"></i>
                                 </div>
                             </div>
                         </div>
@@ -79,6 +79,28 @@
                         </button>
                     </form>
                     
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+                    
+                    <!-- Google Sign-In Button -->
+                    <div class="google-signin-wrapper">
+                        <div id="g_id_onload"
+                             data-client_id="796832644004-dhu94ipfbmc7lob04n9a3gpbebum4cg5.apps.googleusercontent.com"
+                             data-callback="handleCredentialResponse"
+                             data-auto_prompt="false">
+                        </div>
+                        <div class="g_id_signin"
+                             data-type="standard"
+                             data-size="large"
+                             data-theme="outline"
+                             data-text="sign_in_with"
+                             data-shape="rectangular"
+                             data-logo_alignment="left"
+                             data-width="100%">
+                        </div>
+                    </div>
+                    
                     <div class="form-footer">
                         <p>Don't have an account? <a href="register.html">Sign Up</a></p>
                         <a href="WoW.html" class="home-link">Back to home</a>
@@ -87,6 +109,696 @@
             </div>
         </div>
     </div>
+
+    <style>
+        :root {
+            --primary-color: #18d259;
+            --primary-light: rgba(24, 210, 89, 0.1);
+            --primary-dark: #15b54c;
+            --text-color: #333;
+            --text-light: #666;
+            --bg-color: #f0f2f5;
+            --white: #ffffff;
+            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            background: var(--bg-color);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation: float 25s infinite ease-in-out;
+            opacity: 0.4;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(2) {
+            top: 60%;
+            left: 15%;
+            width: 60px;
+            height: 60px;
+            animation: float 20s infinite ease-in-out;
+            animation-delay: -2s;
+            opacity: 0.3;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(3) {
+            top: 30%;
+            left: 80%;
+            width: 40px;
+            height: 40px;
+            animation: float 18s infinite ease-in-out;
+            animation-delay: -5s;
+            opacity: 0.2;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(4) {
+            top: 70%;
+            left: 70%;
+            width: 100px;
+            height: 100px;
+            animation: float 30s infinite ease-in-out;
+            animation-delay: -10s;
+            opacity: 0.2;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(5) {
+            top: 10%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            animation: float 22s infinite ease-in-out;
+            animation-delay: -7s;
+            opacity: 0.4;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(6) {
+            top: 80%;
+            left: 30%;
+            width: 30px;
+            height: 30px;
+            animation: float 28s infinite ease-in-out;
+            animation-delay: -4s;
+            opacity: 0.3;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(7) {
+            top: 40%;
+            left: 40%;
+            width: 70px;
+            height: 70px;
+            animation: float 24s infinite ease-in-out;
+            animation-delay: -9s;
+            opacity: 0.15;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        .particle:nth-child(8) {
+            top: 50%;
+            left: 85%;
+            width: 45px;
+            height: 45px;
+            animation: float 19s infinite ease-in-out;
+            animation-delay: -1s;
+            opacity: 0.25;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(-20px, 20px) rotate(5deg);
+            }
+            50% {
+                transform: translate(20px, 40px) rotate(10deg);
+            }
+            75% {
+                transform: translate(40px, -20px) rotate(5deg);
+            }
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            height: 85vh;
+            max-height: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .split-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            background: var(--white);
+        }
+
+        .visual-side {
+            flex: 1;
+            background: linear-gradient(135deg, #17c456, #109c3f);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        .brand-container {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .logo-text {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            z-index: 1;
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+            50%, 100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .tagline {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 250px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            top: -100px;
+            left: -100px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .circle-3 {
+            width: 120px;
+            height: 120px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+        }
+
+        .line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .line-1 {
+            width: 100%;
+            height: 2px;
+            top: 30%;
+            transform: rotate(-15deg);
+        }
+
+        .line-2 {
+            width: 100%;
+            height: 2px;
+            bottom: 25%;
+            transform: rotate(15deg);
+        }
+        
+        .form-side {
+            flex: 1;
+            background: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        .form-wrapper {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .form-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            font-size: 26px;
+            color: var(--text-color);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .input-field {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon {
+            position: absolute;
+            left: 14px;
+            color: var(--text-light);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 11px 11px 11px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            background: #f9f9f9;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--white);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        input[type="text"]:focus ~ .icon,
+        input[type="password"]:focus ~ .icon,
+        input[type="email"]:focus ~ .icon {
+            color: var(--primary-color);
+        }
+
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .remember-me label {
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .forgot-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            position: relative;
+            margin-top: 8px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: var(--white);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(24, 210, 89, 0.25);
+        }
+
+        .btn-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover .btn-effect {
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 16px 0 14px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            color: #666;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+
+        .google-signin-wrapper {
+            margin: 0 0 16px 0;
+            width: 100%;
+        }
+
+        .google-signin-wrapper .g_id_signin {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+
+        .google-signin-wrapper .g_id_signin > div {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+
+        .google-signin-wrapper iframe {
+            width: 100% !important;
+            min-width: 100% !important;
+            border-radius: 8px !important;
+            height: 38px !important;
+        }
+
+        .google-loading {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .google-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #18d259;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1000;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .form-footer {
+            margin-top: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-footer p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .form-footer a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .home-link {
+            font-size: 12px;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                width: 90%;
+                height: auto;
+                max-height: none;
+            }
+            
+            .split-layout {
+                flex-direction: column;
+                max-height: 85vh;
+            }
+            
+            .visual-side {
+                display: none;
+            }
+            
+            .form-side {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+            }
+            
+            .split-layout {
+                border-radius: 15px;
+            }
+            
+            .form-side {
+                padding: 25px 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+
+    <script>
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            showGoogleLoading(true);
+        
+            fetch('google-login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    credential: response.credential
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showGoogleLoading(false);
+                
+                if (data.success) {
+                    localStorage.setItem('authToken', data.token);
+                    showMessage('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'WoW-Logged.html';
+                    }, 1500);
+                } else {
+                    showMessage(data.message || 'Google login failed', 'error');
+                }
+            })
+            .catch(error => {
+                showGoogleLoading(false);
+                console.error('Error:', error);
+                showMessage('Connection error during Google login', 'error');
+            });
+        }
+
+        function showGoogleLoading(show) {
+            const formWrapper = document.querySelector('.form-wrapper');
+            
+            if (show) {
+                if (formWrapper) formWrapper.classList.add('google-loading');
+            } else {
+                if (formWrapper) formWrapper.classList.remove('google-loading');
+            }
+        }
+
+        function showMessage(message, type) {
+            let messageEl = document.querySelector('.auth-message');
+            if (!messageEl) {
+                messageEl = document.createElement('div');
+                messageEl.className = 'auth-message';
+                messageEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-weight: 500;
+                    z-index: 10000;
+                    max-width: 300px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                document.body.appendChild(messageEl);
+            }
+            if (type === 'success') {
+                messageEl.style.background = '#d4edda';
+                messageEl.style.color = '#155724';
+                messageEl.style.border = '1px solid #c3e6cb';
+            } else {
+                messageEl.style.background = '#f8d7da';
+                messageEl.style.color = '#721c24';
+                messageEl.style.border = '1px solid #f5c6cb';
+            }
+
+            messageEl.textContent = message;
+            messageEl.style.opacity = '1';
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        messageEl.parentNode.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 5000);
+        }
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "796832644004-dhu94ipfbmc7lob04n9a3gpbebum4cg5.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+        };
+    </script>
+
     <script src="FormValidation.js"></script>
     <script src="ApiService.js"></script>
 </body>
