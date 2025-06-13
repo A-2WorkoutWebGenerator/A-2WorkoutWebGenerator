@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (mobileToggle) {
         mobileToggle.addEventListener('click', function() {
-            pageWrapper.classList.toggle('mobile-menu-open');
+            //pageWrapper.classList.toggle('mobile-menu-open');
         });
     }
 

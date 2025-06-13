@@ -1073,3 +1073,619 @@ ul {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+@media (max-width: 1024px) {
+    .container {
+        width: 95%;
+        padding: 0 20px;
+    }
+    
+    .hero .container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .hero-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .hero h1::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .routines-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    
+    .info-columns {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .nav-links, .nav-buttons {
+        display: none;
+    }
+    
+    .mobile-toggle {
+        display: block !important;
+    }
+    
+    .hero {
+        padding: 60px 0 40px;
+    }
+    
+    .hero .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+    }
+    
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    
+    .hero h1::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .hero .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .hero .description {
+        max-width: 100%;
+    }
+    
+    .benefits-list {
+        justify-content: center;
+        gap: 12px;
+    }
+    
+    .benefit-item {
+        min-width: 140px;
+        flex: 1;
+    }
+    
+    .routines-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    
+    .info-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .faq-question {
+        padding: 15px 20px;
+    }
+    
+    .faq-answer {
+        padding: 0 20px;
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 0 20px 15px;
+    }
+    
+    .routines-section,
+    .info-section,
+    .faq-section {
+        padding: 60px 0;
+    }
+    
+    .cta {
+        padding: 4rem 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem; 
+    }
+    
+    h2 {
+        font-size: 1.6rem; 
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+    }
+
+    .container {
+        width: 95%;
+        padding: 0 15px;
+    }
+
+    .hero {
+        padding: 40px 0 30px;
+    }
+    
+    .hero h1 {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+    
+    .hero .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero .description {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .benefits-list {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .benefit-item {
+        width: 100%;
+        min-width: auto;
+        justify-content: flex-start;
+    }
+
+    .image-frame {
+        height: 280px;
+        max-width: 100%;
+    }
+    
+    .routines-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .routine-header {
+        padding: 20px 15px 12px;
+    }
+    
+    .routine-body {
+        padding: 15px;
+    }
+    
+    .routine-footer {
+        padding: 15px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .routine-footer .btn {
+        width: 100%;
+        text-align: center;
+    }
+    .routine-meta {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    .info-section {
+        padding: 50px 0;
+    }
+    
+    .info-column {
+        padding: 20px;
+    }
+
+    .faq-section {
+        padding: 50px 0;
+    }
+    
+    .faq-question {
+        padding: 12px 15px;
+    }
+    
+    .faq-question h4 {
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+    
+    .faq-answer {
+        padding: 0 15px;
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 0 15px 12px;
+    }
+
+    .cta {
+        padding: 3rem 1rem;
+    }
+    
+    .cta h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .cta p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .footer {
+        padding: 4rem 5% 1.5rem;
+    }
+    
+    .footer-top {
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        flex-direction: column;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .section-header {
+        margin-bottom: 40px;
+    }
+    
+    .section-header h2 {
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+    }
+    
+    .section-header p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem; 
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+    }
+    
+    .container {
+        padding: 0 12px;
+    }
+
+    .hero {
+        padding: 30px 0 20px;
+    }
+    
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero .subtitle {
+        font-size: 1rem;
+    }
+    
+    .hero .description {
+        font-size: 0.95rem;
+    }
+
+    .image-frame {
+        height: 240px;
+    }
+    
+    .routine-header {
+        padding: 15px 12px 10px;
+    }
+    
+    .routine-body {
+        padding: 12px;
+    }
+    
+    .routine-footer {
+        padding: 12px;
+        gap: 10px;
+        flex-direction: column;
+    }
+    
+    .routine-footer .btn {
+        width: 100%;
+    }
+    
+    .info-column {
+        padding: 15px;
+    }
+    
+    .faq-question {
+        padding: 10px 12px;
+    }
+    
+    .faq-question h4 {
+        font-size: 1rem;
+    }
+    
+    .faq-answer {
+        padding: 0 12px;
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 0 12px 10px;
+    }
+    
+    .cta {
+        padding: 2.5rem 0.8rem;
+    }
+    
+    .cta h2 {
+        font-size: 1.7rem;
+    }
+    
+    .cta p {
+        font-size: 1rem;
+    }
+    
+    .toast-notification {
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        max-width: none;
+    }
+    
+    .modal-overlay {
+        padding: 15px;
+    }
+    
+    .modal-header {
+        padding: 15px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-footer {
+        padding: 15px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        padding: 30px 0 20px;
+    }
+    
+    .hero .container {
+        flex-direction: row;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .hero-content {
+        text-align: left;
+    }
+    
+    .hero h1::after {
+        left: 0;
+        transform: none;
+    }
+    
+    .image-frame {
+        height: 250px;
+        max-width: 400px;
+    }
+}
+
+html, body {
+    overflow-x: hidden;
+}
+
+.page-wrapper {
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-large {
+        padding: 14px 28px;
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .routine-card:hover,
+    .info-column:hover,
+    .faq-item:hover,
+    .benefit-item:hover {
+        transform: none;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .image-frame:hover img {
+        transform: none;
+    }
+}
+
+.physio-hero {
+    background-color: var(--primary-light);
+    position: relative;
+}
+
+.physio-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent, rgba(24, 210, 89, 0.1));
+    z-index: 0;
+}
+
+.faq-item.active .faq-question {
+    background-color: var(--primary-light);
+}
+
+.save-routine.saved {
+    background-color: var(--primary);
+    color: white;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 992px) {
+    .hero .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+    
+    .hero-content {
+        text-align: center !important;
+        max-width: 100%;
+    }
+    
+    .hero h1 {
+        text-align: center !important;
+        font-size: 2.2rem;
+    }
+    
+    .hero h1::after {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .hero .subtitle {
+        text-align: center !important;
+        font-size: 1.2rem;
+    }
+    
+    .hero .description {
+        text-align: center !important;
+        max-width: 100%;
+    }
+    
+    .benefits-list {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 40px 0 30px;
+    }
+    
+    .hero .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-content {
+        text-align: center !important;
+        max-width: 100%;
+    }
+    
+    .hero h1 {
+        font-size: 1.8rem;
+        text-align: center !important;
+        margin-bottom: 12px;
+    }
+    
+    .hero h1::after {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .hero .subtitle {
+        font-size: 1.1rem;
+        text-align: center !important;
+        margin-bottom: 15px;
+    }
+    
+    .hero .description {
+        font-size: 1rem;
+        text-align: center !important;
+        margin-bottom: 25px;
+    }
+    
+    .benefits-list {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .benefit-item {
+        width: 100%;
+        max-width: 300px;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 30px 0 20px;
+    }
+    
+    .hero h1 {
+        font-size: 1.5rem;
+        text-align: center !important;
+    }
+    
+    .hero h1::after {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .hero .subtitle {
+        font-size: 1rem;
+        text-align: center !important;
+    }
+    
+    .hero .description {
+        font-size: 0.95rem;
+        text-align: center !important;
+    }
+}
