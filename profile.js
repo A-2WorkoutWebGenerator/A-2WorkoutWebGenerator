@@ -521,9 +521,6 @@ function initializeProfileForm() {
                         const data = JSON.parse(text);
                         if (data.success) {
                             showMessage(data.message || "Profile saved successfully!", "success");
-                            if (data.suggestion) {
-                                showWorkoutSuggestion(data.suggestion);
-                            }
                             loadUserProfile();
                         } else {
                             showMessage(data.message || "Error saving profile!", "error");
@@ -598,36 +595,6 @@ function showMessage(message, type) {
             messageElement.style.display = 'none';
         }, 300);
     }, 5000);
-}
-
-function showWorkoutSuggestion(suggestion) {
-    let suggestionContainer = document.getElementById('workout-suggestion-container');
-    if (!suggestionContainer) {
-        suggestionContainer = document.createElement('div');
-        suggestionContainer.id = 'workout-suggestion-container';
-        const workoutsSection = document.getElementById('workouts');
-        if (workoutsSection) {
-            workoutsSection.insertBefore(suggestionContainer, workoutsSection.firstChild.nextSibling);
-        }
-    }
-    let workoutList = '';
-    if (suggestion.workouts) {
-        suggestion.workouts.forEach(workout => {
-            workoutList += `<li>${workout}</li>`;
-        });
-    }
-    suggestionContainer.innerHTML = `
-        <div class="workout-suggestion" style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <h3 style="color: #2ecc71; margin-bottom: 10px;">${suggestion.title || 'Your Workout Plan'}</h3>
-            <p>${suggestion.description || ''}</p>
-            <h4>Recommended Workouts:</h4>
-            <ul style="margin-top: 15px; padding-left: 20px;">${workoutList}</ul>
-            ${suggestion.intensity ? `<p><strong>Intensity:</strong> ${suggestion.intensity}</p>` : ''}
-            ${suggestion.frequency ? `<p><strong>Frequency:</strong> ${suggestion.frequency}</p>` : ''}
-            ${suggestion.caution ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;"><strong>Important:</strong> ${suggestion.caution}</div>` : ''}
-            ${suggestion.age_note ? `<div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #3498db; font-style: italic;">${suggestion.age_note}</div>` : ''}
-        </div>
-    `;
 }
 
 function loadWorkoutSuggestions() {

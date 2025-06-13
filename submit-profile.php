@@ -328,16 +328,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             error_log("EMAIL UPDATED SUCCESSFULLY");
         }
     }
-    $suggestion = generateWorkoutSuggestion($goal, '', $injuries, $age, $gender);
-    $checkQuery = "SELECT id FROM workout_suggestions WHERE user_id = $1 AND suggestion = $2";
-    $checkResult = pg_query_params($conn, $checkQuery, [$user_id, json_encode($suggestion)]);
 
-    if ($checkResult && pg_num_rows($checkResult) == 0) {
-        $insertSuggestionQuery = "INSERT INTO workout_suggestions (user_id, generated_at, suggestion) VALUES ($1, NOW(), $2)";
-        pg_query_params($conn, $insertSuggestionQuery, [$user_id, json_encode($suggestion)]);
-    }
-    $response['suggestion'] = $suggestion;
-    
     pg_close($conn);
     echo json_encode($response);
     exit();
@@ -346,91 +337,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $response['message'] = "Invalid request method.";
     echo json_encode($response);
     exit();
-}
-
-function generateWorkoutSuggestion($goal, $equipment, $injuries, $age, $gender) {
-    $suggestion = [];
-    switch ($goal) {
-        case 'lose_weight':
-            $suggestion['title'] = "Weight Loss Program";
-            $suggestion['description'] = "A balanced program focusing on calorie deficit through cardio and strength training.";
-            $suggestion['workouts'] = [
-                "HIIT Bodyweight Circuit - 3-4 times per week",
-                "Walking/Jogging - 2-3 times per week",
-                "Active Recovery (stretching) - 1-2 times per week"
-            ];
-            break;
-        case 'build_muscle':
-            $suggestion['title'] = "Muscle Building Program";
-            $suggestion['description'] = "A progressive resistance training program with adequate protein intake to build lean muscle.";
-            $suggestion['workouts'] = [
-                "Progressive Calisthenics - 4 times per week",
-                "Bodyweight Supersets - 2 times per week",
-                "Active Recovery - 1 time per week"
-            ];
-            break;
-        case 'flexibility':
-            $suggestion['title'] = "Flexibility Improvement Program";
-            $suggestion['description'] = "A program designed to increase range of motion, reduce stiffness, and improve posture.";
-            $suggestion['workouts'] = [
-                "Dynamic Stretching Routine - Daily",
-                "Yoga Flow Session - 3-4 times per week",
-                "Mobility Drills - 2-3 times per week",
-                "Static Stretching - Daily"
-            ];
-            break;
-        case 'mobility':
-            $suggestion['title'] = "Mobility Enhancement Program";
-            $suggestion['description'] = "A comprehensive program to improve joint mobility, movement quality, and functional range of motion.";
-            $suggestion['workouts'] = [
-                "Dynamic Warm-up Routine - Daily",
-                "Joint Mobility Sequence - 4-5 times per week",
-                "Functional Movement Patterns - 3 times per week",
-                "Deep Stretching Session - 2-3 times per week"
-            ];
-            break;
-        case 'endurance':
-            $suggestion['title'] = "Endurance Building Program";
-            $suggestion['description'] = "A program to improve cardiovascular health and stamina for longer physical activity.";
-            $suggestion['workouts'] = [
-                "Progressive Running/Walking - 3-4 times per week",
-                "Bodyweight Circuit (high rep) - 2 times per week",
-                "Long Duration Low Intensity Session - 1 time per week"
-            ];
-            break;
-        case 'rehab':
-            $suggestion['title'] = "Rehabilitation Program";
-            $suggestion['description'] = "A gentle program focusing on recovery and gradual strengthening. Always consult a medical professional.";
-            $suggestion['workouts'] = [
-                "Gentle Mobility Work - Daily",
-                "Low-Impact Strengthening - 2-3 times per week",
-                "Water-Based Exercises (if available) - 2 times per week",
-                "Progressive Range of Motion Exercises - 3-4 times per week"
-            ];
-            break;
-        default:
-            $suggestion['title'] = "General Fitness Program";
-            $suggestion['description'] = "A balanced approach to overall fitness including strength, cardio, and flexibility.";
-            $suggestion['workouts'] = [
-                "Full Body Strength - 2 times per week",
-                "Cardio Session - 2 times per week",
-                "Flexibility & Mobility - 2 times per week",
-                "Active Recovery - 1 time per week"
-            ];
-    }
-
-    if (!empty($injuries)) {
-        $suggestion['caution'] = "Due to your reported injuries/conditions, please take the following precautions: 
-        1. Start slowly and focus on proper form
-        2. Consider consulting a physical therapist or trainer
-        3. Modify exercises as needed to avoid pain
-        4. Pay attention to pain vs. discomfort";
-    }
-    if ($age < 18) {
-        $suggestion['age_note'] = "For younger athletes, focus on proper technique, variety, and fun rather than intense specialization.";
-    } elseif ($age > 60) {
-        $suggestion['age_note'] = "Focus on functional movement, balance exercises, and joint-friendly activities.";
-    }
-    return $suggestion;
 }
 ?>
