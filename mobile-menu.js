@@ -81,20 +81,51 @@ class MobileMenu {
         }
     }
 
+    isUserAdmin() {
+        const token = localStorage.getItem('authToken');
+        if (!token) return false;
+        
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.isAdmin === true;
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+            return false;
+        }
+    }
+
     createMobileMenu() {
         const navbar = document.querySelector('.navbar');
-        
         const currentPage = this.getCurrentPage();
+        const isAdmin = this.isUserAdmin();
+        
+        let headerButtons = `
+            <a href="profile.html" class="btn btn-outline">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <a href="${currentPage.logoutLink}" class="btn btn-outline">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        `;
+
+        if (isAdmin) {
+            headerButtons = `
+                <a href="admin-panel.html" class="btn btn-admin">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                <a href="profile.html" class="btn btn-outline">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="${currentPage.logoutLink}" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            `;
+        }
         
         const mobileMenuHTML = `
             <div class="mobile-menu">
                 <div class="mobile-menu-header">
-                    <a href="profile.html" class="btn btn-outline">
-                        <i class="fas fa-user"></i> Profile
-                    </a>
-                    <a href="${currentPage.logoutLink}" class="btn btn-outline">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
+                    ${headerButtons}
                 </div>
                 
                 <nav class="mobile-menu-nav">

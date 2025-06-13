@@ -1710,3 +1710,726 @@ button[type="submit"]:hover {
         width: 50px;
     }
 }
+
+@media (max-width: 992px) {
+    #profile-form {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 20px !important;
+        max-width: 100% !important;
+        padding: 30px !important;
+    }
+
+    #profile-form > div:first-child {
+        grid-row: 1 / 3 !important;
+        grid-column: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    #profile-form > div:nth-child(2) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+    
+    #profile-form > div:nth-child(3) {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+    }
+
+    #profile-form > div:nth-child(4) {
+        grid-column: 1 / -1 !important;
+    }
+    
+    #profile-form > div:nth-child(5) {
+        grid-column: 1 !important;
+    }
+    
+    #profile-form > div:nth-child(6) {
+        grid-column: 2 !important;
+    }
+    
+    #profile-form > div:nth-child(7) {
+        grid-column: 1 !important;
+    }
+    
+    #profile-form > div:nth-child(8) {
+        grid-column: 2 !important;
+    }
+    
+    #profile-form > div:nth-child(9) {
+        grid-column: 1 / -1 !important;
+    }
+    
+    #profile-form > div:last-child {
+        grid-column: 1 / -1 !important;
+        text-align: center !important;
+        margin-top: 20px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #profile-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 25px 20px !important;
+        margin: 0 15px !important;
+    }
+    
+    #profile-form > div {
+        grid-column: unset !important;
+        grid-row: unset !important;
+        width: 100% !important;
+    }
+    
+    #profile-form > div:first-child {
+        order: -1;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        margin-bottom: 20px;
+    }
+    
+    #profile_preview {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    #profile-form > div:first-child > div > div {
+        width: 30px !important;
+        height: 30px !important;
+        bottom: 3px !important;
+        right: 3px !important;
+    }
+    
+    #profile-form > div:first-child > div > div i {
+        font-size: 14px !important;
+    }
+    
+    #profile-form input[type="text"],
+    #profile-form input[type="email"],
+    #profile-form input[type="number"],
+    #profile-form select,
+    #profile-form textarea {
+        padding: 14px 16px !important;
+        font-size: 16px !important; 
+        border-radius: 10px !important;
+    }
+
+    #profile-form label {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        margin-bottom: 8px !important;
+        color: #2c3e50 !important;
+    }
+    
+    #profile-form button[type="submit"] {
+        padding: 16px 24px !important;
+        font-size: 16px !important;
+        margin-top: 20px !important;
+        border-radius: 12px !important;
+        width: 100% !important;
+    }
+
+    #profile-form select {
+        background-size: 20px !important;
+        background-position: right 16px center !important;
+        padding-right: 50px !important;
+    }
+    
+    #profile-form textarea {
+        min-height: 100px !important;
+        resize: vertical !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-header {
+        margin-bottom: 20px !important;
+    }
+    
+    #profile-title {
+        font-size: 1.6rem !important;
+    }
+    
+    #profile-title::after {
+        width: 60px !important;
+        height: 3px !important;
+    }
+    
+    #profile-form {
+        padding: 20px 15px !important;
+        margin: 0 10px !important;
+        border-radius: 12px !important;
+    }
+
+    #profile_preview {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    #profile-form input[type="text"],
+    #profile-form input[type="email"],
+    #profile-form input[type="number"],
+    #profile-form select,
+    #profile-form textarea {
+        padding: 12px 14px !important;
+        font-size: 15px !important;
+    }
+    
+    #profile-form label {
+        font-size: 13px !important;
+        margin-bottom: 6px !important;
+    }
+
+    #profile-form button[type="submit"] {
+        padding: 14px 20px !important;
+        font-size: 15px !important;
+        margin-top: 15px !important;
+    }
+
+    .message-container {
+        margin: 0 10px 15px 10px !important;
+        padding: 12px !important;
+        font-size: 14px !important;
+        border-radius: 8px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #profile-form input:focus,
+    #profile-form select:focus,
+    #profile-form textarea:focus {
+        transform: none !important;
+        box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2) !important;
+        border-color: var(--primary) !important;
+    }
+    
+    #profile-form input,
+    #profile-form select,
+    #profile-form textarea {
+        transition: all 0.2s ease !important;
+    }
+    
+    .loading-indicator {
+        margin: 0 15px 20px 15px !important;
+        padding: 15px !important;
+        font-size: 14px !important;
+    }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+    #profile-form {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+        padding: 20px !important;
+    }
+    
+    #profile-form > div:first-child {
+        grid-column: 1 !important;
+        grid-row: 1 / 3 !important;
+    }
+    
+    #profile-form > div:nth-child(2) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+    
+    #profile-form > div:nth-child(3) {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+    }
+    
+    #profile-form > div:nth-child(4) {
+        grid-column: 1 / -1 !important;
+    }
+    
+    #profile-form > div:nth-child(5) {
+        grid-column: 1 !important;
+    }
+    
+    #profile-form > div:nth-child(6) {
+        grid-column: 2 !important;
+    }
+    
+    #profile-form > div:nth-child(7) {
+        grid-column: 1 !important;
+    }
+    
+    #profile-form > div:nth-child(8) {
+        grid-column: 2 !important;
+    }
+    
+    #profile-form > div:nth-child(9) {
+        grid-column: 1 / -1 !important;
+    }
+
+    #profile-form > div:last-child {
+        grid-column: 1 / -1 !important;
+    }
+    
+    #profile_preview {
+        width: 110px !important;
+        height: 110px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        margin-bottom: 25px !important;
+    }
+    
+    .stats-row {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .stat-card {
+        padding: 20px !important;
+    }
+    
+    .stat-icon {
+        font-size: 2.2em !important;
+        margin-right: 18px !important;
+    }
+    
+    .stat-info h3 {
+        font-size: 2em !important;
+    }
+    
+    .stat-info p {
+        font-size: 0.9rem !important;
+    }
+    
+    .stats-card {
+        padding: 20px !important;
+    }
+    
+    .stats-card h3 {
+        font-size: 1.2rem !important;
+        margin-bottom: 15px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-overview {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .stat-card {
+        padding: 18px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+    
+    .stat-icon {
+        font-size: 2em !important;
+        margin-right: 15px !important;
+        min-width: 60px !important;
+        text-align: center !important;
+    }
+    
+    .stat-info h3 {
+        font-size: 1.8em !important;
+        margin: 0 !important;
+    }
+    
+    .stat-info p {
+        margin: 2px 0 0 0 !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .stats-card {
+        padding: 18px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .stats-card h3 {
+        font-size: 1.1rem !important;
+        margin-bottom: 12px !important;
+        padding-bottom: 8px !important;
+    }
+    
+    .progress-item {
+        padding: 10px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 5px !important;
+    }
+    
+    .progress-label,
+    .progress-value {
+        font-size: 0.9rem !important;
+    }
+    
+    .pref-item {
+        padding: 10px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 5px !important;
+    }
+    
+    .pref-label,
+    .pref-value {
+        font-size: 0.9rem !important;
+    }
+    
+    .muscle-groups-chart {
+        gap: 10px !important;
+    }
+    
+    .muscle-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 10px !important;
+        background: #f8f9fa !important;
+        border-radius: 8px !important;
+    }
+    
+    .muscle-label {
+        min-width: auto !important;
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        color: #2c3e50 !important;
+    }
+    
+    .muscle-progress {
+        width: 100% !important;
+        height: 18px !important;
+        border-radius: 9px !important;
+    }
+    
+    .muscle-count {
+        min-width: auto !important;
+        text-align: left !important;
+        font-size: 0.85rem !important;
+        color: #2980b9 !important;
+        font-weight: 600 !important;
+    }
+    
+    .difficulty-chart {
+        gap: 10px !important;
+    }
+    
+    .difficulty-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 10px !important;
+        background: #f8f9fa !important;
+        border-radius: 8px !important;
+    }
+    
+    .difficulty-label {
+        min-width: auto !important;
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        color: #2c3e50 !important;
+    }
+    
+    .difficulty-progress {
+        width: 100% !important;
+        height: 18px !important;
+        border-radius: 9px !important;
+    }
+    
+    .difficulty-count {
+        min-width: auto !important;
+        text-align: left !important;
+        font-size: 0.85rem !important;
+        color: #34495e !important;
+        font-weight: 600 !important;
+    }
+    
+    .recent-workout-item {
+        padding: 15px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .workout-date {
+        font-size: 0.9rem !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .workout-summary {
+        flex-direction: column !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .workout-exercises,
+    .workout-duration {
+        font-size: 0.8rem !important;
+        padding: 3px 10px !important;
+        display: inline-block !important;
+        width: auto !important;
+    }
+    
+    .exercise-tag {
+        font-size: 0.75rem !important;
+        padding: 3px 8px !important;
+        margin: 2px 4px 2px 0 !important;
+    }
+    
+    .chart-container {
+        height: 200px !important;
+        overflow: hidden !important;
+    }
+    
+    #monthlyChart {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-overview {
+        gap: 10px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .stat-card {
+        padding: 15px !important;
+        border-radius: 12px !important;
+    }
+    
+    .stat-icon {
+        font-size: 1.8em !important;
+        margin-right: 12px !important;
+        min-width: 50px !important;
+    }
+    
+    .stat-info h3 {
+        font-size: 1.5em !important;
+    }
+    
+    .stat-info p {
+        font-size: 0.8rem !important;
+    }
+    
+    .stats-card {
+        padding: 15px !important;
+        margin-bottom: 12px !important;
+        border-radius: 12px !important;
+    }
+    
+    .stats-card h3 {
+        font-size: 1rem !important;
+        margin-bottom: 10px !important;
+        padding-bottom: 6px !important;
+    }
+
+    .progress-item,
+    .pref-item {
+        padding: 8px !important;
+        border-radius: 6px !important;
+    }
+    
+    .progress-label,
+    .progress-value,
+    .pref-label,
+    .pref-value {
+        font-size: 0.8rem !important;
+    }
+    
+    .muscle-bar,
+    .difficulty-bar {
+        padding: 8px !important;
+        gap: 6px !important;
+        border-radius: 6px !important;
+    }
+    
+    .muscle-label,
+    .difficulty-label {
+        font-size: 0.8rem !important;
+    }
+    
+    .muscle-progress,
+    .difficulty-progress {
+        height: 16px !important;
+        border-radius: 8px !important;
+    }
+    
+    .muscle-count,
+    .difficulty-count {
+        font-size: 0.8rem !important;
+    }
+
+    .recent-workout-item {
+        padding: 12px !important;
+        border-radius: 8px !important;
+    }
+    
+    .workout-date {
+        font-size: 0.8rem !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .workout-exercises,
+    .workout-duration {
+        font-size: 0.75rem !important;
+        padding: 2px 8px !important;
+    }
+    
+    .exercise-tag {
+        font-size: 0.7rem !important;
+        padding: 2px 6px !important;
+        border-radius: 10px !important;
+    }
+    
+    .chart-container {
+        height: 150px !important;
+    }
+
+    .stats-loading,
+    .stats-error {
+        padding: 30px 20px !important;
+        margin: 0 10px !important;
+    }
+    
+    .stats-loading i,
+    .stats-error i {
+        font-size: 2rem !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .stats-loading p,
+    .stats-error p {
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    
+    .stats-row {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .stat-card {
+        padding: 12px !important;
+    }
+    
+    .stat-icon {
+        font-size: 1.5em !important;
+        margin-right: 10px !important;
+    }
+    
+    .stat-info h3 {
+        font-size: 1.4em !important;
+    }
+    
+    .stat-info p {
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .muscle-fill,
+    .difficulty-fill {
+        transition: width 0.8s ease !important;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-3px) !important;
+    }
+    
+    .recent-workout-item:hover {
+        transform: translateX(3px) !important;
+    }
+    
+    .muscle-bar:hover,
+    .difficulty-bar:hover {
+        background: #e3f2fd !important;
+        transition: background 0.3s ease !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .loading-stats {
+        padding: 25px 15px !important;
+        margin: 0 15px !important;
+        border-radius: 12px !important;
+    }
+    
+    .loading-stats i {
+        font-size: 2rem !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .loading-stats p {
+        font-size: 0.9rem !important;
+        color: #666 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-card {
+        min-height: 220px !important;
+    }
+    
+    .chart-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 10px !important;
+    }
+    
+    #monthlyChart {
+        max-width: 100% !important;
+        max-height: 180px !important;
+        width: auto !important;
+        height: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .muscle-progress,
+    .difficulty-progress {
+        cursor: pointer !important;
+        position: relative !important;
+    }
+    
+    .muscle-progress:active,
+    .difficulty-progress:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #stats h2 {
+        font-size: 1.8rem !important;
+        margin-bottom: 20px !important;
+    }
+    
+    #stats h2::after {
+        width: 60px !important;
+        height: 2px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #stats h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 15px !important;
+    }
+    
+    #stats h2::after {
+        width: 50px !important;
+        height: 2px !important;
+    }
+}

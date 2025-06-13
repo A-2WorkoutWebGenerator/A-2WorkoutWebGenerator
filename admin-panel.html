@@ -837,6 +837,296 @@
                 font-size: 0.9rem;
             }
         }
+
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+            
+            .container {
+                max-width: 100%;
+                padding: 1rem 0.5rem;
+                box-sizing: border-box;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                padding: 1rem 0.5rem;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .admin-header-left,
+            .admin-header-right {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .admin-tabs {
+                justify-content: center;
+                width: 100%;
+                order: 3;
+                margin-top: 0.5rem;
+                gap: 0.3rem;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                max-width: 110px;
+                padding: 0.5rem 0.3rem;
+                font-size: 0.8rem;
+                text-align: center;
+            }
+            
+            .admin-header-right {
+                order: 2;
+            }
+            
+            .home-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .admin-stats {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .admin-stats div {
+                flex: 1;
+                min-width: 70px;
+                text-align: center;
+                padding: 0.3rem;
+                background: rgba(255,255,255,0.1);
+                border-radius: 4px;
+            }
+            
+            .filters {
+                gap: 0.3rem;
+                margin-bottom: 1rem;
+                overflow-x: auto;
+                padding-bottom: 0.2rem;
+            }
+            
+            .filter-btn {
+                flex-shrink: 0;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+                min-width: 80px;
+            }
+            
+            .stories-grid {
+                gap: 1rem;
+            }
+            
+            .story-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            
+            .story-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .story-status {
+                align-self: flex-start;
+            }
+            
+            .story-info h3 {
+                font-size: 1rem;
+                word-break: break-word;
+            }
+            
+            .story-info .achievement {
+                font-size: 0.85rem;
+            }
+            
+            .story-info .date {
+                font-size: 0.8rem;
+            }
+            
+            .status-badge {
+                padding: 0.2rem 0.6rem;
+                font-size: 0.7rem;
+            }
+            
+            .story-content {
+                margin: 0.8rem 0;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            
+            .story-actions {
+                flex-direction: column;
+                gap: 0.6rem;
+                align-items: stretch;
+            }
+            
+            .story-actions .btn {
+                width: 100%;
+                text-align: center;
+                margin-left: 0 !important;
+                padding: 0.7rem;
+                font-size: 0.85rem;
+            }
+            
+            .rejection-form {
+                margin-top: 0.8rem;
+                padding: 0.8rem;
+            }
+            
+            .rejection-form textarea {
+                width: 100%;
+                min-height: 70px;
+                padding: 0.6rem;
+                font-size: 0.85rem;
+                box-sizing: border-box;
+            }
+            
+            .rejection-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 0.8rem;
+            }
+            
+            .rejection-actions .btn {
+                width: 100%;
+                padding: 0.65rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem 0.3rem;
+            }
+            
+            .admin-header {
+                padding: 0.8rem 0.3rem;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .tab-btn {
+                padding: 0.4rem 0.2rem;
+                font-size: 0.75rem;
+                max-width: 100px;
+            }
+            
+            .home-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            .admin-stats {
+                font-size: 0.75rem;
+                gap: 0.3rem;
+            }
+            
+            .admin-stats div {
+                min-width: 60px;
+                padding: 0.25rem;
+            }
+            
+            .filter-btn {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.75rem;
+                min-width: 70px;
+            }
+            
+            .story-card {
+                padding: 0.8rem;
+            }
+            
+            .story-info h3 {
+                font-size: 0.95rem;
+            }
+            
+            .story-info .achievement {
+                font-size: 0.8rem;
+            }
+            
+            .story-content {
+                padding: 0.7rem;
+                font-size: 0.85rem;
+            }
+            
+            .story-actions .btn {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+            
+            .status-badge {
+                font-size: 0.65rem;
+                padding: 0.15rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: landscape) {
+            .admin-tabs {
+                flex-direction: row;
+                gap: 0.5rem;
+            }
+            
+            .tab-btn {
+                max-width: 140px;
+            }
+            
+            .story-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .story-actions .btn {
+                flex: 1;
+                min-width: 100px;
+            }
+            
+            .rejection-actions {
+                flex-direction: row;
+            }
+            
+            .rejection-actions .btn {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .story-card *,
+            .rejection-form *,
+            .admin-stats * {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .story-card {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
+            
+            .btn {
+                box-sizing: border-box;
+                white-space: normal;
+            }
+            
+            input, textarea, select {
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 <body>
