@@ -40,20 +40,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     saveButtons.forEach(button => {
         button.addEventListener('click', function() {
-            this.classList.toggle('saved');
-            
-            const icon = this.querySelector('i');
             const routineName = this.closest('.routine-card').querySelector('h3').textContent;
+            const routineCard = this.closest('.routine-card');
+            const authToken = localStorage.getItem('authToken');
             
-            if (this.classList.contains('saved')) {
-                icon.className = 'fas fa-check';
-                this.innerHTML = `<i class="fas fa-check"></i> Saved`;
-                showToast(`${routineName} added to your saved routines`);
-            } else {
-                icon.className = 'fas fa-bookmark';
-                this.innerHTML = `<i class="fas fa-bookmark"></i> Save`;
-                showToast(`${routineName} removed from your saved routines`);
+            if (!authToken) {
+                showLoginRequiredModal(routineName);
+                return;
             }
+            saveRoutine(routineCard, this);
         });
     });
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -407,3 +402,239 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+function showLoginRequiredModal(routineName) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay login-required-modal';
+    modal.innerHTML = `
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-lock"></i> Login Required</h3>
+                <button class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-bookmark" style="font-size: 3em; color: #18D259; margin-bottom: 15px;"></i>
+                    <p style="font-size: 1.1em; margin-bottom: 15px;">
+                        <strong>Save "${routineName}" routine?</strong>
+                    </p>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        You need to be logged in to save routines to your profile.
+                    </p>
+                    <p style="color: #666;">
+                        Login or create an account to access your personalized saved routines.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-cancel">Cancel</button>
+                <button class="btn btn-primary modal-login">
+                    <i class="fas fa-sign-in-alt"></i> Login / Sign Up
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+    
+    const closeBtn = modal.querySelector('.modal-close');
+    const cancelBtn = modal.querySelector('.modal-cancel');
+    const loginBtn = modal.querySelector('.modal-login');
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.remove();
+            document.body.style.overflow = '';
+        }, 300);
+    }
+    
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    
+    loginBtn.addEventListener('click', function() {
+        window.location.href = 'login.html';
+    });
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+}
+
+function saveRoutine(routineCard, button) {
+    const routineData = extractRoutineData(routineCard);
+    const authToken = localStorage.getItem('authToken');
+    const originalContent = button.innerHTML;
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    
+    fetch('save-routine.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify(routineData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.classList.add('saved');
+            button.innerHTML = '<i class="fas fa-check"></i> Saved';
+            button.style.backgroundColor = '#18D259';
+            button.style.color = 'white';
+            button.style.borderColor = '#18D259';
+            
+            showSuccessToast(`"${routineData.name}" has been saved to your profile!`);
+        } else {
+            button.disabled = false;
+            button.innerHTML = originalContent;
+            showErrorToast(data.message || 'Failed to save routine. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving routine:', error);
+        button.disabled = false;
+        button.innerHTML = originalContent;
+        showErrorToast('Connection error. Please try again.');
+    });
+}
+
+function extractRoutineData(routineCard) {
+    const name = routineCard.querySelector('h3').textContent;
+    const difficulty = routineCard.querySelector('.difficulty-label').textContent;
+    const description = routineCard.querySelector('.routine-body p').textContent;
+    const duration = routineCard.querySelector('.meta-item .fa-clock').nextElementSibling.textContent;
+    const frequency = routineCard.querySelector('.meta-item .fa-calendar-day').nextElementSibling.textContent;
+    const icon = routineCard.querySelector('.routine-icon i').className;
+    const videoUrl = routineCard.querySelector('.btn-primary').href;
+    
+    const exercises = [];
+    const exerciseElements = routineCard.querySelectorAll('.exercise-list li');
+    exerciseElements.forEach(exercise => {
+        exercises.push(exercise.textContent.replace('✓ ', '').trim());
+    });
+    
+    const category = detectPageCategory();
+    
+    return {
+        name: name,
+        difficulty: difficulty,
+        description: description,
+        duration: duration,
+        frequency: frequency,
+        icon: icon,
+        exercises: exercises,
+        video_url: videoUrl,
+        category: category,
+        saved_at: new Date().toISOString()
+    };
+}
+function getCategoryDisplayName(category) {
+    const categoryNames = {
+        'kinetotherapy': 'Kinetotherapy',
+        'physiotherapy': 'Physiotherapy', 
+        'football': 'Football',
+        'basketball': 'Basketball',
+        'tennis': 'Tennis',
+        'swimming': 'Swimming',
+        'general': 'General Workout'
+    };
+    
+    return categoryNames[category] || category;
+}
+function detectPageCategory() {
+    const currentPage = window.location.pathname.toLowerCase();
+    const currentUrl = window.location.href.toLowerCase();
+    
+    if (currentPage.includes('kinetotherapy') || currentUrl.includes('kinetotherapy')) {
+        return 'kinetotherapy';
+    } else if (currentPage.includes('physiotherapy') || currentUrl.includes('physiotherapy')) {
+        return 'physiotherapy';
+    } else if (currentPage.includes('football') || currentUrl.includes('football')) {
+        return 'football';
+    } else if (currentPage.includes('basketball') || currentUrl.includes('basketball')) {
+        return 'basketball';
+    } else if (currentPage.includes('tennis') || currentUrl.includes('tennis')) {
+        return 'tennis';
+    } else if (currentPage.includes('swimming') || currentUrl.includes('swimming')) {
+        return 'swimming';
+    } else {
+        return detectCategoryFromPageContent();
+    }
+}
+
+function showSuccessToast(message) {
+    const category = detectPageCategory();
+    const categoryDisplay = getCategoryDisplayName(category);
+    
+    const toast = document.createElement('div');
+    toast.className = 'success-toast';
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <div class="toast-text">
+                <span>${message}</span>
+                <small style="display: block; opacity: 0.8; margin-top: 2px;">
+                    Category: ${categoryDisplay}
+                </small>
+            </div>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #18D259, #3fcb70);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(24, 210, 89, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 400px;
+        transform: translateX(110%);
+        transition: transform 0.3s ease;
+        z-index: 9999;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.style.cssText = `
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        margin-left: 15px;
+        padding: 5px;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    `;
+    
+    closeBtn.addEventListener('click', () => {
+        toast.style.transform = 'translateX(110%)';
+        setTimeout(() => toast.remove(), 300);
+    });
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.transform = 'translateX(110%)';
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 5000);
+}

@@ -915,4 +915,26 @@ CREATE TABLE IF NOT EXISTS login_logs (
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS saved_routines (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    difficulty VARCHAR(50),
+    description TEXT,
+    duration VARCHAR(50),
+    frequency VARCHAR(50),
+    icon VARCHAR(100),
+    exercises JSONB,
+    video_url VARCHAR(500),
+    category VARCHAR(50) DEFAULT 'general',
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_saved_routines_user_id 
+        FOREIGN KEY (user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    CONSTRAINT unique_user_routine 
+        UNIQUE (user_id, name)
+);
+
+
 

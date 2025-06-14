@@ -197,7 +197,7 @@ function getChampionsFallback($conn, $filters = []) {
 
 function getSimpleStats($conn) {
     try {
-        $query = "
+        $mainQuery = "
             SELECT 
                 COUNT(DISTINCT u.id) as total_users,
                 COUNT(uw.id) as total_workouts,
@@ -226,28 +226,171 @@ function getSimpleStats($conn) {
             WHERE uw.id IS NOT NULL
         ";
 
-        $result = pg_query($conn, $query);
+        $result = pg_query($conn, $mainQuery);
         
         if (!$result) {
-            throw new Exception('Stats query failed: ' . pg_last_error($conn));
+            throw new Exception('Main stats query failed: ' . pg_last_error($conn));
         }
 
         $row = pg_fetch_assoc($result);
+        $ageGroupQuery = "
+            SELECT 
+                CASE 
+                    WHEN up.age BETWEEN 12 AND 25 THEN 'youth'
+                    WHEN up.age BETWEEN 26 AND 45 THEN 'adult'
+                    WHEN up.age > 45 THEN 'senior'
+                    ELSE 'unknown'
+                END as age_group,
+                COUNT(uw.id) as workout_count
+            FROM fitgen.users u
+            LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
+            LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
+            WHERE uw.id IS NOT NULL AND up.age IS NOT NULL
+            GROUP BY 
+                CASE 
+                    WHEN up.age BETWEEN 12 AND 25 THEN 'youth'
+                    WHEN up.age BETWEEN 26 AND 45 THEN 'adult'
+                    WHEN up.age > 45 THEN 'senior'
+                    ELSE 'unknown'
+                END
+            ORDER BY workout_count DESC
+            LIMIT 1
+        ";
+
+        $ageResult = pg_query($conn, $ageGroupQuery);
+        $mostActiveAgeGroup = 'unknown';
         
-        debugLog("Stats calculation", $row);
+        if ($ageResult && pg_num_rows($ageResult) > 0) {
+            $ageRow = pg_fetch_assoc($ageResult);
+            $mostActiveAgeGroup = $ageRow['age_group'];
+        }
+        $goalQuery = "
+            SELECT 
+                up.goal::TEXT as goal,
+                COUNT(uw.id) as workout_count
+            FROM fitgen.users u
+            LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
+            LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
+            WHERE uw.id IS NOT NULL AND up.goal IS NOT NULL
+            GROUP BY up.goal::TEXT
+            ORDER BY workout_count DESC
+            LIMIT 1
+        ";
+
+        $goalResult = pg_query($conn, $goalQuery);
+        $mostPopularGoal = 'unknown';
         
+        if ($goalResult && pg_num_rows($goalResult) > 0) {
+            $goalRow = pg_fetch_assoc($goalResult);
+            $mostPopularGoal = $goalRow['goal'];
+        }
+        $detailedStatsQuery = "
+            SELECT 
+                SUM(CASE WHEN up.age BETWEEN 12 AND 25 THEN 1 ELSE 0 END) as youth_users,
+                SUM(CASE WHEN up.age BETWEEN 26 AND 45 THEN 1 ELSE 0 END) as adult_users,
+                SUM(CASE WHEN up.age > 45 THEN 1 ELSE 0 END) as senior_users,
+                
+                SUM(CASE WHEN up.gender::TEXT = 'male' THEN 1 ELSE 0 END) as male_users,
+                SUM(CASE WHEN up.gender::TEXT = 'female' THEN 1 ELSE 0 END) as female_users,
+                
+                SUM(CASE WHEN up.goal::TEXT = 'lose_weight' THEN 1 ELSE 0 END) as lose_weight_users,
+                SUM(CASE WHEN up.goal::TEXT = 'build_muscle' THEN 1 ELSE 0 END) as build_muscle_users,
+                SUM(CASE WHEN up.goal::TEXT = 'flexibility' THEN 1 ELSE 0 END) as flexibility_users,
+                SUM(CASE WHEN up.goal::TEXT = 'endurance' THEN 1 ELSE 0 END) as endurance_users,
+                SUM(CASE WHEN up.goal::TEXT = 'rehab' THEN 1 ELSE 0 END) as rehab_users,
+                SUM(CASE WHEN up.goal::TEXT = 'mobility' THEN 1 ELSE 0 END) as mobility_users,
+                SUM(CASE WHEN up.goal::TEXT = 'strength' THEN 1 ELSE 0 END) as strength_users,
+                SUM(CASE WHEN up.goal::TEXT = 'posture' THEN 1 ELSE 0 END) as posture_users,
+                SUM(CASE WHEN up.goal::TEXT = 'cardio' THEN 1 ELSE 0 END) as cardio_users
+            FROM fitgen.users u
+            LEFT JOIN fitgen.user_profiles up ON u.id = up.user_id
+            LEFT JOIN fitgen.user_workouts uw ON u.id = uw.user_id
+            WHERE uw.id IS NOT NULL
+        ";
+
+        $detailedResult = pg_query($conn, $detailedStatsQuery);
+        $detailedStats = [];
+        
+        if ($detailedResult && pg_num_rows($detailedResult) > 0) {
+            $detailedStats = pg_fetch_assoc($detailedResult);
+        }
+
+        debugLog("Stats calculation", [
+            'main' => $row,
+            'most_active_age_group' => $mostActiveAgeGroup,
+            'most_popular_goal' => $mostPopularGoal,
+            'detailed' => $detailedStats
+        ]);
+        
+        $goalDisplayNames = [
+            'lose_weight' => 'Lose Weight',
+            'build_muscle' => 'Build Muscle',
+            'flexibility' => 'Flexibility',
+            'endurance' => 'Endurance',
+            'rehab' => 'Rehabilitation',
+            'mobility' => 'Mobility',
+            'strength' => 'Strength',
+            'posture' => 'Posture',
+            'cardio' => 'Cardio'
+        ];
+
+        $ageGroupDisplayNames = [
+            'youth' => 'Youth (12-25)',
+            'adult' => 'Adult (26-45)',
+            'senior' => 'Senior (45+)',
+            'unknown' => 'Unknown'
+        ];
+
         return [
             'total_active_users' => (int)$row['total_users'],
             'total_workouts_generated' => (int)$row['total_workouts'],
             'total_workout_minutes' => (float)$row['total_minutes'],
             'average_workouts_per_user' => $row['total_users'] > 0 ? round($row['total_workouts'] / $row['total_users'], 2) : 0,
-            'most_active_age_group' => 'unknown',
-            'most_popular_goal' => 'unknown'
+            'most_active_age_group' => $mostActiveAgeGroup,
+            'most_active_age_group_display' => $ageGroupDisplayNames[$mostActiveAgeGroup] ?? $mostActiveAgeGroup,
+            'most_popular_goal' => $mostPopularGoal,
+            'most_popular_goal_display' => $goalDisplayNames[$mostPopularGoal] ?? ucfirst(str_replace('_', ' ', $mostPopularGoal)),
+            'demographics' => [
+                'age_groups' => [
+                    'youth' => (int)($detailedStats['youth_users'] ?? 0),
+                    'adult' => (int)($detailedStats['adult_users'] ?? 0),
+                    'senior' => (int)($detailedStats['senior_users'] ?? 0)
+                ],
+                'gender' => [
+                    'male' => (int)($detailedStats['male_users'] ?? 0),
+                    'female' => (int)($detailedStats['female_users'] ?? 0)
+                ],
+                'goals' => [
+                    'lose_weight' => (int)($detailedStats['lose_weight_users'] ?? 0),
+                    'build_muscle' => (int)($detailedStats['build_muscle_users'] ?? 0),
+                    'flexibility' => (int)($detailedStats['flexibility_users'] ?? 0),
+                    'endurance' => (int)($detailedStats['endurance_users'] ?? 0),
+                    'rehab' => (int)($detailedStats['rehab_users'] ?? 0),
+                    'mobility' => (int)($detailedStats['mobility_users'] ?? 0),
+                    'strength' => (int)($detailedStats['strength_users'] ?? 0),
+                    'posture' => (int)($detailedStats['posture_users'] ?? 0),
+                    'cardio' => (int)($detailedStats['cardio_users'] ?? 0)
+                ]
+            ]
         ];
 
     } catch (Exception $e) {
         debugLog("Stats failed", $e->getMessage());
-        return null;
+        return [
+            'total_active_users' => 0,
+            'total_workouts_generated' => 0,
+            'total_workout_minutes' => 0,
+            'average_workouts_per_user' => 0,
+            'most_active_age_group' => 'unknown',
+            'most_active_age_group_display' => 'Unknown',
+            'most_popular_goal' => 'unknown',
+            'most_popular_goal_display' => 'Unknown',
+            'demographics' => [
+                'age_groups' => ['youth' => 0, 'adult' => 0, 'senior' => 0],
+                'gender' => ['male' => 0, 'female' => 0],
+                'goals' => []
+            ]
+        ];
     }
 }
 
@@ -322,6 +465,32 @@ function generatePDF($champions, $filters, $stats) {
                 color: #666;
                 text-transform: uppercase;
                 letter-spacing: 1px;
+            }
+            
+            .insights-section {
+                background: #e6f9ed;
+                padding: 20px;
+                margin: 30px 0;
+                border-radius: 8px;
+                border-left: 4px solid #18D259;
+            }
+            .insights-title {
+                color: #18D259;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 15px;
+            }
+            .insight-item {
+                background: white;
+                padding: 12px 15px;
+                margin: 10px 0;
+                border-radius: 6px;
+                border-left: 3px solid #18D259;
+                font-size: 14px;
+            }
+            .insight-highlight {
+                font-weight: bold;
+                color: #18D259;
             }
             
             .filters { 
@@ -447,7 +616,60 @@ function generatePDF($champions, $filters, $stats) {
                     <div class='stat-label'>Total Minutes</div>
                 </div>
             </div>";
+
+        $html .= "
+            <div class='insights-section'>
+                <div class='insights-title'>📊 Community Insights</div>
+                <div class='insight-item'>
+                    Most Active Age Group: <span class='insight-highlight'>{$stats['most_active_age_group_display']}</span>
+                </div>
+                <div class='insight-item'>
+                    Most Popular Goal: <span class='insight-highlight'>{$stats['most_popular_goal_display']}</span>
+                </div>
+                <div class='insight-item'>
+                    Average Workouts per User: <span class='insight-highlight'>{$stats['average_workouts_per_user']}</span>
+                </div>";
+        
+        if (isset($stats['demographics'])) {
+            $demographics = $stats['demographics'];
+            if (!empty($demographics['age_groups'])) {
+                $ageBreakdown = [];
+                foreach ($demographics['age_groups'] as $group => $count) {
+                    if ($count > 0) {
+                        $groupNames = [
+                            'youth' => 'Youth (12-25)',
+                            'adult' => 'Adult (26-45)', 
+                            'senior' => 'Senior (45+)'
+                        ];
+                        $ageBreakdown[] = ($groupNames[$group] ?? $group) . ": {$count}";
+                    }
+                }
+                if (!empty($ageBreakdown)) {
+                    $html .= "
+                        <div class='insight-item'>
+                            Age Distribution: <span class='insight-highlight'>" . implode(', ', $ageBreakdown) . "</span>
+                        </div>";
+                }
+            }
+            if (!empty($demographics['gender'])) {
+                $genderBreakdown = [];
+                foreach ($demographics['gender'] as $gender => $count) {
+                    if ($count > 0) {
+                        $genderBreakdown[] = ucfirst($gender) . ": {$count}";
+                    }
+                }
+                if (!empty($genderBreakdown)) {
+                    $html .= "
+                        <div class='insight-item'>
+                            Gender Distribution: <span class='insight-highlight'>" . implode(', ', $genderBreakdown) . "</span>
+                        </div>";
+                }
+            }
+        }
+        
+        $html .= "</div>";
     }
+
     if (!empty(array_filter($filters))) {
         $html .= "<div class='filters'><h3>Applied Filters</h3>";
         foreach ($filters as $key => $value) {
@@ -485,7 +707,7 @@ function generatePDF($champions, $filters, $stats) {
                 <td><div class='rank {$rankClass}'>{$rank}</div></td>
                 <td class='user-name'>" . htmlspecialchars($name) . "</td>
                 <td>" . ($champion['age'] ?: 'N/A') . "</td>
-                <td>" . ($champion['gender'] ?: 'N/A') . "</td>
+                <td>" . ($champion['gender'] ? ucfirst($champion['gender']) : 'N/A') . "</td>
                 <td>" . ($champion['goal'] ? ucwords(str_replace('_', ' ', $champion['goal'])) : 'N/A') . "</td>
                 <td>{$champion['stats']['total_workouts']}</td>
                 <td>{$champion['stats']['active_days']}</td>

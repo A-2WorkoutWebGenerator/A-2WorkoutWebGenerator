@@ -203,6 +203,13 @@ document.addEventListener('DOMContentLoaded', () => {
             generateWorkout();
         });
     }
+    const savedRoutinesLink = document.querySelector('[data-section="saved-routines"]');
+    if (savedRoutinesLink) {
+        savedRoutinesLink.addEventListener('click', () => {
+            loadSavedRoutines();
+        });
+    }
+    initializeSavedRoutinesFilters();
 });
 
 function fetchRSSLink() {
@@ -1047,6 +1054,526 @@ function initializeResponsiveMenu() {
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
             closeMenu();
+        }
+    });
+}
+function loadSavedRoutines() {
+    const token = localStorage.getItem("authToken");
+    const container = document.getElementById('saved-routines-container');
+    const noRoutinesMessage = document.getElementById('no-saved-routines');
+
+    container.innerHTML = `
+        <div class="loading-saved-routines" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2em; color: #3498db; margin-bottom: 15px;"></i>
+            <p>Loading your saved routines...</p>
+        </div>
+    `;
+    
+    fetch('get-saved-routines.php', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.routines && data.routines.length > 0) {
+            updateCategoryFilter(data.categories || []);
+            displayRoutineStats(data.stats, data.category_counts);
+            
+            displaySavedRoutines(data.routines);
+            container.style.display = 'grid';
+            noRoutinesMessage.style.display = 'none';
+        } else {
+            container.style.display = 'none';
+            noRoutinesMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading saved routines:', error);
+        container.innerHTML = `
+            <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #e74c3c;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 15px;"></i>
+                <p>Error loading saved routines. Please try again later.</p>
+            </div>
+        `;
+    });
+    attachRemoveListeners();
+}
+function updateCategoryFilter(availableCategories) {
+    const categoryFilter = document.getElementById('category-filter');
+    if (!categoryFilter) return;
+
+    const allOption = categoryFilter.querySelector('option[value="all"]');
+    categoryFilter.innerHTML = '';
+    categoryFilter.appendChild(allOption);
+
+    const categoryNames = {
+        'kinetotherapy': 'Kinetotherapy',
+        'physiotherapy': 'Physiotherapy',
+        'football': 'Football', 
+        'basketball': 'Basketball',
+        'tennis': 'Tennis',
+        'swimming': 'Swimming',
+        'general': 'General Workout'
+    };
+    
+    availableCategories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = categoryNames[category] || category;
+        categoryFilter.appendChild(option);
+    });
+}
+function updateCategoryFilter(availableCategories) {
+    const categoryFilter = document.getElementById('category-filter');
+    if (!categoryFilter) return;
+
+    const allOption = categoryFilter.querySelector('option[value="all"]');
+    categoryFilter.innerHTML = '';
+    categoryFilter.appendChild(allOption);
+
+    const categoryNames = {
+        'kinetotherapy': 'Kinetotherapy',
+        'physiotherapy': 'Physiotherapy',
+        'football': 'Football', 
+        'basketball': 'Basketball',
+        'tennis': 'Tennis',
+        'swimming': 'Swimming',
+        'general': 'General Workout'
+    };
+    
+    availableCategories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = categoryNames[category] || category;
+        categoryFilter.appendChild(option);
+    });
+}
+
+function displayRoutineStats(stats, categoryCounts) {
+    const savedRoutinesHeader = document.querySelector('.saved-routines-header');
+
+    const existingStats = savedRoutinesHeader.querySelector('.routine-stats');
+    if (existingStats) {
+        existingStats.remove();
+    }
+    
+    if (!stats) return;
+    
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'routine-stats';
+    statsDiv.innerHTML = `
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number">${stats.total_routines}</span>
+                <span class="stat-label">Total Routines</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">${stats.unique_categories}</span>
+                <span class="stat-label">Categories</span>
+            </div>
+            ${stats.most_saved_category ? `
+                <div class="stat-item">
+                    <span class="stat-number">${categoryCounts[stats.most_saved_category]}</span>
+                    <span class="stat-label">Most: ${getCategoryDisplayName(stats.most_saved_category)}</span>
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    statsDiv.style.cssText = `
+        margin-top: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    `;
+    
+    savedRoutinesHeader.appendChild(statsDiv);
+
+    if (!document.getElementById('routine-stats-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'routine-stats-styles';
+        styles.textContent = `
+            .stats-container {
+                display: flex;
+                justify-content: center;
+                gap: 30px;
+                flex-wrap: wrap;
+            }
+            
+            .stat-item {
+                text-align: center;
+                min-width: 80px;
+            }
+            
+            .stat-number {
+                display: block;
+                font-size: 1.8em;
+                font-weight: bold;
+                color: #18D259;
+                margin-bottom: 5px;
+            }
+            
+            .stat-label {
+                font-size: 0.9em;
+                color: #6c757d;
+                font-weight: 500;
+            }
+            
+            @media (max-width: 600px) {
+                .stats-container {
+                    gap: 20px;
+                }
+                
+                .stat-number {
+                    font-size: 1.5em;
+                }
+                
+                .stat-label {
+                    font-size: 0.8em;
+                }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+}
+
+function getCategoryDisplayName(category) {
+    const categoryNames = {
+        'kinetotherapy': 'Kinetotherapy',
+        'physiotherapy': 'Physiotherapy',
+        'football': 'Football',
+        'basketball': 'Basketball', 
+        'tennis': 'Tennis',
+        'swimming': 'Swimming',
+        'general': 'General'
+    };
+    
+    return categoryNames[category] || category;
+}
+
+function displaySavedRoutines(routines) {
+    const container = document.getElementById('saved-routines-container');
+    
+    container.innerHTML = routines.map(routine => `
+        <div class="saved-routine-card" data-category="${routine.category}" data-difficulty="${routine.difficulty}">
+            <div class="routine-header">
+                <div class="routine-icon">
+                    <i class="${routine.icon}"></i>
+                </div>
+                <h3>${routine.name}</h3>
+                <div class="category-badge">
+                    <i class="fas fa-tag"></i>
+                    <span>${routine.category_display || getCategoryDisplayName(routine.category)}</span>
+                </div>
+                <div class="difficulty">
+                    <span class="difficulty-label">${routine.difficulty}</span>
+                    <div class="difficulty-meter">
+                        ${generateDifficultyMeter(routine.difficulty)}
+                    </div>
+                </div>
+                <div class="saved-badge">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Saved</span>
+                </div>
+            </div>
+            
+            <div class="routine-body">
+                <p>${routine.description}</p>
+                <ul class="exercise-list">
+                    ${routine.exercises.map(exercise => 
+                        `<li><i class="fas fa-check"></i> ${exercise}</li>`
+                    ).join('')}
+                </ul>
+                <div class="routine-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>${routine.duration}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>${routine.frequency}</span>
+                    </div>
+                </div>
+                <div class="saved-info">
+                    <small><i class="fas fa-calendar-plus"></i> Saved on ${formatSavedDate(routine.saved_at)}</small>
+                </div>
+            </div>
+            
+            <div class="routine-footer">
+                <a href="${routine.video_url}" target="_blank" 
+                   class="btn btn-primary"
+                   style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                   onmouseover="this.style.backgroundColor='#3fcb70';"
+                   onmouseout="this.style.backgroundColor='#18D259';">
+                    <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                </a>
+                <button class="btn btn-outline remove-routine" data-routine-id="${routine.id}">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+        </div>
+    `).join('');
+    const removeButtons = container.querySelectorAll('.remove-routine');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const routineId = this.getAttribute('data-routine-id');
+            const routineName = this.closest('.saved-routine-card').querySelector('h3').textContent;
+            showRemoveConfirmation(routineId, routineName);
+        });
+    });
+}
+
+function generateDifficultyMeter(difficulty) {
+    const levels = {
+        'Beginner': 1,
+        'Intermediate': 2, 
+        'Advanced': 3,
+        'All Levels': 2
+    };
+    
+    const level = levels[difficulty] || 1;
+    let meter = '';
+    
+    for (let i = 1; i <= 3; i++) {
+        meter += `<span${i <= level ? ' class="active"' : ''}></span>`;
+    }
+    
+    return meter;
+}
+
+function formatSavedDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function showRemoveConfirmation(routineId, routineName) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay remove-routine-modal';
+    modal.innerHTML = `
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Remove Routine</h3>
+                <button class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove <strong>"${routineName}"</strong> from your saved routines?</p>
+                <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-cancel">Cancel</button>
+                <button class="btn btn-danger modal-confirm">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+    
+    const closeBtn = modal.querySelector('.modal-close');
+    const cancelBtn = modal.querySelector('.modal-cancel');
+    const confirmBtn = modal.querySelector('.modal-confirm');
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.remove();
+            document.body.style.overflow = '';
+        }, 300);
+    }
+    
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    
+    confirmBtn.addEventListener('click', function() {
+        removeRoutine(routineId);
+        closeModal();
+    });
+}
+
+function removeRoutine(routineId) {
+    const token = localStorage.getItem("authToken");
+    
+    fetch('remove-routine.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ routine_id: routineId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showTemporaryNotification('Routine removed successfully!', 'success');
+            loadSavedRoutines(); 
+        } else {
+            showTemporaryNotification(data.message || 'Failed to remove routine', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error removing routine:', error);
+        showTemporaryNotification('Connection error. Please try again.', 'error');
+    });
+}
+
+function initializeSavedRoutinesFilters() {
+    const categoryFilter = document.getElementById('category-filter');
+    const difficultyFilter = document.getElementById('difficulty-filter');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', applySavedRoutinesFilters);
+    }
+    
+    if (difficultyFilter) {
+        difficultyFilter.addEventListener('change', applySavedRoutinesFilters);
+    }
+    
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            categoryFilter.value = 'all';
+            difficultyFilter.value = 'all';
+            applySavedRoutinesFilters();
+        });
+    }
+}
+
+function applySavedRoutinesFilters() {
+    const categoryFilter = document.getElementById('category-filter').value;
+    const difficultyFilter = document.getElementById('difficulty-filter').value;
+    const routineCards = document.querySelectorAll('.saved-routine-card');
+    
+    let visibleCount = 0;
+    
+    routineCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        const cardDifficulty = card.getAttribute('data-difficulty');
+        
+        const categoryMatch = categoryFilter === 'all' || cardCategory === categoryFilter;
+        const difficultyMatch = difficultyFilter === 'all' || cardDifficulty === difficultyFilter;
+        
+        if (categoryMatch && difficultyMatch) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    const container = document.getElementById('saved-routines-container');
+    let noResultsMessage = container.querySelector('.no-filter-results');
+    
+    if (visibleCount === 0 && routineCards.length > 0) {
+        if (!noResultsMessage) {
+            noResultsMessage = document.createElement('div');
+            noResultsMessage.className = 'no-filter-results';
+            noResultsMessage.style.cssText = `
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 40px;
+                color: #666;
+            `;
+            noResultsMessage.innerHTML = `
+                <i class="fas fa-filter" style="font-size: 2em; margin-bottom: 15px;"></i>
+                <p>No routines match your current filters.</p>
+                <button id="reset-filters" class="btn btn-outline btn-sm" style="margin-top: 10px;">
+                    <i class="fas fa-times"></i> Clear Filters
+                </button>
+            `;
+            container.appendChild(noResultsMessage);
+            const resetBtn = noResultsMessage.querySelector('#reset-filters');
+            resetBtn.addEventListener('click', function() {
+                document.getElementById('category-filter').value = 'all';
+                document.getElementById('difficulty-filter').value = 'all';
+                applySavedRoutinesFilters();
+            });
+        }
+        noResultsMessage.style.display = 'block';
+    } else if (noResultsMessage) {
+        noResultsMessage.style.display = 'none';
+    }
+}
+function attachRemoveListeners() {
+    const container = document.getElementById('saved-routines-container');
+    
+    if (!container) return;
+    container.removeEventListener('click', handleRemoveClick);
+    container.addEventListener('click', handleRemoveClick);
+}
+
+function handleRemoveClick(event) {
+    const button = event.target.closest('.remove-routine');
+    
+    if (!button) return;
+    
+    event.preventDefault();
+    event.stopPropagation();
+    const routineId = button.getAttribute('data-routine-id');
+    const routineName = button.closest('.saved-routine-card').querySelector('h3').textContent;
+    
+    if (!routineId) {
+        alert('Error: No routine ID found');
+        return;
+    }
+    if (confirm(`Are you sure you want to remove "${routineName}"?`)) {
+        removeRoutineQuick(routineId, routineName);
+    }
+}
+
+function removeRoutineQuick(routineId, routineName) {
+    const token = localStorage.getItem("authToken");
+    
+    if (!token) {
+        alert('Please login again');
+        return;
+    }
+    const button = document.querySelector(`[data-routine-id="${routineId}"]`);
+    if (button) {
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
+        button.disabled = true;
+    }
+    
+    fetch('remove-routine.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ routine_id: routineId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Routine removed successfully!');
+            loadSavedRoutines();
+        } else {
+            alert('Error: ' + (data.message || 'Failed to remove routine'));
+            if (button) {
+                button.innerHTML = '<i class="fas fa-trash"></i> Remove';
+                button.disabled = false;
+            }
+        }
+    })
+    .catch(error => {
+        alert('Connection error. Please try again.');
+        if (button) {
+            button.innerHTML = '<i class="fas fa-trash"></i> Remove';
+            button.disabled = false;
         }
     });
 }

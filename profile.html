@@ -22,6 +22,9 @@
                 <li><a href="#workouts" class="nav-link" data-section="workouts">
                     <i class="fas fa-dumbbell"></i> My Workouts
                 </a></li>
+                <li><a href="#saved-routines" class="nav-link" data-section="saved-routines">
+                    <i class="fas fa-bookmark"></i> Saved Routines
+                </a></li>
                 <li><a href="#stats" class="nav-link" data-section="stats">
                     <i class="fas fa-chart-line"></i> Statistics
                 </a></li>
@@ -119,6 +122,55 @@
             <section id="workouts" class="section hidden">
                 <h2>My Workouts</h2>
                 <div id="workout-suggestion-container"></div>
+            </section>
+            <section id="saved-routines" class="section hidden">
+                <div class="saved-routines-header">
+                    <h2><i class="fas fa-bookmark"></i> Saved Routines</h2>
+                    <p class="section-subtitle">Your collection of saved workout routines</p>
+                </div>
+                
+                <div class="saved-routines-filters">
+                    <div class="filter-group">
+                        <label for="category-filter">Category:</label>
+                        <select id="category-filter">
+                            <option value="all">All Categories</option>
+                            <option value="kinetotherapy">Kinetotherapy</option>
+                            <option value="physiotherapy">Physiotherapy</option>
+                            <option value="sports">Sports</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="difficulty-filter">Difficulty:</label>
+                        <select id="difficulty-filter">
+                            <option value="all">All Levels</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="All Levels">All Levels</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button id="clear-filters" class="btn btn-outline btn-sm">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="saved-routines-container" class="saved-routines-grid">
+                </div>
+                
+                <div id="no-saved-routines" class="no-routines-message" style="display: none;">
+                    <div class="empty-state">
+                        <i class="fas fa-bookmark" style="font-size: 3em; color: #bdc3c7; margin-bottom: 20px;"></i>
+                        <h3>No Saved Routines Yet</h3>
+                        <p>Start exploring our workout routines and save your favorites!</p>
+                        <a href="kinetotherapy.html" class="btn btn-primary">
+                            <i class="fas fa-dumbbell"></i> Browse Routines
+                        </a>
+                    </div>
+                </div>
             </section>
 
             <section id="stats" class="section hidden">
