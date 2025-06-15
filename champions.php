@@ -741,6 +741,56 @@ function generatePDF($champions, $filters, $stats) {
 
     return $html;
 }
+function generateCSV($champions, $filters, $stats) {
+    $goalDisplayNames = [
+        'lose_weight' => 'Lose Weight',
+        'build_muscle' => 'Build Muscle',
+        'flexibility' => 'Improve Flexibility',
+        'endurance' => 'Increase Endurance',
+        'rehab' => 'Rehabilitation',
+        'mobility' => 'Increase Mobility',
+        'strength' => 'Increase Strength',
+        'posture' => 'Greater Posture',
+        'cardio' => 'Resistance'
+    ];
+    
+    $csv = "Rank,Name,Age,Gender,Goal,Workouts,Active Days,Duration (min),Score\n";
+    foreach ($champions as $champion) {
+        $rank = $champion['rank'];
+        $name = trim($champion['first_name'] . ' ' . $champion['last_name']) ?: $champion['username'];
+        $age = $champion['age'] ?: 'N/A';
+        $gender = $champion['gender'] ? ucfirst($champion['gender']) : 'N/A';
+        $goal = $champion['goal'] ? ($goalDisplayNames[$champion['goal']] ?? ucwords(str_replace('_', ' ', $champion['goal']))) : 'N/A';
+
+        $name = '"' . str_replace('"', '""', $name) . '"';
+        $goal = '"' . str_replace('"', '""', $goal) . '"';
+        
+        $csv .= sprintf(
+            "%d,%s,%s,%s,%s,%d,%d,%s,%s\n",
+            $rank,
+            $name,
+            $age,
+            $gender,
+            $goal,
+            $champion['stats']['total_workouts'],
+            $champion['stats']['active_days'],
+            $champion['stats']['total_duration'],
+            $champion['stats']['activity_score']
+        );
+    }
+
+    if ($stats) {
+        $csv .= "\n\n\"=== COMMUNITY STATISTICS ===\"\n";
+        $csv .= "\"Total Active Users\"," . $stats['total_active_users'] . "\n";
+        $csv .= "\"Total Workouts\"," . $stats['total_workouts_generated'] . "\n";
+        $csv .= "\"Total Minutes\"," . number_format($stats['total_workout_minutes']) . "\n";
+        $csv .= "\"Average Workouts per User\"," . $stats['average_workouts_per_user'] . "\n";
+        $csv .= "\"Most Active Age Group\",\"" . $stats['most_active_age_group_display'] . "\"\n";
+        $csv .= "\"Most Popular Goal\",\"" . $stats['most_popular_goal_display'] . "\"\n";
+    }
+    
+    return $csv;
+}
 
 try {
     debugLog("Champions API called", $_GET);
@@ -780,6 +830,11 @@ try {
         header('Content-Disposition: inline; filename="fitgen_champions_' . date('Y-m-d_H-i') . '.html"');
         echo $html;
         
+    } elseif ($format === 'csv') {
+        $csv = generateCSV($champions, $filters, $stats);
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="fitgen_champions_' . date('Y-m-d_H-i') . '.csv"');
+        echo $csv;
     } else {
         echo json_encode([
             'success' => true,
