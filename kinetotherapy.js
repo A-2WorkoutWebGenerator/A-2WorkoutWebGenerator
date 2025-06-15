@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
             //pageWrapper.classList.toggle('mobile-menu-open');
         });
     }
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+        setTimeout(() => {
+            checkSavedRoutines();
+        }, 1000);
+    }
     
     const faqItems = document.querySelectorAll('.faq-item');
     
@@ -468,9 +474,15 @@ function showLoginRequiredModal(routineName) {
 }
 
 function saveRoutine(routineCard, button) {
+    if (button.classList.contains('saved')) {
+        showErrorToast('This routine is already saved to your profile!');
+        return;
+    }
+    
     const routineData = extractRoutineData(routineCard);
     const authToken = localStorage.getItem('authToken');
     const originalContent = button.innerHTML;
+    
     button.disabled = true;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
     
@@ -485,17 +497,17 @@ function saveRoutine(routineCard, button) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            button.classList.add('saved');
-            button.innerHTML = '<i class="fas fa-check"></i> Saved';
-            button.style.backgroundColor = '#18D259';
-            button.style.color = 'white';
-            button.style.borderColor = '#18D259';
-            
+            markAsSaved(button);
             showSuccessToast(`"${routineData.name}" has been saved to your profile!`);
         } else {
-            button.disabled = false;
-            button.innerHTML = originalContent;
-            showErrorToast(data.message || 'Failed to save routine. Please try again.');
+            if (data.already_saved) {
+                markAsSaved(button);
+                showErrorToast('This routine is already saved to your profile!');
+            } else {
+                button.disabled = false;
+                button.innerHTML = originalContent;
+                showErrorToast(data.message || 'Failed to save routine. Please try again.');
+            }
         }
     })
     .catch(error => {
@@ -598,6 +610,119 @@ function showSuccessToast(message) {
         padding: 15px 20px;
         border-radius: 10px;
         box-shadow: 0 4px 20px rgba(24, 210, 89, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 400px;
+        transform: translateX(110%);
+        transition: transform 0.3s ease;
+        z-index: 9999;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.style.cssText = `
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        margin-left: 15px;
+        padding: 5px;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    `;
+    
+    closeBtn.addEventListener('click', () => {
+        toast.style.transform = 'translateX(110%)';
+        setTimeout(() => toast.remove(), 300);
+    });
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.transform = 'translateX(110%)';
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 5000);
+}
+
+function checkSavedRoutines() {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+
+    fetch('get-saved-routines.php', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.routines) {
+            markSavedRoutinesOnPage(data.routines);
+        }
+    })
+    .catch(error => {
+        console.error('Error checking saved routines:', error);
+    });
+}
+function markSavedRoutinesOnPage(savedRoutines) {
+    const currentPage = detectPageCategory();
+    const routineCards = document.querySelectorAll('.routine-card');
+    
+    routineCards.forEach(card => {
+        const routineName = card.querySelector('h3').textContent.trim();
+        const saveButton = card.querySelector('.save-routine');
+        
+        if (!saveButton) return;
+        const isRoutineSaved = savedRoutines.some(routine => 
+            routine.name === routineName && 
+            routine.category === currentPage
+        );
+        
+        if (isRoutineSaved) {
+            markAsSaved(saveButton);
+        }
+    });
+}
+function markAsSaved(button) {
+    button.classList.add('saved');
+    button.innerHTML = '<i class="fas fa-check"></i> Saved';
+    button.style.backgroundColor = '#18D259';
+    button.style.color = 'white';
+    button.style.borderColor = '#18D259';
+    button.disabled = true;
+    button.title = 'This routine is already saved to your profile';
+    
+    button.style.opacity = '0.8';
+    button.style.cursor = 'not-allowed';
+}
+function showErrorToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'error-toast';
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
         display: flex;
         align-items: center;
         justify-content: space-between;

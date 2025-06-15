@@ -61,9 +61,14 @@ try {
         throw new Exception('Database query failed: ' . pg_last_error($conn));
     }
     
+
     if (pg_num_rows($checkResult) > 0) {
         pg_close($conn);
-        echo json_encode(['success' => false, 'message' => 'Routine already saved']);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Routine already saved',
+            'already_saved' => true 
+        ]);
         exit;
     }
 
