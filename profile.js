@@ -211,6 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     initializeSavedRoutinesFilters();
+
+    setTimeout(handleHashOnLoad, 100);
 });
 
 function fetchRSSLink() {
@@ -283,11 +285,71 @@ function initializeNavigation() {
             
             event.preventDefault();
             menuItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(s => s.classList.remove('active'));
+            sections.forEach(s => {
+                s.classList.remove('active');
+                s.classList.add('hidden');
+            });
             item.classList.add('active');
-            document.getElementById(target).classList.add('active');
+            const targetSection = document.getElementById(target);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                targetSection.classList.remove('hidden');
+            }
+            if (target === 'workouts') {
+                loadWorkoutSuggestions();
+            } else if (target === 'stats') {
+                loadStatistics();
+            } else if (target === 'saved-routines') {
+                loadSavedRoutines();
+            }
         });
     });
+    
+    handleHashOnLoad();
+}
+function handleHashOnLoad() {
+    const hash = window.location.hash;
+    
+    if (hash) {
+        console.log('Hash detectat:', hash);
+        
+        const hashToSection = {
+            '#preferences': 'preferences',
+            '#account': 'account',
+            '#workouts': 'workouts',
+            '#saved-routines': 'saved-routines',
+            '#stats': 'stats'
+        };
+        
+        const targetSection = hashToSection[hash];
+        
+        if (targetSection) {
+            console.log('Navighez la secțiunea:', targetSection);
+            
+            const targetLink = document.querySelector(`[data-section="${targetSection}"]`);
+            
+            if (targetLink) {
+                setTimeout(() => {
+                    targetLink.click();
+                    
+                    if (targetSection === 'preferences') {
+                        setTimeout(() => {
+                            const firstInput = document.querySelector('#muscle_group');
+                            if (firstInput) {
+                                firstInput.focus();
+                                document.getElementById('preferences-form').scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            }
+                        }, 200);
+                    }
+                    window.history.replaceState(null, null, window.location.pathname);
+                    
+                }, 300);
+            }
+        }
+    }
 }
 function initializeProfilePhoto() {
     const profilePic = document.getElementById('profile_pic');
