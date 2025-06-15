@@ -4,54 +4,648 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="kinetotherapy.css">
+    <link rel="stylesheet" href="mobile-menu.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="admin-utils.js"></script>
+    <script src="mobile-menu.js"></script>
     <title>Credits - FitGen</title>
+    <style>
+        .credits-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .credits-hero {
+            background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credits-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .credits-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .credits-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .credits-hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .credits-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .credits-intro {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .credits-intro h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .credits-intro p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .credits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .credit-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+        }
+
+        .credit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .credit-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .credit-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #18D259, #3fcb70);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .credit-icon i {
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .credit-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #18D259;
+            margin-bottom: 0.5rem;
+        }
+
+        .credit-platform {
+            font-size: 0.85rem;
+            color: #18D259;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .credit-link {
+            display: block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #18D259;
+            border-radius: 8px;
+            color: #18D259;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            word-break: break-all;
+            font-size: 0.9rem;
+        }
+
+        .credit-link:hover {
+            background: linear-gradient(135deg, #18D259 0%, #3fcb70 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .credit-link i {
+            margin-right: 0.5rem;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .adobe {
+            background: #ff4444;
+            color: white;
+        }
+
+        .freepik {
+            background: #00d4aa;
+            color: white;
+        }
+
+        .pixabay {
+            background: #02be6e;
+            color: white;
+        }
+
+        .credits-footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .credits-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .credits-hero p {
+                font-size: 1.1rem;
+            }
+
+            .credits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .credit-card {
+                padding: 1.5rem;
+            }
+
+            .credits-container {
+                padding: 2rem 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .credits-hero {
+                padding: 2rem 0;
+            }
+
+            .credits-hero h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="">
-        <div class="">
-            <h1>Credits</h1>
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW-Logged.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy.html">Physiotherapy</a>
+                        <a href="kinetotherapy.html">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="football.html">Football</a>
+                                <a href="basketball.html">Basketball</a>
+                                <a href="tennis.html">Tennis</a>
+                                <a href="swimming.html">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="champions.html" class="nav-link">Champions</a>
+                <a href="success-stories.html" class="nav-link">Success stories</a>
+                <a href="contact.html" class="nav-link">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="profile.html" class="btn btn-outline">Profile</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+
+        <div class="credits-page">
+            <section class="credits-hero">
+                <div class="credits-hero-content">
+                    <h1><i class="fas fa-camera"></i> Credits & Attribution</h1>
+                    <p>We believe in giving credit where credit is due. Here are all the amazing photographers, artists, and platforms that helped make FitGen visually stunning.</p>
+                </div>
+            </section>
+
+            <div class="credits-container">
+                <div class="credits-intro">
+                    <h2>Image Sources</h2>
+                    <p>All images used in FitGen are properly licensed and attributed to their respective creators and platforms.</p>
+                </div>
+
+
+
+                <div class="credits-grid">
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-swimmer"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#1</div>
+                                <div class="credit-source">Swimming Image</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/diving-female-swimmer-on-pink-background/1441241625" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Diving Female Swimmer on Pink Background
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-football-ball"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#2</div>
+                                <div class="credit-source">Football Image</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/afro-american-football-player-man-over-isolated-yellow-background/316380529" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Afro-American Football Player
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-band-aid"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#3</div>
+                                <div class="credit-source">Physiotherapy Image</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/young-woman-with-physio-tape-on-blue-background/1068200453" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Young Woman with Physio Tape
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#4</div>
+                                <div class="credit-source">Sports Stretching</div>
+                                <div class="credit-platform">Freepik</div>
+                            </div>
+                        </div>
+                        <a href="https://www.freepik.com/free-photo/full-shot-men-stretching-before-game_42247402.htm" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Men Stretching Before Game
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-swimmer"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#5</div>
+                                <div class="credit-source">Swimming Training</div>
+                                <div class="credit-platform">Freepik</div>
+                            </div>
+                        </div>
+                        <a href="https://www.freepik.com/free-photo/blonde-swimmer-stretching-back-shot_6378162.htm" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Blonde Swimmer Stretching
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#6</div>
+                                <div class="credit-source">Home Workouts</div>
+                                <div class="credit-platform">Freepik</div>
+                            </div>
+                        </div>
+                        <a href="https://www.freepik.com/free-photo/full-shot-smiley-woman-mat_19894406.htm" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Smiley Woman Home Workout
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#7</div>
+                                <div class="credit-source">Senior Fitness</div>
+                                <div class="credit-platform">Freepik</div>
+                            </div>
+                        </div>
+                        <a href="https://www.freepik.com/free-photo/old-woman-doing-fitness-exercises_29969603.htm" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Senior Woman Fitness Exercises
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#8</div>
+                                <div class="credit-source">Group Exercise</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/four-young-women-exercising-in-nature/143793182" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Four Young Women Exercising
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#9</div>
+                                <div class="credit-source">Senior Group</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/group-of-diverse-seniors-smile-after-exercise-in-park-happy-diverse-seniors-group-enjoy-outdoor-exercise-senior-friends-group-smile-happily-in-park-happy-diverse-senior-friends-exercise-outdoors/1342769438" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Diverse Seniors Exercise Group
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#10</div>
+                                <div class="credit-source">Gym Training</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/fitness-couple-doing-a-kettlebell-workout-exercise-or-warmup-training-in-a-gym-fit-sports-people-woman-and-man-with-a-strong-grip-exercising-using-equipment-to-build-muscles-and-forearm-strength/524377928" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Fitness Couple Kettlebell Workout
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#11</div>
+                                <div class="credit-source">Online Fitness</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/young-latina-woman-exercising-at-home-using-laptop-to-follow-online-fitness-video-tutorial-copy-space/496985799" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Online Fitness Video Tutorial
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-basketball-ball"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#12</div>
+                                <div class="credit-source">Basketball Team</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/top-view-of-basketball-team-holding-hands-over-court/232978499" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Basketball Team Top View
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#13</div>
+                                <div class="credit-source">Outdoor Jogging</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/group-of-young-people-in-sports-clothing-jogging-together-outdoors/282635162" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Young People Jogging Outdoors
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-basketball-ball"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#14</div>
+                                <div class="credit-source">Basketball Players</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/group-of-multiracial-young-people-playing-basketball-outdoors/229779959" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Multiracial Basketball Players
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-tennis-ball"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#15</div>
+                                <div class="credit-source">Tennis Coaching</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/male-instructor-teaching-young-woman-to-play-tennis-on-the-tennis-court-outdoors/206441535" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Tennis Instructor Teaching
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-band-aid"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#16</div>
+                                <div class="credit-source">Sports Medicine</div>
+                                <div class="credit-platform">Adobe Stock</div>
+                            </div>
+                        </div>
+                        <a href="https://stock.adobe.com/ee/images/sporty-man-with-physio-tape-applied-on-arm-against-light-background/303600320" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Sporty Man with Physio Tape
+                        </a>
+                    </div>
+
+                    <div class="credit-card">
+                        <div class="credit-header">
+                            <div class="credit-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div>
+                                <div class="credit-number">#17</div>
+                                <div class="credit-source">Running Sports</div>
+                                <div class="credit-platform">Pixabay</div>
+                            </div>
+                        </div>
+                        <a href="https://pixabay.com/photos/woman-running-run-fitness-sports-1822459/" 
+                           target="_blank" class="credit-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Woman Running Fitness Sports
+                        </a>
+                    </div>
+                </div>
+
+                <div class="credits-footer">
+                    <p>We're grateful to all the talented creators whose work helps bring FitGen to life.</p>
+                </div>
+            </div>
         </div>
-        <div class="">
-            <ul>
-                <li><a href="https://stock.adobe.com/ee/images/diving-female-swimmer-on-pink-background/1441241625">
-                    1. https://stock.adobe.com/ee/images/diving-female-swimmer-on-pink-background/1441241625</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/afro-american-football-player-man-over-isolated-yellow-background/316380529?prev_url=detail">
-                    2. https://stock.adobe.com/ee/images/afro-american-football-player-man-over-isolated-yellow-background/316380529?prev_url=detail</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/young-woman-with-physio-tape-on-blue-background/1068200453?prev_url=detail">
-                    3. https://stock.adobe.com/ee/images/young-woman-with-physio-tape-on-blue-background/1068200453?prev_url=detail</a></li>
-                <li><a href="https://www.freepik.com/free-photo/full-shot-men-stretching-before-game_42247402.htm">
-                    4. https://www.freepik.com/free-photo/full-shot-men-stretching-before-game_42247402.htm</a></li>
-                <li><a href="https://www.freepik.com/free-photo/blonde-swimmer-stretching-back-shot_6378162.htm#fromView=search&page=1&position=12&uuid=3fd64978-3fd2-483e-a258-f62b64b21a3e&query=blonde+swimmer+stratching">
-                    5. https://www.freepik.com/free-photo/blonde-swimmer-stretching-back-shot_6378162.htm#fromView=search&page=1&position=12&uuid=3fd64978-3fd2-483e-a258-f62b64b21a3e&query=blonde+swimmer+stratching</a></li>
-                <li><a href="https://www.freepik.com/free-photo/full-shot-smiley-woman-mat_19894406.htm#fromView=search&page=1&position=38&uuid=d05b9817-9fb3-4b8a-af01-6f7fbcc1cc38&query=home+workouts">
-                    6. https://www.freepik.com/free-photo/full-shot-smiley-woman-mat_19894406.htm#fromView=search&page=1&position=38&uuid=d05b9817-9fb3-4b8a-af01-6f7fbcc1cc38&query=home+workouts</a></li>
-                <li><a href="https://www.freepik.com/free-photo/old-woman-doing-fitness-exercises_29969603.htm">
-                    7. https://www.freepik.com/free-photo/old-woman-doing-fitness-exercises_29969603.htm</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/four-young-women-exercising-in-nature/143793182">
-                    8. https://stock.adobe.com/ee/images/four-young-women-exercising-in-nature/143793182</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/group-of-diverse-seniors-smile-after-exercise-in-park-happy-diverse-seniors-group-enjoy-outdoor-exercise-senior-friends-group-smile-happily-in-park-happy-diverse-senior-friends-exercise-outdoors/1342769438">
-                    9. https://stock.adobe.com/ee/images/group-of-diverse-seniors-smile-after-exercise-in-park-happy-diverse-seniors-group-enjoy-outdoor-exercise-senior-friends-group-smile-happily-in-park-happy-diverse-senior-friends-exercise-outdoors/1342769438</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/fitness-couple-doing-a-kettlebell-workout-exercise-or-warmup-training-in-a-gym-fit-sports-people-woman-and-man-with-a-strong-grip-exercising-using-equipment-to-build-muscles-and-forearm-strength/524377928">
-                    10. https://stock.adobe.com/ee/images/fitness-couple-doing-a-kettlebell-workout-exercise-or-warmup-training-in-a-gym-fit-sports-people-woman-and-man-with-a-strong-grip-exercising-using-equipment-to-build-muscles-and-forearm-strength/524377928</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/young-latina-woman-exercising-at-home-using-laptop-to-follow-online-fitness-video-tutorial-copy-space/496985799">
-                    11. https://stock.adobe.com/ee/images/young-latina-woman-exercising-at-home-using-laptop-to-follow-online-fitness-video-tutorial-copy-space/496985799</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/top-view-of-basketball-team-holding-hands-over-court/232978499">
-                    12. https://stock.adobe.com/ee/images/top-view-of-basketball-team-holding-hands-over-court/232978499</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/group-of-young-people-in-sports-clothing-jogging-together-outdoors/282635162">
-                    13. https://stock.adobe.com/ee/images/group-of-young-people-in-sports-clothing-jogging-together-outdoors/282635162</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/group-of-multiracial-young-people-playing-basketball-outdoors/229779959">
-                    14. https://stock.adobe.com/ee/images/group-of-multiracial-young-people-playing-basketball-outdoors/229779959</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/male-instructor-teaching-young-woman-to-play-tennis-on-the-tennis-court-outdoors/206441535">
-                    15. https://stock.adobe.com/ee/images/male-instructor-teaching-young-woman-to-play-tennis-on-the-tennis-court-outdoors/206441535</a></li>
-                <li><a href="https://stock.adobe.com/ee/images/sporty-man-with-physio-tape-applied-on-arm-against-light-background/303600320?prev_url=detail">
-                    16. https://stock.adobe.com/ee/images/sporty-man-with-physio-tape-applied-on-arm-against-light-background/303600320?prev_url=detail</a></li>
-                <li><a href="https://pixabay.com/photos/woman-running-run-fitness-sports-1822459/">
-                    17. https://pixabay.com/photos/woman-running-run-fitness-sports-1822459/</a></li>
-            </ul>
-        </div>
-        <div class="">
-            <a href="WoW.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
-        </div>
+
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <ul>
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="credits.html">Credits</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
+
+    <script>
+        window.logout = function() {
+            if (confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('authToken');
+                window.location.href = 'WoW.html';
+            }
+        };
+    </script>
 </body>
+</html>

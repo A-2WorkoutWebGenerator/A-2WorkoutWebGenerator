@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeProfileForm(); 
     loadWorkoutSuggestions();
     fetchRSSLink();
+    addVideoLinkStyles();
     document.querySelector('[data-section="workouts"]').addEventListener('click', () => {
         loadWorkoutSuggestions();
     });
@@ -640,6 +641,9 @@ function showAllSuggestions(suggestions) {
                     ${exercise.duration_minutes ? ` - ${exercise.duration_minutes} min` : ''}
                     <br>${exercise.description || ""}
                     <br><em>${exercise.instructions || ""}</em>
+                    ${exercise.video_url ? `<br><a href="${exercise.video_url}" target="_blank" class="watch-video-link">
+                        <i class="fab fa-youtube"></i> Watch Video
+                    </a>` : ''}
                 </li>`;
             });
         }
@@ -652,7 +656,55 @@ function showAllSuggestions(suggestions) {
             </div>
         `;
     });
+    
+    addVideoLinkStyles();
 }
+function addVideoLinkStyles() {
+    if (!document.getElementById('watch-video-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'watch-video-styles';
+        styles.textContent = `
+            .watch-video-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+                color: white !important;
+                text-decoration: none !important;
+                border-radius: 6px;
+                font-weight: 500;
+                font-size: 0.85rem;
+                margin-top: 8px;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 6px rgba(255, 71, 87, 0.25);
+            }
+            
+            .watch-video-link:hover {
+                background: linear-gradient(135deg, #ff3742 0%, #ff2f3a 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 3px 10px rgba(255, 71, 87, 0.35);
+                color: white !important;
+                text-decoration: none !important;
+            }
+            
+            .watch-video-link:active {
+                transform: translateY(0px);
+            }
+            
+            .watch-video-link .fab {
+                font-size: 1em;
+                color: white;
+            }
+            
+            .watch-video-link:visited {
+                color: white !important;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+}
+
 
 function generateWorkout() {
     const token = localStorage.getItem("authToken");
