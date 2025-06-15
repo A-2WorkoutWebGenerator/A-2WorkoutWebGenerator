@@ -265,15 +265,96 @@ paths:
     get:
       tags: [Leaderboard]
       summary: Get leaderboard
+      parameters:
+        - name: age_group
+          in: query
+          required: false
+          schema: { type: string, enum: [youth, adult, senior] }
+          description: Filter by age group
+        - name: gender
+          in: query
+          required: false
+          schema: { type: string }
+          description: Filter by gender
+        - name: goal
+          in: query
+          required: false
+          schema: { type: string }
+          description: Filter by goal
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100 }
+          description: Limit the number of results (default 25)
+        - name: format
+          in: query
+          required: false
+          schema: { type: string, enum: [json, pdf, html] }
+          description: Response format (json, pdf/html for report)
       responses:
         '200':
-          description: Leaderboard
+          description: Leaderboard with champions and statistics
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntry'
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LeaderboardEntry'
+                  stats:
+                    $ref: '#/components/schemas/LeaderboardStats'
+                  filters_applied:
+                    type: object
+                  total_count:
+                    type: integer
+                  generated_at:
+                    type: string
+                example:
+                  success: true
+                  data:
+                    - user_id: 1
+                      username: johndoe
+                      first_name: John
+                      last_name: Doe
+                      age: 25
+                      gender: male
+                      goal: build_muscle
+                      profile_picture: "uploads/profile_pics/1_xxx.jpg"
+                      rank: 1
+                      stats:
+                        total_workouts: 120
+                        active_days: 70
+                        total_duration: 3500
+                        activity_score: 1450
+                  stats:
+                    total_active_users: 100
+                    total_workouts_generated: 1000
+                    total_workout_minutes: 24000
+                    average_workouts_per_user: 10
+                    most_active_age_group: adult
+                    most_active_age_group_display: Adult (26-45)
+                    most_popular_goal: build_muscle
+                    most_popular_goal_display: Build Muscle
+                    demographics:
+                      age_groups:
+                        youth: 20
+                        adult: 60
+                        senior: 20
+                      gender:
+                        male: 70
+                        female: 30
+                      goals:
+                        build_muscle: 30
+                        lose_weight: 40
+                        endurance: 30
+                  filters_applied:
+                    age_group: adult
+                    gender: male
+                  total_count: 25
+                  generated_at: "2025-06-15T10:23:21Z"
 
 components:
   securitySchemes:
@@ -398,5 +479,45 @@ components:
       properties:
         user_id: { type: integer }
         username: { type: string }
-        total_workouts: { type: integer }
+        first_name: { type: string }
+        last_name: { type: string }
+        age: { type: integer }
+        gender: { type: string }
+        goal: { type: string }
+        profile_picture: { type: string }
         rank: { type: integer }
+        stats:
+          type: object
+          properties:
+            total_workouts: { type: integer }
+            active_days: { type: integer }
+            total_duration: { type: number }
+            activity_score: { type: number }
+    LeaderboardStats:
+      type: object
+      properties:
+        total_active_users: { type: integer }
+        total_workouts_generated: { type: integer }
+        total_workout_minutes: { type: number }
+        average_workouts_per_user: { type: number }
+        most_active_age_group: { type: string }
+        most_active_age_group_display: { type: string }
+        most_popular_goal: { type: string }
+        most_popular_goal_display: { type: string }
+        demographics:
+          type: object
+          properties:
+            age_groups:
+              type: object
+              properties:
+                youth: { type: integer }
+                adult: { type: integer }
+                senior: { type: integer }
+            gender:
+              type: object
+              properties:
+                male: { type: integer }
+                female: { type: integer }
+            goals:
+              type: object
+              additionalProperties: { type: integer }
