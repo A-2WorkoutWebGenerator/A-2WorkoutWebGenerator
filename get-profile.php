@@ -37,7 +37,7 @@ function getBearerToken() {
 $response = array();
 $response['success'] = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET') {
     $token = getBearerToken();
 
     if (!empty($token)) {
