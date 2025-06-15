@@ -159,3 +159,30 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const termsLink = document.getElementById("show-terms-link");
+    const modal = document.getElementById("terms-modal-backdrop");
+    const closeBtn = document.getElementById("close-terms-modal");
+
+    if (termsLink && modal && closeBtn) {
+        termsLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            modal.classList.add("active");
+        });
+        closeBtn.addEventListener("click", function () {
+            modal.classList.remove("active");
+        });
+        modal.addEventListener("mousedown", function (e) {
+            if (e.target === modal) {
+                modal.classList.remove("active");
+            }
+        });
+
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape" && modal.classList.contains("active")) {
+                modal.classList.remove("active");
+            }
+        });
+    }
+});

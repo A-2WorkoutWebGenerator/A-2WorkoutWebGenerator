@@ -75,7 +75,7 @@
                         
                         <div class="terms-row">
                             <input type="checkbox" id="terms" name="terms" required>
-                            <label for="terms">I agree to the <a href="#">Terms & Conditions</a></label>
+                            <label for="terms">I agree to the <a href="#" id="show-terms-link">Terms & Conditions</a></label>
                         </div>
                         
                         <button type="submit" class="submit-btn">
@@ -92,6 +92,49 @@
             </div>
         </div>
     </div>
+
+    <div class="modal-backdrop" id="terms-modal-backdrop" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-content" role="document" aria-labelledby="terms-title">
+            <button class="modal-close-btn" id="close-terms-modal" title="Close">&times;</button>
+            <h2 id="terms-title">Terms & Conditions</h2>
+            <div>
+                <strong>Last updated:</strong> June 15, 2025<br><br>
+                Welcome to <b>FitGen</b>. By creating an account and using the application, you agree to the following terms and conditions:
+                <ol style="margin-top:14px; padding-left:20px;">
+                    <li>
+                        <b>Eligibility:</b> You must be at least 16 years old to use FitGen. Access may be restricted in certain regions.
+                    </li>
+                    <li>
+                        <b>Account creation:</b> You are responsible for the accuracy of the information provided and for keeping your login credentials confidential.
+                    </li>
+                    <li>
+                        <b>Use of the application:</b> Do not use FitGen for illegal, offensive, or inappropriate activities or to share inappropriate content.
+                    </li>
+                    <li>
+                        <b>User-generated content:</b> The content you upload (exercises, comments, etc.) may be used by FitGen for functionality and promotion, while respecting your privacy rights.
+                    </li>
+                    <li>
+                        <b>Intellectual property:</b> All materials, source code, and design belong to FitGen and may not be reproduced without permission.
+                    </li>
+                    <li>
+                        <b>Limitation of liability:</b> FitGen is not responsible for injuries or issues resulting from the use of training programs. Please consult a physician before starting any exercise program.
+                    </li>
+                    <li>
+                        <b>Modification of terms:</b> We reserve the right to modify these terms. You will be notified of any changes at the email address associated with your account or within the application.
+                    </li>
+                    <li>
+                        <b>Privacy policy:</b> Your data is protected in accordance with our privacy policy. For details, please consult the dedicated section in the application.
+                    </li>
+                    <li>
+                        <b>Account termination:</b> We may suspend or delete your account in case of violation of these terms or at your request.
+                    </li>
+                </ol>
+                <br>
+                By creating an account, you confirm that you have read and agree to these terms and conditions.
+            </div>
+        </div>
+    </div>
+
     <script src="FormValidation.js"></script>
     <script src="ApiService.js"></script>
 </body>
