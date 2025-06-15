@@ -356,9 +356,13 @@
                             <option value="">All Goals</option>
                             <option value="lose_weight">Lose Weight</option>
                             <option value="build_muscle">Build Muscle</option>
-                            <option value="flexibility">Flexibility</option>
-                            <option value="endurance">Endurance</option>
+                            <option value="flexibility">Improve Flexibility</option>
+                            <option value="endurance">Increase Endurance</option>
                             <option value="rehab">Rehabilitation</option>
+                            <option value="mobility">Increase Mobility</option>
+                            <option value="strength">Increase Strength</option>
+                            <option value="posture">Greater Posture</option>
+                            <option value="cardio">Improve Resistance</option>
                         </select>
                     </div>
 
@@ -533,7 +537,19 @@
         }
 
         function formatGoal(goal) {
-            return goal.replace(/_/g, ' ')
+            const goalDisplayNames = {
+            'lose_weight': 'Lose Weight',
+            'build_muscle': 'Build Muscle',
+            'flexibility': 'Improve Flexibility',
+            'endurance': 'Increase Endurance',
+            'rehab': 'Rehabilitation',
+            'mobility': 'Increase Mobility',
+            'strength': 'Increase Strength',
+            'posture': 'Greater Posture',
+            'cardio': 'Improve Resistance'
+            };
+    
+            return goalDisplayNames[goal] || goal.replace(/_/g, ' ')
                 .split(' ')
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');

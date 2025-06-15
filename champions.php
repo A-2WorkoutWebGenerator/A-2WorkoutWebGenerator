@@ -325,13 +325,13 @@ function getSimpleStats($conn) {
         $goalDisplayNames = [
             'lose_weight' => 'Lose Weight',
             'build_muscle' => 'Build Muscle',
-            'flexibility' => 'Flexibility',
-            'endurance' => 'Endurance',
+            'flexibility' => 'Improve Flexibility',
+            'endurance' => 'Increase Endurance',
             'rehab' => 'Rehabilitation',
-            'mobility' => 'Mobility',
-            'strength' => 'Strength',
-            'posture' => 'Posture',
-            'cardio' => 'Cardio'
+            'mobility' => 'Increase Mobility',
+            'strength' => 'Increase Strength',
+            'posture' => 'Greater Posture',
+            'cardio' => 'Improve Resistance'
         ];
 
         $ageGroupDisplayNames = [
@@ -701,14 +701,24 @@ function generatePDF($champions, $filters, $stats) {
         $rank = $champion['rank'];
         $name = trim($champion['first_name'] . ' ' . $champion['last_name']) ?: $champion['username'];
         $rankClass = $rank <= 3 ? "top-3 rank-{$rank}" : '';
-        
+        $goalDisplayNames = [
+            'lose_weight' => 'Weight',
+            'build_muscle' => 'Muscle',
+            'flexibility' => 'Flexibility',
+            'endurance' => 'Endurance',
+            'rehab' => 'Rehab',
+            'mobility' => 'Mobility',
+            'strength' => 'Strength',
+            'posture' => 'Posture',
+            'cardio' => 'Resistance'
+        ];
         $html .= "
             <tr>
                 <td><div class='rank {$rankClass}'>{$rank}</div></td>
                 <td class='user-name'>" . htmlspecialchars($name) . "</td>
                 <td>" . ($champion['age'] ?: 'N/A') . "</td>
                 <td>" . ($champion['gender'] ? ucfirst($champion['gender']) : 'N/A') . "</td>
-                <td>" . ($champion['goal'] ? ucwords(str_replace('_', ' ', $champion['goal'])) : 'N/A') . "</td>
+                <td>" . ($champion['goal'] ? ($goalDisplayNames[$champion['goal']] ?? ucwords(str_replace('_', ' ', $champion['goal']))) : 'N/A') . "</td>
                 <td>{$champion['stats']['total_workouts']}</td>
                 <td>{$champion['stats']['active_days']}</td>
                 <td>{$champion['stats']['total_duration']}</td>
