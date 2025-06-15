@@ -1,0 +1,402 @@
+openapi: 3.0.3
+info:
+  title: FitGen REST API
+  version: "1.0.0"
+  description: |
+    API for workout generator, user profiles, statistics, leaderboard and exercise management.
+
+servers:
+  - url: http://localhost:8081/api
+
+tags:
+  - name: Auth
+  - name: Users
+  - name: Profile
+  - name: Exercises
+  - name: Workouts
+  - name: Statistics
+  - name: Leaderboard
+
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, email, password]
+              properties:
+                username: { type: string }
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '201':
+          description: Registered successfully
+        '400':
+          description: Registration error
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login an existing user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  user: { $ref: '#/components/schemas/User' }
+        '401':
+          description: Login failed
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout the current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+
+  /profile:
+    get:
+      tags: [Profile]
+      summary: Get profile of current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+    put:
+      tags: [Profile]
+      summary: Update profile of current user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileInput'
+      responses:
+        '200':
+          description: Profile updated
+
+  /profile/picture:
+    post:
+      tags: [Profile]
+      summary: Upload/change profile picture
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Picture uploaded
+
+  /exercises:
+    get:
+      tags: [Exercises]
+      summary: Get all exercises (admin or public)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of exercises
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Exercise'
+    post:
+      tags: [Exercises]
+      summary: Create a new exercise (admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExerciseInput'
+      responses:
+        '201':
+          description: Exercise created
+
+  /exercises/{id}:
+    get:
+      tags: [Exercises]
+      summary: Get exercise by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Exercise data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exercise'
+    put:
+      tags: [Exercises]
+      summary: Update exercise (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExerciseInput'
+      responses:
+        '200':
+          description: Exercise updated
+    delete:
+      tags: [Exercises]
+      summary: Delete exercise (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Exercise deleted
+
+  /workouts/generate:
+    post:
+      tags: [Workouts]
+      summary: Generate a workout for current user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                muscle_group: { type: string }
+                duration: { type: integer }
+                intensity: { type: string }
+                equipment: { type: string }
+                location: { type: string }
+      responses:
+        '200':
+          description: Generated workout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workout'
+
+  /workouts/history:
+    get:
+      tags: [Workouts]
+      summary: Get current user's workout history
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of workouts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workout'
+
+  /statistics:
+    get:
+      tags: [Statistics]
+      summary: Get personal statistics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStatistics'
+
+  /leaderboard:
+    get:
+      tags: [Leaderboard]
+      summary: Get leaderboard
+      responses:
+        '200':
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntry'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        email: { type: string }
+        created_at: { type: string, format: date-time }
+    UserProfile:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        email: { type: string }
+        first_name: { type: string }
+        last_name: { type: string }
+        gender: { type: string }
+        age: { type: integer }
+        weight: { type: number }
+        goal: { type: string }
+        injuries: { type: string }
+        profile_picture_url: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    UserProfileInput:
+      type: object
+      properties:
+        first_name: { type: string }
+        last_name: { type: string }
+        gender: { type: string }
+        age: { type: integer }
+        weight: { type: number }
+        goal: { type: string }
+        injuries: { type: string }
+        profile_pic:
+          type: string
+          format: binary
+    Exercise:
+      type: object
+      properties:
+        id: { type: integer }
+        category_id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        instructions: { type: string }
+        duration_minutes: { type: integer }
+        difficulty: { type: string }
+        equipment_needed: { type: string }
+        video_url: { type: string }
+        image_url: { type: string }
+        muscle_groups: 
+          type: array
+          items: { type: string }
+        calories_per_minute: { type: number }
+        location: { type: string }
+        min_age: { type: integer }
+        max_age: { type: integer }
+        gender: { type: string }
+        min_weight: { type: number }
+        goal: { type: string }
+        contraindications: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    ExerciseInput:
+      type: object
+      properties:
+        category_id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        instructions: { type: string }
+        duration_minutes: { type: integer }
+        difficulty: { type: string }
+        equipment_needed: { type: string }
+        video_url: { type: string }
+        image_url: { type: string }
+        muscle_groups: 
+          type: array
+          items: { type: string }
+        calories_per_minute: { type: number }
+        location: { type: string }
+        min_age: { type: integer }
+        max_age: { type: integer }
+        gender: { type: string }
+        min_weight: { type: number }
+        goal: { type: string }
+        contraindications: { type: string }
+    Workout:
+      type: object
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+        duration: { type: integer }
+        date: { type: string, format: date-time }
+        total_calories: { type: number }
+    UserStatistics:
+      type: object
+      properties:
+        total_workouts: { type: integer }
+        this_month_workouts: { type: integer }
+        this_week_workouts: { type: integer }
+        total_exercises: { type: integer }
+        total_duration_minutes: { type: integer }
+        avg_workout_duration: { type: number }
+        most_popular_muscle_group: { type: string }
+        most_used_difficulty: { type: string }
+        most_used_equipment: { type: string }
+        workout_streak_days: { type: integer }
+        last_workout_date: { type: string, format: date-time }
+    LeaderboardEntry:
+      type: object
+      properties:
+        user_id: { type: integer }
+        username: { type: string }
+        total_workouts: { type: integer }
+        rank: { type: integer }
