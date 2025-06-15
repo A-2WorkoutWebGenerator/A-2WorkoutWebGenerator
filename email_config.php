@@ -293,4 +293,135 @@ class EmailConfig {
         </body>
         </html>";
     }
+    public static function sendPasswordResetEmail($email, $username, $resetLink, $token) {
+        $subject = "🔐 Password Reset Request - FitGen";
+        $htmlBody = self::buildPasswordResetTemplate($username, $resetLink, $token);
+        return self::sendEmail($email, $subject, $htmlBody);
+    }
+    
+    public static function sendPasswordResetConfirmation($email, $username) {
+        $subject = "✅ Password Successfully Reset - FitGen";
+        $htmlBody = self::buildPasswordResetConfirmationTemplate($username);
+        return self::sendEmail($email, $subject, $htmlBody);
+    }
+    
+    private static function buildPasswordResetTemplate($username, $resetLink, $token) {
+        return "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='UTF-8'>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background: #f5f5f5; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                .header { background: #18D259; color: white; padding: 30px 20px; text-align: center; }
+                .content { padding: 30px; }
+                .reset-button { display: inline-block; background: #18D259; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+                .reset-button:hover { background: #15b54c; }
+                .warning-box { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #666; }
+                .highlight { color: #18D259; font-weight: bold; }
+                .token-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; font-family: monospace; word-break: break-all; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1 style='margin: 0; font-size: 24px;'>🔐 FitGen</h1>
+                    <p style='margin: 10px 0 0 0; opacity: 0.9;'>Password Reset Request</p>
+                </div>
+                <div class='content'>
+                    <p>Dear <span class='highlight'>" . htmlspecialchars($username) . "</span>,</p>
+                    
+                    <p>We received a request to reset your password for your FitGen account. If you made this request, click the button below to reset your password:</p>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='" . htmlspecialchars($resetLink) . "' class='reset-button'>Reset My Password</a>
+                    </div>
+                    
+                    <p>Or copy and paste this link into your browser:</p>
+                    <div class='token-info'>" . htmlspecialchars($resetLink) . "</div>
+                    
+                    <div class='warning-box'>
+                        <h3 style='margin-top: 0; color: #856404;'>⚠️ Important Security Information:</h3>
+                        <ul style='margin-bottom: 0;'>
+                            <li><strong>This link expires in 1 hour</strong> for security reasons</li>
+                            <li>If you didn't request this reset, please ignore this email</li>
+                            <li>Never share this reset link with anyone</li>
+                            <li>Contact support if you have concerns about account security</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Stay secure with FitGen! 🚀</strong></p>
+                </div>
+                <div class='footer'>
+                    <p><strong>© 2025 FitGen - Your Fitness Partner</strong></p>
+                    <p>📧 support@fitgen.com | 🌐 www.fitgen.com</p>
+                    <p style='margin-top: 10px; font-size: 12px;'>
+                        This email was sent because a password reset was requested for your account.
+                        If you did not request this, please contact our support team immediately.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+    
+    private static function buildPasswordResetConfirmationTemplate($username) {
+        return "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='UTF-8'>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background: #f5f5f5; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                .header { background: #28a745; color: white; padding: 30px 20px; text-align: center; }
+                .content { padding: 30px; }
+                .success-box { background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; }
+                .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #666; }
+                .highlight { color: #28a745; font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1 style='margin: 0; font-size: 24px;'>✅ FitGen</h1>
+                    <p style='margin: 10px 0 0 0; opacity: 0.9;'>Password Reset Successful</p>
+                </div>
+                <div class='content'>
+                    <p>Dear <span class='highlight'>" . htmlspecialchars($username) . "</span>,</p>
+                    
+                    <div class='success-box'>
+                        <h3 style='margin-top: 0; color: #155724;'>🎉 Password Successfully Updated!</h3>
+                        <p style='margin-bottom: 0; color: #155724;'>Your FitGen account password has been successfully reset and updated.</p>
+                    </div>
+                    
+                    <p>Your password change was completed on <strong>" . date('F j, Y \a\t g:i A') . "</strong>.</p>
+                    
+                    <h3 style='color: #28a745;'>🔒 Security Tips:</h3>
+                    <ul>
+                        <li>Keep your password private and secure</li>
+                        <li>Use a unique password for your FitGen account</li>
+                        <li>Consider using a password manager</li>
+                        <li>Enable two-factor authentication if available</li>
+                    </ul>
+                    
+                    <p style='background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;'>
+                        <strong>⚠️ Didn't reset your password?</strong><br>
+                        If you didn't request this password reset, please contact our support team immediately at support@fitgen.com
+                    </p>
+                    
+                    <p>You can now log in to your account using your new password.</p>
+                    
+                    <p><strong>Welcome back to FitGen! 💪</strong></p>
+                </div>
+                <div class='footer'>
+                    <p><strong>© 2025 FitGen - Your Fitness Partner</strong></p>
+                    <p>📧 support@fitgen.com | 🌐 www.fitgen.com</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
 }

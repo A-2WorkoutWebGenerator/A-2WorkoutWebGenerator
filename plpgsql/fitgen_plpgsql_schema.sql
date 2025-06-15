@@ -937,4 +937,5 @@ CREATE TABLE IF NOT EXISTS saved_routines (
 );
 
 
-
+ALTER TABLE fitgen.users ADD COLUMN reset_token VARCHAR(64) NULL;
+ALTER TABLE fitgen.users ADD COLUMN reset_token_expiry TIMESTAMP NULL;
