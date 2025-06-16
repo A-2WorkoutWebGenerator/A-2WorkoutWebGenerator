@@ -39,9 +39,9 @@ function friendly_description($row) {
 
     $desc = "<b>User ID:</b> $user<br/>";
     $desc .= "<b>IP:</b> $ip<br/>";
-    $desc .= "<b>Data:</b> $when<br/>";
-    $desc .= "<b>Valori vechi:</b><pre style=\"white-space:pre-wrap;\">$old_values</pre><br/>";
-    $desc .= "<b>Valori noi:</b><pre style=\"white-space:pre-wrap;\">$new_values</pre><br/>";
+    $desc .= "<b>Date:</b> $when<br/>";
+    $desc .= "<b>Old values:</b><pre style=\"white-space:pre-wrap;\">$old_values</pre><br/>";
+    $desc .= "<b>New values:</b><pre style=\"white-space:pre-wrap;\">$new_values</pre><br/>";
 
     return $desc;
 }
