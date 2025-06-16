@@ -1,6 +1,9 @@
+--SCHEMA FITGEN
 DROP SCHEMA IF EXISTS fitgen CASCADE;
 CREATE SCHEMA fitgen;
 SET search_path TO fitgen;
+
+--TYPES
 CREATE TYPE workout_type AS ENUM ('physiotherapy', 'kinetotherapy', 'sports');
 CREATE TYPE difficulty_level AS ENUM ('beginner', 'intermediate', 'advanced', 'all_levels');
 CREATE TYPE equipment_type AS ENUM ('none', 'basic', 'full');
@@ -8,17 +11,163 @@ CREATE TYPE activity_level AS ENUM ('sedentary', 'light', 'moderate', 'active');
 CREATE TYPE fitness_goal AS ENUM ('lose_weight', 'build_muscle', 'flexibility', 'endurance', 'rehab', 'mobility', 'posture', 'strength', 'cardio');
 CREATE TYPE gender_type AS ENUM ('male', 'female', 'other');
 
+--USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    isAdmin BOOLEAN DEFAULT FALSE,
+    rss_token VARCHAR(64),
+    google_id VARCHAR(255) UNIQUE,
+    profile_picture_url VARCHAR(500),
+    email_verified BOOLEAN DEFAULT FALSE,
+    last_login TIMESTAMP,
+    reset_token VARCHAR(64) NULL,
+    reset_token_expiry TIMESTAMP NULL
 );
-ALTER TABLE fitgen.users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
-ALTER TABLE fitgen.users ADD COLUMN rss_token VARCHAR(64);
+
+--ADMIN
 UPDATE fitgen.users SET isAdmin = TRUE WHERE username = 'aramaAndreea';
+
+--AUTH TOKENS TABLE
+CREATE TABLE IF NOT EXISTS auth_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+--USER PROFILE TABLE
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    gender gender_type,
+    age INTEGER CHECK (age >= 10 AND age <= 120),
+    goal fitness_goal,
+    injuries TEXT,
+    profile_picture_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    weight INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+--EXERCISE CATEGORIES TABLE
+CREATE TABLE exercise_categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    workout_type workout_type NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--EXERCISES TABLE
+CREATE TABLE exercises (
+    id SERIAL PRIMARY KEY,
+    category_id INTEGER NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    description TEXT,
+    instructions TEXT,
+    duration_minutes INTEGER CHECK (duration_minutes > 0),
+    difficulty difficulty_level NOT NULL,
+    equipment_needed equipment_type DEFAULT 'none',
+    video_url VARCHAR(500),
+    image_url VARCHAR(500),
+    muscle_groups TEXT[],
+    calories_per_minute DECIMAL(4,2) DEFAULT 5.0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    location TEXT,
+    min_age INTEGER,
+    max_age INTEGER,
+    gender TEXT,
+    min_weight FLOAT,
+    goal TEXT,
+    contraindications TEXT,
+    FOREIGN KEY (category_id) REFERENCES exercise_categories(id) ON DELETE CASCADE
+);
+
+--AUDIT LOG TABLE 
+CREATE TABLE audit_log (
+    id SERIAL PRIMARY KEY,
+    table_name VARCHAR(50) NOT NULL,
+    operation VARCHAR(10) NOT NULL, 
+    record_id INTEGER,
+    user_id INTEGER,
+    old_values JSONB,
+    new_values JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address INET,
+    user_agent TEXT
+);
+
+--SUCCES STORIES TABLE
+CREATE TABLE success_stories (
+    id SERIAL PRIMARY KEY,
+    user_name VARCHAR(100) NOT NULL,
+    achievement VARCHAR(255) NOT NULL,
+    story_text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_approved BOOLEAN DEFAULT FALSE,
+    ip_address INET,
+    user_agent TEXT,
+    rejection_reason TEXT
+);
+
+--CONTACT MESSAGES TABLE
+CREATE TABLE contact_messages (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    ip_address INET,
+    user_agent TEXT,
+    response_sent BOOLEAN DEFAULT FALSE,
+    admin_notes TEXT
+);
+
+--LOGIN LOGS
+CREATE TABLE IF NOT EXISTS login_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES fitgen.users(id),
+    login_method VARCHAR(20) DEFAULT 'normal',
+    ip_address INET,
+    user_agent TEXT,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--SAVED ROUTINES
+CREATE TABLE IF NOT EXISTS saved_routines (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    difficulty VARCHAR(50),
+    description TEXT,
+    duration VARCHAR(50),
+    frequency VARCHAR(50),
+    icon VARCHAR(100),
+    exercises JSONB,
+    video_url VARCHAR(500),
+    category VARCHAR(50) DEFAULT 'general',
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_saved_routines_user_id 
+        FOREIGN KEY (user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    CONSTRAINT unique_user_routine 
+        UNIQUE (user_id, name)
+);
+
+
 SET search_path TO fitgen;
 CREATE OR REPLACE FUNCTION validate_email(email_address TEXT)
 RETURNS BOOLEAN AS $$
@@ -38,64 +187,6 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TABLE IF NOT EXISTS auth_tokens (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    token VARCHAR(255) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NOT NULL,
-    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS user_profiles (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    gender gender_type,
-    age INTEGER CHECK (age >= 10 AND age <= 120),
-    goal fitness_goal,
-    activity_level activity_level,
-    injuries TEXT,
-    equipment equipment_type,
-    profile_picture_path VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE exercise_categories (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    workout_type workout_type NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE exercises (
-    id SERIAL PRIMARY KEY,
-    category_id INTEGER NOT NULL,
-    name VARCHAR(200) NOT NULL,
-    description TEXT,
-    instructions TEXT,
-    duration_minutes INTEGER CHECK (duration_minutes > 0),
-    difficulty difficulty_level NOT NULL,
-    equipment_needed equipment_type DEFAULT 'none',
-    video_url VARCHAR(500),
-    image_url VARCHAR(500),
-    muscle_groups TEXT[],
-    calories_per_minute DECIMAL(4,2) DEFAULT 5.0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES exercise_categories(id) ON DELETE CASCADE
-);
-ALTER TABLE fitgen.exercises ADD COLUMN location TEXT;
-ALTER TABLE fitgen.exercises ADD COLUMN min_age INTEGER;
-ALTER TABLE fitgen.exercises ADD COLUMN max_age INTEGER;
-ALTER TABLE fitgen.exercises ADD COLUMN gender TEXT;
-ALTER TABLE fitgen.exercises ADD COLUMN min_weight FLOAT;
-ALTER TABLE fitgen.exercises ADD COLUMN goal TEXT;
-ALTER TABLE fitgen.exercises ADD COLUMN contraindications TEXT;
 
 INSERT INTO fitgen.exercises (category_id, name, description, instructions, duration_minutes, difficulty, equipment_needed, video_url, image_url, muscle_groups, calories_per_minute, created_at, updated_at, location, min_age, max_age, gender, min_weight, goal, contraindications) VALUES
 (1, 'Pelvic Tilts', 'Gentle exercise to strengthen core and relieve back tension. No equipment needed. Main muscle group: core.', 'Lie on back, tilt pelvis upward', 10, 'beginner', 'none', NULL, NULL, ARRAY['core'], 4.50, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'rehab', 'Avoid if acute lower back pain or recent back surgery'),
@@ -139,42 +230,8 @@ INSERT INTO fitgen.exercises (category_id, name, description, instructions, dura
 (5, 'Upper Trap Stretch', 'Stretches upper trapezius muscles. No equipment needed. Main muscle group: upper body.', 'Sit or stand, gently pull head to side', 6, 'beginner', 'none', NULL, NULL, ARRAY['upper body'], 3.20, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 10, 99, NULL, 35, 'flexibility', NULL),
 (1, 'Seated Forward Fold', 'Stretches hamstrings and low back. No equipment needed. Main muscle group: lower body.', 'Sit with legs extended, reach toward toes', 10, 'beginner', 'none', NULL, NULL, ARRAY['lower body'], 3.60, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'flexibility', 'Avoid if severe lower back pain');
 
-/*CREATE TABLE workout_suggestions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    generated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    suggestion JSONB NOT NULL
-);*/
 
 
-CREATE TABLE user_stats (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    stat_date DATE DEFAULT CURRENT_DATE,
-    total_workouts INTEGER DEFAULT 0,
-    total_minutes INTEGER DEFAULT 0,
-    total_calories INTEGER DEFAULT 0,
-    current_streak INTEGER DEFAULT 0,
-    longest_streak INTEGER DEFAULT 0,
-    favorite_workout_type workout_type,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE(user_id, stat_date)
-);
-
-CREATE TABLE audit_log (
-    id SERIAL PRIMARY KEY,
-    table_name VARCHAR(50) NOT NULL,
-    operation VARCHAR(10) NOT NULL, 
-    record_id INTEGER,
-    user_id INTEGER,
-    old_values JSONB,
-    new_values JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ip_address INET,
-    user_agent TEXT
-);
 
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
 
@@ -190,16 +247,6 @@ CREATE INDEX idx_user_stats_date ON user_stats(stat_date);
 CREATE INDEX idx_audit_log_table_operation ON audit_log(table_name, operation);
 CREATE INDEX idx_audit_log_created_at ON audit_log(created_at);
 
-CREATE TABLE success_stories (
-    id SERIAL PRIMARY KEY,
-    user_name VARCHAR(100) NOT NULL,
-    achievement VARCHAR(255) NOT NULL,
-    story_text TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_approved BOOLEAN DEFAULT TRUE,
-    ip_address INET,
-    user_agent TEXT
-);
 
 CREATE INDEX idx_success_stories_created_at ON success_stories(created_at DESC);
 CREATE INDEX idx_success_stories_approved ON success_stories(is_approved);
@@ -212,18 +259,6 @@ COMMENT ON COLUMN success_stories.is_approved IS 'Whether the story is approved 
 COMMENT ON COLUMN success_stories.ip_address IS 'IP address for spam prevention';
 COMMENT ON COLUMN success_stories.user_agent IS 'Browser info for analytics';
 
-CREATE TABLE contact_messages (
-    id SERIAL PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    message TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_read BOOLEAN DEFAULT FALSE,
-    ip_address INET,
-    user_agent TEXT,
-    response_sent BOOLEAN DEFAULT FALSE,
-    admin_notes TEXT
-);
 
 CREATE INDEX idx_contact_messages_created_at ON contact_messages(created_at DESC);
 CREATE INDEX idx_contact_messages_read ON contact_messages(is_read);
@@ -892,50 +927,3 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-ALTER TABLE fitgen.success_stories 
-ADD COLUMN IF NOT EXISTS rejection_reason TEXT;
-
-UPDATE fitgen.success_stories 
-SET is_approved = NULL 
-WHERE is_approved = true;
-
-
-ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255) UNIQUE;
-ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS profile_picture_url VARCHAR(500);
-ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE;
-ALTER TABLE fitgen.users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP;
-
-SET search_path TO fitgen;
-CREATE TABLE IF NOT EXISTS login_logs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES fitgen.users(id),
-    login_method VARCHAR(20) DEFAULT 'normal',
-    ip_address INET,
-    user_agent TEXT,
-    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS saved_routines (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    difficulty VARCHAR(50),
-    description TEXT,
-    duration VARCHAR(50),
-    frequency VARCHAR(50),
-    icon VARCHAR(100),
-    exercises JSONB,
-    video_url VARCHAR(500),
-    category VARCHAR(50) DEFAULT 'general',
-    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_saved_routines_user_id 
-        FOREIGN KEY (user_id) 
-        REFERENCES users(id) 
-        ON DELETE CASCADE,
-    CONSTRAINT unique_user_routine 
-        UNIQUE (user_id, name)
-);
-
-
-ALTER TABLE fitgen.users ADD COLUMN reset_token VARCHAR(64) NULL;
-ALTER TABLE fitgen.users ADD COLUMN reset_token_expiry TIMESTAMP NULL;

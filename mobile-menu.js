@@ -81,7 +81,25 @@ class MobileMenu {
         }
     }
 
+    isUnloggedPage() {
+        // Check if this is an unlogged page by looking for login/signup buttons
+        const loginButton = document.querySelector('a[href="login.html"]');
+        const signupButton = document.querySelector('a[href="register.html"]');
+        
+        // Or check by URL patterns
+        const url = window.location.pathname;
+        const unloggedPatterns = ['-unlogged.html', 'login.html', 'register.html'];
+        const isUnloggedByUrl = unloggedPatterns.some(pattern => url.includes(pattern));
+        
+        return (loginButton && signupButton) || isUnloggedByUrl;
+    }
+
     isUserAdmin() {
+        // Skip admin check if this is an unlogged page
+        if (this.isUnloggedPage()) {
+            return false;
+        }
+        
         const token = localStorage.getItem('authToken');
         if (!token) return false;
         
@@ -98,21 +116,23 @@ class MobileMenu {
         const navbar = document.querySelector('.navbar');
         const currentPage = this.getCurrentPage();
         const isAdmin = this.isUserAdmin();
+        const isUnlogged = this.isUnloggedPage();
         
-        let headerButtons = `
-            <a href="profile.html" class="btn btn-outline">
-                <i class="fas fa-user"></i> Profile
-            </a>
-            <a href="${currentPage.logoutLink}" class="btn btn-outline">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        `;
+        let headerButtons = '';
 
-        if (isAdmin) {
+        if (isUnlogged) {
+            // For unlogged pages: show Login and Sign Up buttons
             headerButtons = `
-                <a href="admin-panel.html" class="btn btn-admin">
-                    <i class="fas fa-cog"></i> Admin
+                <a href="login.html" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Log In
                 </a>
+                <a href="register.html" class="btn btn-outline">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+            `;
+        } else {
+            // For logged pages: show Profile and Logout (+ Admin if admin)
+            headerButtons = `
                 <a href="profile.html" class="btn btn-outline">
                     <i class="fas fa-user"></i> Profile
                 </a>
@@ -120,7 +140,48 @@ class MobileMenu {
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             `;
+
+            if (isAdmin) {
+                headerButtons = `
+                    <a href="admin-panel.html" class="btn btn-admin">
+                        <i class="fas fa-cog"></i> Admin
+                    </a>
+                    <a href="profile.html" class="btn btn-outline">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="${currentPage.logoutLink}" class="btn btn-outline">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                `;
+            }
         }
+
+        // Set up navigation links based on page type
+        const workoutLinks = isUnlogged ? {
+            physiotherapy: 'physiotherapy-unlogged.html',
+            kinetotherapy: 'kinetotherapy-unlogged.html',
+            football: 'football-unlogged.html',
+            basketball: 'basketball-unlogged.html',
+            tennis: 'tennis-unlogged.html',
+            swimming: 'swimming-unlogged.html'
+        } : {
+            physiotherapy: 'physiotherapy.html',
+            kinetotherapy: 'kinetotherapy.html',
+            football: 'football.html',
+            basketball: 'basketball.html',
+            tennis: 'tennis.html',
+            swimming: 'swimming.html'
+        };
+
+        const navLinks = isUnlogged ? {
+            champions: 'champions-unlogged.html',
+            successStories: 'success-stories-unlogged.html',
+            contact: 'contact-unlogged.html'
+        } : {
+            champions: 'champions.html',
+            successStories: 'success-stories.html',
+            contact: 'contact.html'
+        };
         
         const mobileMenuHTML = `
             <div class="mobile-menu">
@@ -134,15 +195,15 @@ class MobileMenu {
                             <span><i class="fas fa-dumbbell"></i> Workout routines</span>
                         </a>
                         <div class="mobile-dropdown" id="workouts-dropdown">
-                            <a href="physiotherapy.html" class="mobile-dropdown-item">Physiotherapy</a>
-                            <a href="kinetotherapy.html" class="mobile-dropdown-item">Kinetotherapy</a>
+                            <a href="${workoutLinks.physiotherapy}" class="mobile-dropdown-item">Physiotherapy</a>
+                            <a href="${workoutLinks.kinetotherapy}" class="mobile-dropdown-item">Kinetotherapy</a>
                             <a href="#" class="mobile-dropdown-item has-nested" data-nested="sports">
                                 Sports
                                 <div class="mobile-nested-dropdown" id="sports-nested">
-                                    <a href="football.html" class="mobile-nested-item">Football</a>
-                                    <a href="basketball.html" class="mobile-nested-item">Basketball</a>
-                                    <a href="tennis.html" class="mobile-nested-item">Tennis</a>
-                                    <a href="swimming.html" class="mobile-nested-item">Swimming</a>
+                                    <a href="${workoutLinks.football}" class="mobile-nested-item">Football</a>
+                                    <a href="${workoutLinks.basketball}" class="mobile-nested-item">Basketball</a>
+                                    <a href="${workoutLinks.tennis}" class="mobile-nested-item">Tennis</a>
+                                    <a href="${workoutLinks.swimming}" class="mobile-nested-item">Swimming</a>
                                 </div>
                             </a>
                         </div>
@@ -151,19 +212,19 @@ class MobileMenu {
                     <div class="mobile-menu-separator"></div>
                     
                     <div class="mobile-nav-item" style="--delay: 2">
-                        <a href="champions.html" class="mobile-nav-link">
+                        <a href="${navLinks.champions}" class="mobile-nav-link">
                             <span><i class="fas fa-trophy"></i> Champions</span>
                         </a>
                     </div>
                     
                     <div class="mobile-nav-item" style="--delay: 3">
-                        <a href="success-stories.html" class="mobile-nav-link">
+                        <a href="${navLinks.successStories}" class="mobile-nav-link">
                             <span><i class="fas fa-star"></i> Success stories</span>
                         </a>
                     </div>
                     
                     <div class="mobile-nav-item" style="--delay: 4">
-                        <a href="contact.html" class="mobile-nav-link">
+                        <a href="${navLinks.contact}" class="mobile-nav-link">
                             <span><i class="fas fa-envelope"></i> Contacts</span>
                         </a>
                     </div>
@@ -180,6 +241,12 @@ class MobileMenu {
     getCurrentPage() {
         const path = window.location.pathname;
         const filename = path.split('/').pop();
+
+        if (this.isUnloggedPage()) {
+            return {
+                logoutLink: 'WoW.html' // Redirect to main unlogged page
+            };
+        }
 
         if (filename === 'WoW-Logged.html' || filename === '' || filename === 'index.html') {
             return {

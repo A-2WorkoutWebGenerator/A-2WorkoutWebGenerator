@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <link rel="stylesheet" href="WoW.css">
+        <link rel="stylesheet" href="success-stories.css">
+        <link rel="stylesheet" href="mobile-menu.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <script src="mobile-menu.js"></script>
+        <script src="success-stories.js" defer></script>
+        <title>Success Stories - FitGen</title>
+    </head>
+    <body>
+        <div class="page-wrapper">
+            <nav class="navbar">
+                <div class="logo">
+                    <a href="WoW.html"><span>FitGen</span></a>
+                </div>
+                <div class="nav-links">
+                    <div class="dropdown">
+                        <a href="#workouts" class="nav-link">Workout routines</a>
+                        <div class="dropdown-content">
+                            <a href="physiotherapy-unlogged.html">Physiotherapy</a>
+                            <a href="kinetotherapy-unlogged.html">Kinetotherapy</a>
+                            <div class="nested-dropdown">
+                                <a href="#sports" class="nested-link">Sports</a>
+                                <div class="nested-dropdown-content">
+                                    <a href="football-unlogged.html">Football</a>
+                                    <a href="basketball-unlogged.html">Basketball</a>
+                                    <a href="tennis-unlogged.html">Tennis</a>
+                                    <a href="swimming-unlogged.html">Swimming</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="champions-unlogged.html" class="nav-link">Champions</a>
+                    <a href="success-stories-unlogged.html" class="nav-link">Success stories</a>
+                    <a href="contact-unlogged.html" class="nav-link">Contacts</a>
+                </div>
+                <div class="nav-buttons">
+                    <a href="login.html" class="btn btn-outline">Log In</a>
+                    <a href="register.html" class="btn btn-primary">Sign Up</a>
+                </div>
+                <div class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>Success Stories</h1>
+                        <p>Read inspiring stories from our community members and share your own transformation journey.</p>
+                        <div class="hero-buttons">
+                            <a href="#stories" class="btn btn-primary btn-large">Read Stories</a>
+                            <a href="#share-story" class="btn btn-outline btn-large">Share Your Story</a>
+                        </div>
+                    </div>
+                    <div class="hero-image-container">
+                        <div class="image-frame fullsize-image">
+                            <img src="images/success.jpeg" alt="Success Stories">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="stories" class="testimonials">
+                <div class="section-header">
+                    <h2>Inspiring Transformations</h2>
+                    <p>Real stories from real people who achieved their fitness goals</p>
+                </div>
+                <div class="stories-info">
+                    <p id="stories-count">Loading stories...</p>
+                </div>
+                <div id="user-stories" class="user-stories-grid"></div>
+                <div class="pagination-container">
+                    <div class="pagination">
+                        <button id="prev-btn" class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        
+                        <div class="pagination-numbers" id="pagination-numbers"></div>
+                        
+                        <button id="next-btn" class="pagination-btn" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="share-story" class="cta">
+                <div class="cta-content">
+                    <h2>Tell Your Story</h2>
+                    <p>Have you achieved your fitness goals with FitGen? Share your journey and inspire others!</p>
+                    
+                    <form id="story-form" class="story-form">
+                        <div class="form-group">
+                            <label for="user-name">Your Name:</label>
+                            <input type="text" id="user-name" name="userName" required placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="achievement">Your Achievement:</label>
+                            <input type="text" id="achievement" name="achievement" required placeholder="e.g., Lost 10kg, Completed first marathon">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="story-text">Your Story:</label>
+                            <textarea id="story-text" name="storyText" rows="6" required placeholder="Tell us about your fitness journey with FitGen. What challenges did you overcome? What helped you succeed?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-large">Share My Story</button>
+                    </form>
+                    
+                    <div id="success-message" class="success-message" style="display: none;">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Thank you for sharing your story! It has been added to our success stories.</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <div class="logo">FitGen</div>
+                        <p>Transform Your Workout Experience</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-links-column">
+                            <ul>
+                                <li><a href="contact-unlogged.html">Contact Us</a></li>
+                                <li><a href="credits-unlogged.html">Credits</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 FitGen. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
