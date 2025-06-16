@@ -616,7 +616,7 @@ const API_URL = "http://localhost:8081";
         function editExercise(exerciseId) {
             const exercise = allExercises.find(ex => ex.id === exerciseId);
             if (!exercise) return;
-
+        
             isEditing = true;
             document.getElementById('exercise-form').classList.add('active');
             document.getElementById('form-title').innerHTML = '<i class="fas fa-edit"></i> Edit Exercise';
@@ -640,11 +640,40 @@ const API_URL = "http://localhost:8081";
             document.getElementById('exercise-instructions').value = exercise.instructions;
             document.getElementById('exercise-contraindications').value = exercise.contraindications || '';
 
-            const muscleGroups = Array.isArray(exercise.muscle_groups) ? exercise.muscle_groups : [];
+            console.log('Muscle groups din exercițiu:', exercise.muscle_groups); 
+
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                cb.checked = muscleGroups.includes(cb.value);
+                cb.checked = false;
             });
 
+            let muscleGroups = [];
+            
+            if (Array.isArray(exercise.muscle_groups)) {
+                muscleGroups = exercise.muscle_groups;
+            } else if (typeof exercise.muscle_groups === 'string') {
+                try {
+                    muscleGroups = JSON.parse(exercise.muscle_groups);
+                } catch (e) {
+                    muscleGroups = exercise.muscle_groups.split(',').map(mg => mg.trim());
+                }
+            }
+            
+            console.log('Muscle groups procesate:', muscleGroups);
+            
+            muscleGroups.forEach(muscle => {
+                const normalizedMuscle = muscle.toLowerCase().trim();
+                
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    const cbValue = cb.value.toLowerCase().trim();
+                    if (cbValue === normalizedMuscle || 
+                        cbValue === normalizedMuscle.replace(/\s+/g, ' ') ||
+                        normalizedMuscle.includes(cbValue) ||
+                        cbValue.includes(normalizedMuscle)) {
+                        cb.checked = true;
+                        console.log(`Bifat checkbox pentru: ${cb.value}`);
+                    }
+                });
+            });
             setTimeout(() => {
                 document.getElementById('exercise-form').scrollIntoView({ 
                     behavior: 'smooth', 
