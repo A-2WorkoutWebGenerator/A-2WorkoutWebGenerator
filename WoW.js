@@ -1,237 +1,247 @@
+const API_URL = "http://localhost:8081";
+
 document.addEventListener('DOMContentLoaded', function() {
+    loadTestimonials();
+    loadChampions();
     const mobileToggle = document.querySelector('.mobile-toggle');
     const navLinks = document.querySelector('.nav-links');
-    const navButtons = document.querySelector('.nav-buttons');
     
-    if (mobileToggle) {
+    if (mobileToggle && navLinks) {
         mobileToggle.addEventListener('click', function() {
-            if (!document.querySelector('.mobile-menu')) {
-                const mobileMenu = document.createElement('div');
-                mobileMenu.className = 'mobile-menu';
-                const linksClone = navLinks.cloneNode(true);
-                mobileMenu.appendChild(linksClone);
-                const buttonsClone = navButtons.cloneNode(true);
-                mobileMenu.appendChild(buttonsClone);
-                
-                document.querySelector('.navbar').appendChild(mobileMenu);
-                mobileMenu.style.position = 'absolute';
-                mobileMenu.style.top = '100%';
-                mobileMenu.style.left = '0';
-                mobileMenu.style.width = '100%';
-                mobileMenu.style.backgroundColor = 'white';
-                mobileMenu.style.padding = '2rem';
-                mobileMenu.style.boxShadow = 'var(--shadow-md)';
-                mobileMenu.style.display = 'none';
-                mobileMenu.style.flexDirection = 'column';
-                mobileMenu.style.gap = '2rem';
-                mobileMenu.style.zIndex = '1000';
-                
-                linksClone.style.display = 'flex';
-                linksClone.style.flexDirection = 'column';
-                linksClone.style.gap = '1.5rem';
-                
-                buttonsClone.style.display = 'flex';
-                buttonsClone.style.flexDirection = 'column';
-                buttonsClone.style.gap = '1rem';
-            }
-            const mobileMenu = document.querySelector('.mobile-menu');
-            if (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') {
-                mobileMenu.style.display = 'flex';
-                mobileToggle.innerHTML = '<i class="fas fa-times"></i>';
-            } else {
-                mobileMenu.style.display = 'none';
-                mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            }
+            navLinks.classList.toggle('active');
         });
     }
-
-    const links = document.querySelectorAll('a[href^="#"]');
-    
-    links.forEach(link => {
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            
-            if (href !== '#') {
-                e.preventDefault();
-                
-                const targetElement = document.querySelector(href);
-                if (targetElement) {
-                    const mobileMenu = document.querySelector('.mobile-menu');
-                    if (mobileMenu && mobileMenu.style.display === 'flex') {
-                        mobileMenu.style.display = 'none';
-                        mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
-                    
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const element = document.getElementById(targetId);
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
     });
-    const navbar = document.querySelector('.navbar');
-    let lastScrollTop = 0;
-    
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > 100) {
-            navbar.style.padding = '1rem 5%';
-            navbar.style.boxShadow = 'var(--shadow-md)';
-        } else {
-            navbar.style.padding = '1.5rem 5%';
-            navbar.style.boxShadow = 'var(--shadow-sm)';
-        }
-        
-        lastScrollTop = scrollTop;
-    });
-    const animateElements = document.querySelectorAll('.feature-card, .workout-card, .trainer-card, .testimonial, .pricing-card');
-    animateElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    });
-    
-    function isInViewport(element) {
-        const rect = element.getBoundingClientRect();
-        return (
-            rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.85 &&
-            rect.bottom >= 0
-        );
-    }
-    function checkScroll() {
-        animateElements.forEach(element => {
-            if (isInViewport(element)) {
-                element.style.opacity = '1';
-                element.style.transform = 'translateY(0)';
-            }
-        });
-    }
-
-    window.addEventListener('load', checkScroll);
-    window.addEventListener('scroll', checkScroll);
-
-    const statNumbers = document.querySelectorAll('.stat-number');
-    
-    function animateStats() {
-        statNumbers.forEach(stat => {
-            const targetValue = stat.textContent;
-            let currentValue = 0;
-            const duration = 2000
-            const interval = 20;
-            const isPercentage = targetValue.includes('%');
-            const numericValue = parseInt(targetValue.replace(/[^0-9]/g, ''));
-            const increment = numericValue / (duration / interval);
-            
-            stat.textContent = '0' + (isPercentage ? '%' : '');
-            
-            const counter = setInterval(() => {
-                currentValue += increment;
-                if (currentValue >= numericValue) {
-                    clearInterval(counter);
-                    stat.textContent = targetValue;
-                } else {
-                    stat.textContent = Math.floor(currentValue) + (targetValue.includes('+') ? '+' : '') + (isPercentage ? '%' : '');
-                }
-            }, interval);
-        });
-    }
-    setTimeout(animateStats, 500);
-    const workoutSlider = document.querySelector('.workout-slider');
-    
-    if (workoutSlider) {
-        const prevArrow = document.createElement('div');
-        prevArrow.className = 'slider-arrow prev-arrow';
-        prevArrow.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        prevArrow.style.position = 'absolute';
-        prevArrow.style.top = '50%';
-        prevArrow.style.left = '1rem';
-        prevArrow.style.transform = 'translateY(-50%)';
-        prevArrow.style.backgroundColor = 'white';
-        prevArrow.style.borderRadius = '50%';
-        prevArrow.style.width = '40px';
-        prevArrow.style.height = '40px';
-        prevArrow.style.display = 'flex';
-        prevArrow.style.alignItems = 'center';
-        prevArrow.style.justifyContent = 'center';
-        prevArrow.style.cursor = 'pointer';
-        prevArrow.style.boxShadow = 'var(--shadow-md)';
-        prevArrow.style.zIndex = '2';
-        
-        const nextArrow = document.createElement('div');
-        nextArrow.className = 'slider-arrow next-arrow';
-        nextArrow.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        nextArrow.style.position = 'absolute';
-        nextArrow.style.top = '50%';
-        nextArrow.style.right = '1rem';
-        nextArrow.style.transform = 'translateY(-50%)';
-        nextArrow.style.backgroundColor = 'white';
-        nextArrow.style.borderRadius = '50%';
-        nextArrow.style.width = '40px';
-        nextArrow.style.height = '40px';
-        nextArrow.style.display = 'flex';
-        nextArrow.style.alignItems = 'center';
-        nextArrow.style.justifyContent = 'center';
-        nextArrow.style.cursor = 'pointer';
-        nextArrow.style.boxShadow = 'var(--shadow-md)';
-        nextArrow.style.zIndex = '2';
-
-        const workoutsSection = document.querySelector('.workouts');
-        const workoutSliderContainer = document.createElement('div');
-        workoutSliderContainer.style.position = 'relative';
-        workoutSliderContainer.style.marginBottom = '3rem';
-
-        workoutSlider.parentNode.insertBefore(workoutSliderContainer, workoutSlider);
-        workoutSliderContainer.appendChild(workoutSlider);
-
-        workoutSliderContainer.appendChild(prevArrow);
-        workoutSliderContainer.appendChild(nextArrow);
-        nextArrow.addEventListener('click', function() {
-            workoutSlider.scrollBy({ left: 370, behavior: 'smooth' });
-        });
-        
-        prevArrow.addEventListener('click', function() {
-            workoutSlider.scrollBy({ left: -370, behavior: 'smooth' });
-        });
-    }
-
-    const testimonialSlider = document.querySelector('.testimonial-slider');
-    
-    if (testimonialSlider) {
-        const dotsContainer = document.createElement('div');
-        dotsContainer.className = 'slider-dots';
-        dotsContainer.style.display = 'flex';
-        dotsContainer.style.justifyContent = 'center';
-        dotsContainer.style.gap = '0.5rem';
-        dotsContainer.style.marginTop = '2rem';
-        
-        const testimonials = testimonialSlider.querySelectorAll('.testimonial');
-        
-        testimonials.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.className = 'slider-dot';
-            dot.style.width = '10px';
-            dot.style.height = '10px';
-            dot.style.borderRadius = '50%';
-            dot.style.backgroundColor = index === 0 ? 'var(--primary)' : '#ccc';
-            dot.style.cursor = 'pointer';
-            dot.style.transition = 'all var(--transition-normal)';
-            
-            dot.addEventListener('click', function() {
-                dotsContainer.querySelectorAll('.slider-dot').forEach(d => {
-                    d.style.backgroundColor = '#ccc';
-                });
-                this.style.backgroundColor = 'var(--primary)';
-                testimonialSlider.scrollTo({
-                    left: testimonialSlider.offsetWidth * index,
-                    behavior: 'smooth'
-                });
-            });
-            
-            dotsContainer.appendChild(dot);
-        });
-        
-        testimonialSlider.parentNode.insertBefore(dotsContainer, testimonialSlider.nextSibling);
-    }
 });
+
+function loadTestimonials() {
+    fetch(`${API_URL}/get_stories.php?limit=2&offset=0`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data.length > 0) {
+            displayTestimonials(data.data);
+        } else {
+            displayFallbackTestimonials();
+        }
+    })
+    .catch(error => {
+        console.error('Error loading testimonials:', error);
+        displayFallbackTestimonials();
+    });
+}
+
+function displayTestimonials(stories) {
+    const container = document.getElementById('testimonials-container');
+    container.innerHTML = '';
+
+    stories.forEach(story => {
+        const firstLetter = story.userName.charAt(0).toUpperCase();
+        const testimonial = document.createElement('div');
+        testimonial.className = 'testimonial';
+        
+        testimonial.innerHTML = `
+            <div class="testimonial-content">
+                <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                <p>"${story.storyText}"</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-author-avatar">${firstLetter}</div>
+                    <div class="author-info">
+                        <h4>${story.userName}</h4>
+                        <span>${story.achievement}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(testimonial);
+    });
+}
+
+function displayFallbackTestimonials() {
+    const container = document.getElementById('testimonials-container');
+    container.innerHTML = `
+        <div class="testimonial">
+            <div class="testimonial-content">
+                <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                <p>"FitGen completely transformed my approach to fitness. The personalized workout plans and tracking features helped me lose 15kg in just 4 months!"</p>
+                <div class="testimonial-author">
+                    <div class="author-image"></div>
+                    <div class="author-info">
+                        <h4>Andreea M.</h4>
+                        <span>Member since 2023</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial">
+            <div class="testimonial-content">
+                <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                <p>"As someone who travels frequently, having access to workouts I can do anywhere has been a game-changer. The app is intuitive and the community support is amazing."</p>
+                <div class="testimonial-author">
+                    <div class="author-image author-image-2"></div>
+                    <div class="author-info">
+                        <h4>Radu C.</h4>
+                        <span>Member since 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function loadChampions() {
+    console.log('Loading homepage champions...');
+    const container = document.querySelector('.homepage-champions-list');
+    
+    if (!container) {
+        console.error('Homepage champions container not found!');
+        return;
+    }
+    
+    fetch(`${API_URL}/champions.php?limit=3`)
+    .then(response => {
+        console.log('Champions API response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Champions API data:', data);
+        if (data.success && data.data && data.data.length > 0) {
+            displayHomepageChampions(data.data.slice(0, 3));
+        } else {
+            console.log('No champions data, showing fallback');
+            displayHomepageFallback();
+        }
+    })
+    .catch(error => {
+        console.error('Error loading champions:', error);
+        displayHomepageFallback();
+    });
+}
+
+function displayHomepageChampions(champions) {
+    console.log('Displaying homepage champions leaderboard:', champions);
+    const container = document.querySelector('.homepage-champions-list');
+    
+    if (!container) {
+        console.error('Homepage champions container not found!');
+        return;
+    }
+    
+    let listHTML = '';
+    
+    champions.forEach((champion, index) => {
+        const rank = champion.rank || (index + 1);
+        const name = getChampionDisplayName(champion);
+        const avatar = getChampionAvatar(champion);
+        const hasProfilePic = champion.profile_picture && champion.profile_picture.trim() !== '';
+        const stats = champion.stats || {
+            total_workouts: champion.total_workouts || 0,
+            active_days: champion.active_days || 0,
+            total_duration: champion.total_duration || 0,
+            activity_score: champion.activity_score || 0
+        };
+        const details = [];
+        if (champion.age) details.push(`${champion.age} years old`);
+        if (champion.gender) details.push(champion.gender);
+        if (champion.goal) details.push(formatGoal(champion.goal));
+        
+        listHTML += `
+            <div class="homepage-champion-item rank-${rank}">
+                <div class="homepage-champion-rank">${rank}</div>
+                
+                <div class="homepage-champion-avatar ${hasProfilePic ? 'has-image' : ''}">
+                    ${hasProfilePic 
+                        ? `<img src="${champion.profile_picture}" alt="${name}" onerror="this.parentElement.innerHTML='${avatar}'; this.parentElement.classList.remove('has-image');">` 
+                        : avatar
+                    }
+                </div>
+                
+                <div class="homepage-champion-info">
+                    <div class="homepage-champion-name">${name}</div>
+                    <div class="homepage-champion-details">
+                        ${details.length > 0 ? details.join(' • ') : 'Fitness enthusiast'}
+                    </div>
+                </div>
+                
+                <div class="homepage-champion-score">
+                    <span class="homepage-champion-score-value">${Math.round(stats.activity_score)}</span>
+                    <span class="homepage-champion-score-label">Score</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = listHTML;
+    console.log('Homepage champions leaderboard updated successfully');
+}
+
+function displayHomepageFallback() {
+    const container = document.querySelector('.homepage-champions-list');
+    container.innerHTML = `
+        <div class="homepage-champion-item rank-1">
+            <div class="homepage-champion-rank">1</div>
+            <div class="homepage-champion-avatar">C</div>
+            <div class="homepage-champion-info">
+                <div class="homepage-champion-name">Champion User</div>
+                <div class="homepage-champion-details">Fitness enthusiast</div>
+            </div>
+            <div class="homepage-champion-score">
+                <span class="homepage-champion-score-value">856</span>
+                <span class="homepage-champion-score-label">Score</span>
+            </div>
+        </div>
+        <div class="homepage-champion-item rank-2">
+            <div class="homepage-champion-rank">2</div>
+            <div class="homepage-champion-avatar">F</div>
+            <div class="homepage-champion-info">
+                <div class="homepage-champion-name">Fitness Pro</div>
+                <div class="homepage-champion-details">Personal trainer</div>
+            </div>
+            <div class="homepage-champion-score">
+                <span class="homepage-champion-score-value">742</span>
+                <span class="homepage-champion-score-label">Score</span>
+            </div>
+        </div>
+        <div class="homepage-champion-item rank-3">
+            <div class="homepage-champion-rank">3</div>
+            <div class="homepage-champion-avatar">A</div>
+            <div class="homepage-champion-info">
+                <div class="homepage-champion-name">Active User</div>
+                <div class="homepage-champion-details">Regular member</div>
+            </div>
+            <div class="homepage-champion-score">
+                <span class="homepage-champion-score-value">634</span>
+                <span class="homepage-champion-score-label">Score</span>
+            </div>
+        </div>
+    `;
+}
+
+function formatGoal(goal) {
+    return goal.replace(/_/g, ' ')
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+function getChampionDisplayName(champion) {
+    const fullName = `${champion.first_name || ''} ${champion.last_name || ''}`.trim();
+    return fullName || champion.username || 'Anonymous';
+}
+
+function getChampionAvatar(champion) {
+    const name = getChampionDisplayName(champion);
+    return name.charAt(0).toUpperCase();
+}

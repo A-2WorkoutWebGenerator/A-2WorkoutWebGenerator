@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="kinetotherapy.css">
+    <link rel="stylesheet" href="mobile-menu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="mobile-menu.js"></script>
+    <script src="kinetotherapy-unlogged.js"></script>
+    <title>Kinetotherapy - FitGen</title>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link active">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy-unlogged.html">Physiotherapy</a>
+                        <a href="kinetotherapy-unlogged.html" class="active">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="football-unlogged.html">Football</a>
+                                <a href="basketball-unlogged.html">Basketball</a>
+                                <a href="tennis-unlogged.html">Tennis</a>
+                                <a href="swimming-unlogged.html">Swimming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="champions-unlogged.html" class="nav-link">Champions</a>
+                <a href="success-stories-unlogged.html" class="nav-link">Success stories</a>
+                <a href="contact-unlogged.html" class="nav-link">Contacts</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+
+        <section class="hero kinesio-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Kinetotherapy</h1>
+                    <p class="subtitle">Therapeutic healing through movement</p>
+                    <p class="description">
+                        Kinetotherapy is a specialized therapeutic discipline based on human movement, used to improve strength, 
+                        flexibility, coordination, and function through carefully designed exercises. It's an essential component 
+                        in rehabilitation after injuries, surgeries, and for managing chronic conditions.
+                    </p>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-heart-pulse"></i>
+                            </div>
+                            <span>Promotes healing</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-person-walking"></i>
+                            </div>
+                            <span>Improves mobility</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <span>Builds strength</span>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <span>Enhances coordination</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image-container">
+                    <div class="image-frame">
+                        <img src="images/img_kineto.webp" alt="Kinetotherapy Session" onerror="this.src='/api/placeholder/600/400';this.onerror='';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="routines-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Expert-Designed Exercise Routines</h2>
+                    <p>Therapeutic programs designed by professional kinesiotherapists</p>
+                </div>
+
+                <div class="routines-grid">
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>Postural Correction</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Correct posture problems and alignment issues with these foundational exercises</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Wall posture alignment</li>
+                                <li><i class="fas fa-check"></i> Scapular retraction exercises</li>
+                                <li><i class="fas fa-check"></i> Chin tucks</li>
+                                <li><i class="fas fa-check"></i> Thoracic spine extensions</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>3-4x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=LcyZT6_AjJI" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                            <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-bars-progress"></i>
+                            </div>
+                            <h3>Core Stabilization</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Strengthen your core muscles for better stability and reduced back pain</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Pelvic tilts</li>
+                                <li><i class="fas fa-check"></i> Dead bug exercise</li>
+                                <li><i class="fas fa-check"></i> Bird-dog</li>
+                                <li><i class="fas fa-check"></i> Plank (with modifications)</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>20-25 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>2-3x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=WO1a3pWJiz0" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-person-walking"></i>
+                            </div>
+                            <h3>Functional Mobility</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">All Levels</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Improve daily movement patterns and recover functional independence</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Heel-to-toe walking</li>
+                                <li><i class="fas fa-check"></i> Side steps with resistance band</li>
+                                <li><i class="fas fa-check"></i> Squat to chair</li>
+                                <li><i class="fas fa-check"></i> Marching in place</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>15-20 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>3-5x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=SIzAd_ueIZU" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                             <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                         </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3>Neuromuscular Coordination</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Advanced</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Enhance the connection between your brain and muscles for better coordination</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Balance board drills</li>
+                                <li><i class="fas fa-check"></i> Step-ups with arm movements</li>
+                                <li><i class="fas fa-check"></i> Single-leg balance</li>
+                                <li><i class="fas fa-check"></i> Cross-crawl patterns</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>25-30 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>2-3x weekly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=GYe1WeAEbZY" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine">
+                                <i class="fas fa-bookmark"></i> Save
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-spine"></i></div>
+                            <h3>Lower Back Rehab</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Strengthen and stabilize the lower back, relieve pain, and regain mobility.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Cat-camel stretches</li>
+                                <li><i class="fas fa-check"></i> Pelvic tilts</li>
+                                <li><i class="fas fa-check"></i> Bridge lifts</li>
+                                <li><i class="fas fa-check"></i> Knee-to-chest</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>20 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>3x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=p6CMso14NWk" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-hand-paper"></i></div>
+                            <h3>Shoulder Mobility</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Restore range of motion and strength to the shoulders.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Pendulum swings</li>
+                                <li><i class="fas fa-check"></i> Cane-assisted lifts</li>
+                                <li><i class="fas fa-check"></i> Wall slides</li>
+                                <li><i class="fas fa-check"></i> External rotations</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>15 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>Daily</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=QPjIbr_sSCk" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-running"></i></div>
+                            <h3>Knee Rehabilitation</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Build strength and stability in the knee joint after injury or surgery.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Straight leg raises</li>
+                                <li><i class="fas fa-check"></i> Quad sets</li>
+                                <li><i class="fas fa-check"></i> Step-ups</li>
+                                <li><i class="fas fa-check"></i> Mini squats</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>20-25 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>3-4x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=sHzqS03AVj8" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-shoe-prints"></i></div>
+                            <h3>Ankle Stability</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Beginner</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Enhance ankle mobility and prevent sprains with these exercises.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Ankle circles</li>
+                                <li><i class="fas fa-check"></i> Towel scrunches</li>
+                                <li><i class="fas fa-check"></i> Heel raises</li>
+                                <li><i class="fas fa-check"></i> Single-leg balance</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>12 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>Daily</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=ZYosnA-1_W0" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+
+                    <div class="routine-card">
+                        <div class="routine-header">
+                            <div class="routine-icon"><i class="fas fa-child"></i></div>
+                            <h3>Hip Mobility</h3>
+                            <div class="difficulty">
+                                <span class="difficulty-label">Intermediate</span>
+                                <div class="difficulty-meter">
+                                    <span class="active"></span>
+                                    <span class="active"></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="routine-body">
+                            <p>Restore flexibility and strength in the hip area for better movement.</p>
+                            <ul class="exercise-list">
+                                <li><i class="fas fa-check"></i> Hip flexor stretches</li>
+                                <li><i class="fas fa-check"></i> Clamshells</li>
+                                <li><i class="fas fa-check"></i> Side-lying leg lifts</li>
+                                <li><i class="fas fa-check"></i> Glute bridges</li>
+                            </ul>
+                            <div class="routine-meta">
+                                <div class="meta-item"><i class="fas fa-clock"></i><span>18 min</span></div>
+                                <div class="meta-item"><i class="fas fa-calendar-day"></i><span>3x weekly</span></div>
+                            </div>
+                        </div>
+                        <div class="routine-footer">
+                            <a href="https://www.youtube.com/watch?v=jj2AAH6jbHk" target="_blank" 
+                            class="btn btn-primary" 
+                            style="color: white !important; background-color: #18D259 !important; text-decoration: none !important;"
+                            onmouseover="this.style.color='white'; this.style.backgroundColor='#3fcb70';"
+                            onmouseout="this.style.color='white'; this.style.backgroundColor='#18D259';">
+                                <i class="fab fa-youtube" style="color: white !important;"></i> Watch Tutorial
+                            </a>
+                            <button class="btn btn-outline save-routine"><i class="fas fa-bookmark"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="container">
+                <div class="info-columns">
+                    <div class="info-column">
+                        <h3><i class="fas fa-user-doctor"></i> When to Seek Kinetotherapy</h3>
+                        <ul class="info-list">
+                            <li>After injury or surgery</li>
+                            <li>For chronic pain management</li>
+                            <li>To improve movement limitations</li>
+                            <li>For neurological conditions</li>
+                            <li>For preventive care</li>
+                            <li>For sports performance enhancement</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-notes-medical"></i> Benefits of Kinetotherapy</h3>
+                        <ul class="info-list">
+                            <li>Reduces pain and inflammation</li>
+                            <li>Improves joint mobility and muscle strength</li>
+                            <li>Enhances balance and coordination</li>
+                            <li>Accelerates recovery after injuries</li>
+                            <li>Prevents future injuries</li>
+                            <li>Improves overall quality of life</li>
+                        </ul>
+                    </div>
+                    <div class="info-column">
+                        <h3><i class="fas fa-circle-exclamation"></i> Important Notes</h3>
+                        <div class="info-notice">
+                            <p>Always consult with a healthcare provider before starting any new exercise program, especially if you have existing health conditions or injuries.</p>
+                            <p>These routines are meant as general guidance and should be personalized by a qualified kinesiotherapist for your specific needs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Common questions about kinetotherapy practices and benefits</p>
+                </div>
+
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>What is the difference between physiotherapy and kinetotherapy?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>While both focus on rehabilitation, physiotherapy is a broader field that includes various treatment modalities like electrotherapy, ultrasound, and manual therapy. Kinetotherapy specifically focuses on movement-based exercises and physical activities as therapeutic interventions.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>How long does a typical kinetotherapy program last?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The duration varies based on your condition and goals. Acute injuries might require 4-6 weeks, while chronic conditions may need ongoing management. A typical session lasts 30-60 minutes, with frequency ranging from daily to 2-3 times per week.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Can I practice kinetotherapy exercises at home?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, most kinetotherapy programs include home exercises. After initial assessment and training with a professional, you'll receive a customized routine to practice at home. Regular follow-ups ensure proper technique and progression.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Is kinetotherapy covered by insurance?</h4>
+                            <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Many insurance plans cover kinetotherapy when medically necessary and prescribed by a doctor. Coverage varies by provider and plan. It's recommended to check with your insurance company about specific coverage details and requirements.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="cta-content">
+                <h2>Ready to Start Your Healing Journey?</h2>
+                <p>Get personalized kinetotherapy plans tailored to your specific needs and goals.</p>
+                <a href="login.html" id="personalizedKinetoPlanBtn" class="btn btn-primary btn-large">Get Personalized Plan</a>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">FitGen</div>
+                    <p>Transform Your Workout Experience</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <ul>
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="credits.html">Credits</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitGen. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

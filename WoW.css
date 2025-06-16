@@ -37,8 +37,8 @@ body {
     color: var(--text-dark);
     line-height: 1.6;
     background-color: var(--white);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    /*-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;*/
 }
 
 a {
@@ -272,7 +272,7 @@ img {
 .nav-buttons .btn-primary {
     background-color: white;
     color: var(--primary);
-    border: 2px solid white;
+    /*border: 2px solid white;*/
     padding: 0.5rem 1.2rem;
     border-radius: 50px;
     font-weight: 600;
@@ -504,9 +504,9 @@ section {
     scrollbar-width: none; 
 }
 
-.workout-slider::-webkit-scrollbar {
+/*.workout-slider::-webkit-scrollbar {
     display: none;
-}
+}*/
 
 .workout-card {
     flex: 0 0 350px;
@@ -1761,4 +1761,23 @@ section {
         transform: scale(1.1);
         transition: transform 0.3s ease;
     }
+}
+.loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+}
+
+.testimonial-author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 1rem;
 }

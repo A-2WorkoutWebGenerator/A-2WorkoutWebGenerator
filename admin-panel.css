@@ -226,7 +226,6 @@ body {
 }
 
 .filter-btn.active {
-    border-color: var(--primary);
     background: var(--primary);
     color: white;
 }
@@ -329,9 +328,6 @@ body {
     font-size: 0.95rem;
     line-height: 1.5;
     margin: 1rem 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
@@ -479,7 +475,6 @@ body {
 .pagination-btn.active {
     background: var(--primary);
     color: white;
-    border-color: var(--primary);
 }
 
 .pagination-btn:disabled {
@@ -935,7 +930,6 @@ body {
     
     .story-info h3 {
         font-size: 1rem;
-        word-break: break-word;
     }
     
     .story-info .achievement {

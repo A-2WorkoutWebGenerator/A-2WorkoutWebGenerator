@@ -7,39 +7,39 @@
     <link rel="stylesheet" href="kinetotherapy.css">
     <link rel="stylesheet" href="mobile-menu.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <script src="admin-utils.js"></script>
     <script src="mobile-menu.js"></script>
+    <script src="kinetotherapy-unlogged.js"></script>
 </head>
 <body>
     <div class="page-wrapper">
         <nav class="navbar">
             <div class="logo">
-                <a href="WoW-Logged.html"><span>FitGen</span></a>
+                <a href="WoW.html"><span>FitGen</span></a>
             </div>
             <div class="nav-links">
                 <div class="dropdown">
                     <a href="#workouts" class="nav-link active">Workout routines</a>
                     <div class="dropdown-content">
-                        <a href="physiotherapy.html">Physiotherapy</a>
-                        <a href="kinetotherapy.html">Kinetotherapy</a>
+                        <a href="physiotherapy-unlogged.html">Physiotherapy</a>
+                        <a href="kinetotherapy-unlogged.html">Kinetotherapy</a>
                         <div class="nested-dropdown">
                             <a href="#sports" class="nested-link">Sports</a>
                             <div class="nested-dropdown-content">
-                                <a href="football.html" class="active">Football</a>
-                                <a href="basketball.html">Basketball</a>
-                                <a href="tennis.html">Tennis</a>
-                                <a href="swimming.html">Swimming</a>
+                                <a href="football-unlogged.html" class="active">Football</a>
+                                <a href="basketball-unlogged.html">Basketball</a>
+                                <a href="tennis-unlogged.html">Tennis</a>
+                                <a href="swimming-unlogged.html">Swimming</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <a href="champions.html" class="nav-link">Champions</a>
-                <a href="success-stories.html" class="nav-link">Success stories</a>
-                <a href="contact.html" class="nav-link">Contacts</a>
+                <a href="champions-unlogged.html" class="nav-link">Champions</a>
+                <a href="success-stories-unlogged.html" class="nav-link">Success stories</a>
+                <a href="contact-unlogged.html" class="nav-link">Contacts</a>
             </div>
             <div class="nav-buttons">
-                <a href="profile.html" class="btn btn-outline">Profile</a>
-                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
             </div>
             <div class="mobile-toggle">
                 <i class="fas fa-bars"></i>
@@ -330,9 +330,9 @@
         </section>
         <section class="cta">
             <div class="cta-content">
-                <h2>Want to Boost Your Football Game?</h2>
-                <p>Start these routines and take your performance to the next level!</p>
-                <a href="#" id="personalizedFootballPlanBtn" class="btn btn-primary btn-large">Get Personalized Football Plan</a>
+                <h2>Ready to Start Your Recovery Journey?</h2>
+                <p>Get personalized physiotherapy programs tailored to your specific needs and goals.</p>
+                <a href="login.html" class="btn btn-primary btn-large" id="personalizedPhysioPlanBtn">Get Personalized Plan</a>
             </div>
         </section>
         <footer class="footer">
@@ -355,6 +355,5 @@
             </div>
         </footer>
     </div>
-    <script src="kinetotherapy.js"></script>
 </body>
 </html>

@@ -4,52 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <link rel="stylesheet" href="WoW.css">
+    <link rel="stylesheet" href="mobile-menu.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="mobile-menu.js"></script>
+    <script src="WoW.js"></script>
     <title>FitGen - Transform Your Workout Experience</title>
 </head>
 <body>
     <div class="page-wrapper">
-    <nav class="navbar">
-        <div class="logo">
-            <a href="WoW.html"><span>FitGen</span></a>
-        </div>
-        <div class="nav-links">
-            <div class="dropdown">
-                <a href="#workouts" class="nav-link">Workout routines</a>
-                <div class="dropdown-content">
-                    <a href="physiotherapy.html">Physiotherapy</a>
-                    <a href="kinetotherapy.html">Kinetotherapy</a>
-                    <div class="nested-dropdown">
-                        <a href="#sports" class="nested-link">Sports</a>
-                        <div class="nested-dropdown-content">
-                            <a href="football.html">Football</a>
-                            <a href="basketball.html">Basketball</a>
-                            <a href="tennis.html">Tennis</a>
-                            <a href="swimming.html">Swimming</a>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="WoW.html"><span>FitGen</span></a>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <a href="#workouts" class="nav-link">Workout routines</a>
+                    <div class="dropdown-content">
+                        <a href="physiotherapy-unlogged.html">Physiotherapy</a>
+                        <a href="kinetotherapy-unlogged.html">Kinetotherapy</a>
+                        <div class="nested-dropdown">
+                            <a href="#sports" class="nested-link">Sports</a>
+                            <div class="nested-dropdown-content">
+                                <a href="football-unlogged.html">Football</a>
+                                <a href="basketball-unlogged.html">Basketball</a>
+                                <a href="tennis-unlogged.html">Tennis</a>
+                                <a href="swimming-unlogged.html">Swimming</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <a href="champions-unlogged.html" class="nav-link">Champions</a>
+                <a href="success-stories-unlogged.html" class="nav-link">Success stories</a>
+                <a href="contact-unlogged.html" class="nav-link">Contacts</a>
             </div>
-            <a href="#champions" class="nav-link">Champions</a>
-            <a href="#gallery" class="nav-link">Gallery</a>
-            <a href="contact.html" class="nav-link">Contacts</a>
-        </div>
-        <div class="nav-buttons">
-            <a href="login.html" class="btn btn-outline">Log In</a>
-            <a href="register.html" class="btn btn-primary">Sign Up</a>
-        </div>
-        <div class="mobile-toggle">
-            <i class="fas fa-bars"></i>
-        </div>
-    </nav>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
                     <h1>Transform Your Workout Experience</h1>
                     <p>Create personalized fitness routines, track your progress, and achieve your goals faster with FitGen.</p>
                     <div class="hero-buttons">
-                        <a href="#features" class="btn btn-primary btn-large">Get Started</a>
-                        <a href="#workouts" class="btn btn-outline btn-large">Explore Workouts</a>
+                        <a href="login.html" class="btn btn-primary btn-large">Get Started</a>
+                        <a href="kinetotherapy-unlogged.html" class="btn btn-outline btn-large">Browse Exercises</a>
                     </div>
                     <div class="hero-stats">
                         <div class="stat">
@@ -73,144 +77,98 @@
                 </div>
             </div>
         </section>
+
         <section id="features" class="features">
             <div class="section-header">
                 <h2>Key Features</h2>
-                <p>Everything you need to transform your fitness journey</p>
+                <p>Everything you need for personalized fitness training</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3>Personalized Training</h3>
+                    <p>Sign up to customize workouts based on weight, height, age, gender, and health condition for optimal results.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Physiotherapy & Rehabilitation</h3>
+                    <p>Exercises for recovery and health maintenance with detailed instructions and video examples.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
                         <i class="fas fa-dumbbell"></i>
                     </div>
-                    <h3>Personalized Workouts</h3>
-                    <p>AI-powered workout plans tailored to your fitness level, goals, and available equipment.</p>
+                    <h3>Sports Training Programs</h3>
+                    <p>Routines for various sports focusing on specific muscle groups and performance objectives.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <h3>Progress Tracking</h3>
-                    <p>Monitor your achievements with detailed analytics and visual progress reports.</p>
+                    <h3>Flexible Locations</h3>
+                    <p>Exercises adapted for home or outdoor training with customizable preferences and equipment options.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-chart-bar"></i>
                     </div>
-                    <h3>Community Support</h3>
-                    <p>Connect with like-minded fitness enthusiasts and share your journey.</p>
+                    <h3>Statistics & RSS Feed</h3>
+                    <p>Personal progress tracking with detailed analytics available as RSS data feeds for each user.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-medal"></i>
+                        <i class="fas fa-trophy"></i>
                     </div>
-                    <h3>Achievements & Rewards</h3>
-                    <p>Earn badges and rewards as you hit milestones and complete challenges.</p>
+                    <h3>Public Rankings</h3>
+                    <p>Leaderboards of most active users, available in JSON and PDF formats.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-video"></i>
                     </div>
-                    <h3>HD Video Tutorials</h3>
-                    <p>Learn perfect form with our extensive library of professional exercise videos.</p>
+                    <h3>Video Tutorials</h3>
+                    <p>Learn perfect form with our exercise tutorial videos and step-by-step guidance.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <h3>Mobile & Desktop</h3>
-                    <p>Access your workouts anytime, anywhere with our cross-platform application.</p>
+                    <h3>Custom Duration</h3>
+                    <p>Set your preferred workout duration and intensity based on your schedule and fitness goals.</p>
                 </div>
             </div>
         </section>
-        <section id="workouts" class="workouts">
-            <div class="section-header">
-                <h2>Popular Workout Programs</h2>
-                <p>Find the perfect routine for your fitness goals</p>
-            </div>
-            <div class="workout-slider">
-                <div class="workout-card">
-                    <div class="workout-image">
-                        <div class="workout-difficulty">Beginner</div>
-                    </div>
-                    <div class="workout-content">
-                        <h3>Total Body Strength</h3>
-                        <div class="workout-meta">
-                            <span><i class="fas fa-clock"></i> 8 Weeks</span>
-                            <span><i class="fas fa-fire"></i> High Intensity</span>
+
+        <section id="champions" class="homepage-champions">
+            <div class="homepage-champions-background">
+                <div class="container">
+                    <div class="homepage-champions-content">
+                        <div class="homepage-champions-text">
+                            <h2>Our Champions</h2>
+                            <p>The most active members who lead by example</p>
+                            
+                            <div class="homepage-champions-cta">
+                                <a href="champions.html" class="btn btn-primary btn-large">
+                                    <i class="fas fa-trophy"></i> View Full Leaderboard
+                                </a>
+                            </div>
                         </div>
-                        <p>A comprehensive program designed to build strength and muscle across your entire body.</p>
-                        <a href="#" class="btn btn-secondary">View Details</a>
-                    </div>
-                </div>
-                <div class="workout-card">
-                    <div class="workout-image workout-image-2">
-                        <div class="workout-difficulty">Intermediate</div>
-                    </div>
-                    <div class="workout-content">
-                        <h3>Core & Cardio Blast</h3>
-                        <div class="workout-meta">
-                            <span><i class="fas fa-clock"></i> 6 Weeks</span>
-                            <span><i class="fas fa-fire"></i> Medium Intensity</span>
+                        
+                        <div class="homepage-champions-list">
+                            <div class="homepage-loading-champions">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading champions...</p>
+                            </div>
                         </div>
-                        <p>Torch calories and strengthen your core with this balanced cardio and strength routine.</p>
-                        <a href="#" class="btn btn-secondary">View Details</a>
-                    </div>
-                </div>
-                <div class="workout-card">
-                    <div class="workout-image workout-image-3">
-                        <div class="workout-difficulty">Advanced</div>
-                    </div>
-                    <div class="workout-content">
-                        <h3>Functional Fitness</h3>
-                        <div class="workout-meta">
-                            <span><i class="fas fa-clock"></i> 12 Weeks</span>
-                            <span><i class="fas fa-fire"></i> Very High Intensity</span>
-                        </div>
-                        <p>Improve overall athleticism and movement patterns with this functional training program.</p>
-                        <a href="#" class="btn btn-secondary">View Details</a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center">
-                <a href="#" class="btn btn-primary">Browse All Workouts</a>
-            </div>
-        </section>
-        <section id="champions" class="champions">
-            <div class="section-header">
-                <h2>Our Champions</h2>
-                <p>Meet the outstanding members who achieved remarkable results</p>
-            </div>
-            <div class="champions-grid">
-                <div class="champion-card">
-                    <div class="champion-image">
-                    </div>
-                    <div class="champion-content">
-                        <h3>Mark Johnson</h3>
-                        <span class="champion-achievement">Lost 30kg in 6 months</span>
-                        <p>"The structured programs and consistent tracking helped me transform my body and my life."</p>
-                    </div>
-                </div>
-                <div class="champion-card">
-                    <div class="champion-image champion-image-2">
-                    </div>
-                    <div class="champion-content">
-                        <h3>Sarah Williams</h3>
-                        <span class="champion-achievement">Completed marathon after knee injury</span>
-                        <p>"The recovery routines were essential in my journey back to running after a serious injury."</p>
-                    </div>
-                </div>
-                <div class="champion-card">
-                    <div class="champion-image champion-image-3">
-                    </div>
-                    <div class="champion-content">
-                        <h3>David Chen</h3>
-                        <span class="champion-achievement">From beginner to competitive athlete</span>
-                        <p>"I started with basic routines and now compete in CrossFit events thanks to the progressive programs."</p>
                     </div>
                 </div>
             </div>
         </section>
+
         <section id="gallery" class="gallery">
             <div class="section-header">
                 <h2>Workout Gallery</h2>
@@ -253,73 +211,36 @@
                         <p>Effective exercises with minimal equipment</p>
                     </div>
                 </div>
+                <div class="gallery-item">
+                    <div class="gallery-overlay">
+                        <h3>Swimming training</h3>
+                        <p>Exercises for you to stay fit in water</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-overlay">
+                        <h3>Football Meetings</h3>
+                        <p>Very good way to socialize while doing physical activity</p>
+                    </div>
+                </div>
             </div>
         </section>
+
         <section id="testimonials" class="testimonials">
             <div class="section-header">
                 <h2>Success Stories</h2>
                 <p>Hear from our satisfied members</p>
             </div>
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                        <p>"FitGen completely transformed my approach to fitness. The personalized workout plans and tracking features helped me lose 15kg in just 4 months!"</p>
-                        <div class="testimonial-author">
-                            <div class="author-image">
-                            </div>
-                            <div class="author-info">
-                                <h4>Andreea M.</h4>
-                                <span>Member since 2023</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                        <p>"As someone who travels frequently, having access to workouts I can do anywhere has been a game-changer. The mobile app is intuitive and the community support is amazing."</p>
-                        <div class="testimonial-author">
-                            <div class="author-image author-image-2">
-                            </div>
-                            <div class="author-info">
-                                <h4>Radu C.</h4>
-                                <span>Member since 2024</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="testimonial-slider" id="testimonials-container">
+                <div class="loading-message">
+                    <p>Loading success stories...</p>
                 </div>
             </div>
             <div class="text-center">
-                <a href="#" class="btn btn-outline">Read More Stories</a>
+                <a href="success-stories.html" class="btn btn-outline">Read More Stories</a>
             </div>
         </section>
 
-        <section id="contacts" class="contacts">
-            <div class="section-header">
-                <h2>Contact Us</h2>
-                <p>We're here to help with any questions you may have</p>
-            </div>
-            <div class="contact-container">
-                <div class="contact-form">
-                    <form action="#">
-                        <div class="form-group">
-                            <label for="name">Name:</label>
-                            <input type="text" id="name" name="name" placeholder="Your name">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" placeholder="Your email address">
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message:</label>
-                            <textarea id="message" name="message" placeholder="Your message"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </section>
         <section class="cta">
             <div class="cta-content">
                 <h2>Ready to Transform Your Fitness Journey?</h2>
@@ -333,50 +254,20 @@
                 <div class="footer-brand">
                     <div class="logo">FitGen</div>
                     <p>Transform Your Workout Experience</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
                 </div>
                 <div class="footer-links">
                     <div class="footer-links-column">
-                        <h4>Company</h4>
                         <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Press</a></li>
-                            <li><a href="#">Partners</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links-column">
-                        <h4>Resources</h4>
-                        <ul>
-                            <li><a href="#">Blog</a></li>
-                            <li><a href="#">Tutorials</a></li>
-                            <li><a href="#">FAQs</a></li>
-                            <li><a href="#">Community</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links-column">
-                        <h4>Support</h4>
-                        <ul>
-                            <li><a href="#">Help Center</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="credits.html">Credits</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 FitGen. All rights reserved.</p>
-                <p><a href="credits.html">Credits</a></p>
             </div>
         </footer>
     </div>
-
-    <script src="WoW.js"></script>
 </body>
 </html>

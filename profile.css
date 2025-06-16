@@ -1302,7 +1302,7 @@ button[type="submit"]:hover {
     padding-right: 5px;
 }
 
-.workout-suggestion ul::-webkit-scrollbar {
+/*.workout-suggestion ul::-webkit-scrollbar {
     width: 4px;
 }
 
@@ -1318,7 +1318,7 @@ button[type="submit"]:hover {
 
 .workout-suggestion ul::-webkit-scrollbar-thumb:hover {
     background: #27ae60;
-}
+}*/
 
 .workout-suggestion li {
     background: linear-gradient(135deg, #ffffff, #f8fffe);
@@ -2692,7 +2692,7 @@ button[type="submit"]:hover {
 .saved-routine-card .btn-primary {
     background: #18D259;
     color: white;
-    border-color: #18D259;
+    /*border-color: #18D259;*/
 }
 
 .saved-routine-card .btn-primary:hover {
@@ -2750,12 +2750,12 @@ button[type="submit"]:hover {
 .btn-danger {
     background: #e74c3c;
     color: white;
-    border-color: #e74c3c;
+    /*border-color: #e74c3c;*/
 }
 
 .btn-danger:hover {
     background: #c0392b;
-    border-color: #c0392b;
+    /*border-color: #c0392b;*/
 }
 
 @media (max-width: 768px) {
