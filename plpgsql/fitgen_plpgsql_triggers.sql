@@ -15,15 +15,6 @@ CREATE TRIGGER update_exercises_modtime
     FOR EACH ROW
     EXECUTE FUNCTION update_modified_column();
 
-CREATE TRIGGER update_workout_routines_modtime
-    BEFORE UPDATE ON workout_routines
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_column();
-
-CREATE TRIGGER update_user_stats_modtime
-    BEFORE UPDATE ON user_stats
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_column();
 
 CREATE OR REPLACE FUNCTION audit_trigger_function()
 RETURNS TRIGGER AS $$
@@ -103,18 +94,14 @@ CREATE TRIGGER audit_user_profiles_trigger
     AFTER INSERT OR UPDATE OR DELETE ON user_profiles
     FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
 
-CREATE TRIGGER audit_user_saved_routines_trigger
-    AFTER INSERT OR UPDATE OR DELETE ON user_saved_routines
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
-
-CREATE TRIGGER audit_workout_sessions_trigger
-    AFTER INSERT OR UPDATE OR DELETE ON workout_sessions
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
-
 CREATE TRIGGER audit_exercises_trigger
     AFTER INSERT OR UPDATE OR DELETE ON exercises
     FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
 
+
+
+
+-----------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION validate_user_profile()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -165,78 +152,6 @@ CREATE TRIGGER validate_user_trigger
     BEFORE INSERT OR UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION validate_user();
 
-CREATE OR REPLACE FUNCTION update_user_stats_on_workout()
-RETURNS TRIGGER AS $$
-DECLARE
-    v_stats_record user_stats%ROWTYPE;
-    v_current_date DATE := CURRENT_DATE;
-BEGIN
-
-    IF TG_OP = 'UPDATE' AND OLD.completed_at IS NULL AND NEW.completed_at IS NOT NULL THEN
-
-        SELECT * INTO v_stats_record
-        FROM user_stats
-        WHERE user_id = NEW.user_id AND stat_date = v_current_date;
-        
-        IF FOUND THEN
-
-            UPDATE user_stats SET
-                total_workouts = total_workouts + 1,
-                total_minutes = total_minutes + COALESCE(NEW.duration_minutes, 0),
-                total_calories = total_calories + COALESCE(NEW.calories_burned, 0),
-                updated_at = NOW()
-            WHERE user_id = NEW.user_id AND stat_date = v_current_date;
-        ELSE
-
-            INSERT INTO user_stats (
-                user_id, stat_date, total_workouts, total_minutes, total_calories
-            ) VALUES (
-                NEW.user_id, v_current_date, 1, 
-                COALESCE(NEW.duration_minutes, 0), 
-                COALESCE(NEW.calories_burned, 0)
-            );
-        END IF;
-
-        PERFORM update_user_streak(NEW.user_id);
-        
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION update_user_streak(p_user_id INTEGER)
-RETURNS VOID AS $$
-DECLARE
-    v_yesterday_workout BOOLEAN;
-    v_current_streak INTEGER := 1;
-BEGIN
-
-    SELECT EXISTS(
-        SELECT 1 FROM workout_sessions 
-        WHERE user_id = p_user_id 
-            AND DATE(completed_at) = CURRENT_DATE - INTERVAL '1 day'
-            AND completed_at IS NOT NULL
-    ) INTO v_yesterday_workout;
-    
-    IF v_yesterday_workout THEN
-
-        SELECT COALESCE(current_streak, 0) + 1 INTO v_current_streak
-        FROM user_stats 
-        WHERE user_id = p_user_id AND stat_date = CURRENT_DATE - INTERVAL '1 day';
-    END IF;
-
-    UPDATE user_stats SET
-        current_streak = v_current_streak,
-        longest_streak = GREATEST(longest_streak, v_current_streak)
-    WHERE user_id = p_user_id AND stat_date = CURRENT_DATE;
-    
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_stats_on_workout_completion
-    AFTER UPDATE ON workout_sessions
-    FOR EACH ROW EXECUTE FUNCTION update_user_stats_on_workout();
 
 CREATE OR REPLACE FUNCTION register_user(
     p_username VARCHAR(50),

@@ -167,26 +167,15 @@ CREATE TABLE IF NOT EXISTS saved_routines (
         UNIQUE (user_id, name)
 );
 
+--USER WORKOUTS TABLE 
+CREATE TABLE user_workouts (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    workout JSONB NOT NULL
+);
 
-SET search_path TO fitgen;
-CREATE OR REPLACE FUNCTION validate_email(email_address TEXT)
-RETURNS BOOLEAN AS $$
-BEGIN
-    IF email_address IS NULL OR email_address = '' THEN
-        RETURN FALSE;
-    END IF;
-
-    IF email_address ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN
-        RETURN TRUE;
-    ELSE
-        RETURN FALSE;
-    END IF;
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Email validation error: %', SQLERRM;
-END;
-$$ LANGUAGE plpgsql;
-
+--INSERTURI
 
 INSERT INTO fitgen.exercises (category_id, name, description, instructions, duration_minutes, difficulty, equipment_needed, video_url, image_url, muscle_groups, calories_per_minute, created_at, updated_at, location, min_age, max_age, gender, min_weight, goal, contraindications) VALUES
 (1, 'Pelvic Tilts', 'Gentle exercise to strengthen core and relieve back tension. No equipment needed. Main muscle group: core.', 'Lie on back, tilt pelvis upward', 10, 'beginner', 'none', NULL, NULL, ARRAY['core'], 4.50, '2025-06-01 14:15:06.514171', '2025-06-01 20:36:34.244269', 'home', 12, 99, NULL, 35, 'rehab', 'Avoid if acute lower back pain or recent back surgery'),
@@ -232,22 +221,13 @@ INSERT INTO fitgen.exercises (category_id, name, description, instructions, dura
 
 
 
-
+--INDECSI
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
-
 CREATE INDEX idx_exercises_category_id ON exercises(category_id);
 CREATE INDEX idx_exercises_difficulty ON exercises(difficulty);
 CREATE INDEX idx_exercises_equipment ON exercises(equipment_needed);
-
-CREATE INDEX idx_user_saved_routines_user_id ON user_saved_routines(user_id);
-
-CREATE INDEX idx_user_stats_user_id ON user_stats(user_id);
-CREATE INDEX idx_user_stats_date ON user_stats(stat_date);
-
 CREATE INDEX idx_audit_log_table_operation ON audit_log(table_name, operation);
 CREATE INDEX idx_audit_log_created_at ON audit_log(created_at);
-
-
 CREATE INDEX idx_success_stories_created_at ON success_stories(created_at DESC);
 CREATE INDEX idx_success_stories_approved ON success_stories(is_approved);
 
@@ -271,6 +251,8 @@ COMMENT ON COLUMN contact_messages.message IS 'The actual message content';
 COMMENT ON COLUMN contact_messages.is_read IS 'Whether admin has read this message';
 COMMENT ON COLUMN contact_messages.response_sent IS 'Whether a response has been sent';
 COMMENT ON COLUMN contact_messages.admin_notes IS 'Internal notes for admin use';
+
+--FUNCTII
 
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
