@@ -187,11 +187,11 @@ function exportData(format) {
     }
 }
 setInterval(loadChampions, 300000);
+
 window.logout = function() {
     showModal('Logout Confirmation', 'Are you sure you want to log out?', function() {
         showToast('You have been logged out');
         setTimeout(() => {
-            localStorage.removeItem('authToken');
             window.location.href = 'WoW.html';
         }, 1500);
     });
@@ -223,89 +223,86 @@ function showModal(title, message, confirmCallback) {
     
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
-    
     if (!document.getElementById('modal-styles')) {
         const modalStyles = document.createElement('style');
         modalStyles.id = 'modal-styles';
         modalStyles.textContent = `
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                padding: 20px;
-            }
-            
-            .modal-overlay.active {
-                opacity: 1;
-            }
-            
-            .modal-container {
-                background-color: white;
-                border-radius: 12px;
-                width: 100%;
-                max-width: 500px;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-                transform: scale(0.8);
-                transition: transform 0.3s ease;
-            }
-            
-            .modal-overlay.active .modal-container {
-                transform: scale(1);
-            }
-            
-            .modal-header {
-                padding: 20px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .modal-header h3 {
-                margin: 0;
-            }
-            
-            .modal-close {
-                background: transparent;
-                border: none;
-                font-size: 1.2rem;
-                cursor: pointer;
-                color: #999;
-                transition: color 0.2s ease;
-            }
-            
-            .modal-close:hover {
-                color: #333;
-            }
-            
-            .modal-body {
-                padding: 20px;
-            }
-            
-            .modal-footer {
-                padding: 20px;
-                border-top: 1px solid rgba(0, 0, 0, 0.1);
-                display: flex;
-                justify-content: flex-end;
-                gap: 10px;
-            }
-        `;
-        document.head.appendChild(modalStyles);
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        padding: 20px;
     }
     
+    .modal-overlay.active {
+        opacity: 1;
+    }
+    
+    .modal-container {
+        background-color: white;
+        border-radius: var(--radius-md);
+        width: 100%;
+        max-width: 500px;
+        box-shadow: var(--shadow-lg);
+        transform: scale(0.8);
+        transition: transform 0.3s ease;
+    }
+    
+    .modal-overlay.active .modal-container {
+        transform: scale(1);
+    }
+    
+    .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+    }
+    
+    .modal-close {
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: color var(--transition-fast);
+    }
+    
+    .modal-close:hover {
+        color: var(--text-dark);
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .modal-footer {
+        padding: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+`;
+        document.head.appendChild(modalStyles);
+    }
     setTimeout(() => {
         modal.classList.add('active');
     }, 10);
-    
     const closeBtn = modal.querySelector('.modal-close');
     const cancelBtn = modal.querySelector('.modal-cancel');
     const confirmBtn = modal.querySelector('.modal-confirm');
@@ -328,7 +325,6 @@ function showModal(title, message, confirmCallback) {
         closeModal();
     });
 }
-
 function showToast(message) {
     const existingToast = document.querySelector('.toast-notification');
     if (existingToast) {
