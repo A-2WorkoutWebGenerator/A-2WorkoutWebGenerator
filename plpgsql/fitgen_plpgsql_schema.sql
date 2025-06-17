@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 --ADMIN
 UPDATE fitgen.users SET isAdmin = TRUE WHERE username = 'aramaAndreea';
+UPDATE fitgen.users SET isAdmin = TRUE WHERE username = 'andreeaPlaton';
 
 --AUTH TOKENS TABLE
 CREATE TABLE IF NOT EXISTS auth_tokens (
@@ -292,13 +293,6 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         RAISE EXCEPTION 'Email validation error: %', SQLERRM;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION calculate_age(birth_year INTEGER)
-RETURNS INTEGER AS $$
-BEGIN
-    RETURN EXTRACT(YEAR FROM CURRENT_DATE) - birth_year;
 END;
 $$ LANGUAGE plpgsql;
 
