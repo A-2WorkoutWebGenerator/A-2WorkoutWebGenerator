@@ -221,6 +221,20 @@ INSERT INTO fitgen.exercises (category_id, name, description, instructions, dura
 
 
 
+INSERT INTO exercise_categories (name, description, workout_type) VALUES
+    ('Lower Back Pain Relief', 'Exercises for alleviating lower back pain', 'physiotherapy'),
+    ('Shoulder Mobility', 'Exercises to improve shoulder range of motion', 'physiotherapy'),
+    ('Knee Rehabilitation', 'Strengthening exercises for knee recovery', 'physiotherapy'),
+    ('Full-Body Stretching', 'Complete flexibility routine', 'physiotherapy'),
+    ('Postural Correction', 'Exercises to correct posture problems', 'kinetotherapy'),
+    ('Core Stabilization', 'Core strengthening for stability', 'kinetotherapy'),
+    ('Functional Mobility', 'Daily movement pattern improvement', 'kinetotherapy'),
+    ('Neuromuscular Coordination', 'Brain-muscle connection exercises', 'kinetotherapy'),
+    ('Football Training', 'Sport-specific football exercises', 'sports'),
+    ('Basketball Drills', 'Basketball skill development', 'sports'),
+    ('Tennis Conditioning', 'Tennis-specific conditioning', 'sports'),
+    ('Swimming Technique', 'Swimming stroke improvement', 'sports');
+
 --INDECSI
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
 CREATE INDEX idx_exercises_category_id ON exercises(category_id);
