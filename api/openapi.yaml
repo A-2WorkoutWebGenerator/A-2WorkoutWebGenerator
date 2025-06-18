@@ -6,7 +6,7 @@ info:
     API for workout generator, user profiles, statistics, leaderboard and exercise management.
 
 servers:
-  - url: http://localhost:8081/api
+  - url: http://fitgen.eu-north-1.elasticbeanstalk.com/api
 
 tags:
   - name: Auth

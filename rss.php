@@ -73,7 +73,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <rss version="2.0">
   <channel>
     <title>Summary for exercises updates and personal statistics</title>
-    <link>http://localhost:8081/</link>
+    <link>http://fitgen.eu-north-1.elasticbeanstalk.com/</link>
     <?php
     echo "<description>Latest updates in the FitGen app on the exercises and personal statistics";
     if ($username) {
@@ -89,7 +89,7 @@ if ($result) {
     $title = htmlspecialchars(friendly_action($row['operation'], $row['table_name']));
     $description = friendly_description($row);
     $pubDate = date(DATE_RSS, strtotime($row['created_at']));
-    $link = "http://localhost:8081/audit/{$row['id']}";
+    $link = "http://fitgen.eu-north-1.elasticbeanstalk.com/audit/{$row['id']}";
     $guid = $link;
     echo "    <item>
     <title>{$title}</title>
@@ -107,7 +107,7 @@ if ($user_id) {
     $desc = $stats ? statistics_description($stats) : "There are no statistics for this user.";
     $title = "Personal statistics for #{$user_id}";
     $pubDate = date(DATE_RSS); 
-    $link = "http://localhost:8081/user/{$user_id}/statistics";
+    $link = "http://fitgen.eu-north-1.elasticbeanstalk.com/user/{$user_id}/statistics";
     $guid = "statistics-{$user_id}-" . date('YmdHis');
     echo "    <item>
     <title>" . htmlspecialchars($title) . "</title>

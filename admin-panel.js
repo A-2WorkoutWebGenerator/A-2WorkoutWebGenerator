@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8081";
+const API_URL = "http://fitgen.eu-north-1.elasticbeanstalk.com";
         let allMessages = [];
         let allExercises = [];
         let allStories = [];
