@@ -1,8 +1,8 @@
 <?php
 function getConnection() {
-    $host = "db";
+    $host = "database-1.cpak6uiam1q1.eu-north-1.rds.amazonaws.com";
     $port = "5432";
-    $dbname = "fitgen";
+    $dbname = "postgres";
     $username = "postgres";
     $password = "postgres";
     

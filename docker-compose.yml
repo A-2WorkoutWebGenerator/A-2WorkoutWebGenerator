@@ -10,15 +10,15 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - db
+      - database-1.cpak6uiam1q1.eu-north-1.rds.amazonaws.com
 
-  db:
+  database-1.cpak6uiam1q1.eu-north-1.rds.amazonaws.com:
     image: postgres:14
     restart: always
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: fitgen
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:

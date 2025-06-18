@@ -2,8 +2,8 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 try {
-    $host = 'db';
-    $dbname = 'fitgen';
+    $host = 'database-1.cpak6uiam1q1.eu-north-1.rds.amazonaws.com';
+    $dbname = 'postgres';
     $username = 'postgres';
     $password = 'postgres';
     
@@ -25,7 +25,7 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
-const GOOGLE_CLIENT_ID = '796832644004-dhu94ipfbmc7lob04n9a3gpbebum4cg5.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '452342585871-p9ofgvju1jnjdg1u6mh3urllevoatta0.apps.googleusercontent.com';
 
 function generateRSSToken() {
     return bin2hex(random_bytes(32));

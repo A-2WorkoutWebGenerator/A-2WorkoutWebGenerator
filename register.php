@@ -53,7 +53,7 @@ if (!empty($data->username) && !empty($data->email) && !empty($data->password)) 
         }
     } else {
         $hashed_password = password_hash($data->password, PASSWORD_DEFAULT);
-        $plpgsql_query = "SELECT * FROM register_user($1, $2, $3)";
+        $plpgsql_query = "SELECT * FROM fitgen.register_user($1, $2, $3)";
         $plpgsql_result = pg_query_params($conn, $plpgsql_query, array($username, $email, $hashed_password));
 
         $user_id = null;
