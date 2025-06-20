@@ -1,3 +1,23 @@
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+});
+
 function handleCredentialResponse(response) {
     console.log("Encoded JWT ID token: " + response.credential);
     showGoogleLoading(true);
@@ -82,6 +102,7 @@ function showMessage(message, type) {
         }, 300);
     }, 5000);
 }
+
 window.onload = function () {
     google.accounts.id.initialize({
         client_id: "452342585871-p9ofgvju1jnjdg1u6mh3urllevoatta0.apps.googleusercontent.com",

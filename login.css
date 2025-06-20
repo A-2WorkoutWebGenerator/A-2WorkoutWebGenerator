@@ -591,3 +591,97 @@ input[type="email"]:focus ~ .icon {
         font-size: 28px;
     }
 }
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 5px;
+    transition: var(--transition);
+    z-index: 2;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+.input-field:has(.toggle-password) input[type="password"],
+.input-field:has(.toggle-password) input[type="text"] {
+    padding-right: 50px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 11px 50px 11px 40px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: var(--transition);
+    background: #f9f9f9;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    color: var(--text-color) !important;
+    background-color: #f9f9f9 !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-text-fill-color: var(--text-color) !important;
+    -webkit-opacity: 1 !important;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: var(--white) !important;
+    box-shadow: 0 0 0 4px var(--primary-light);
+    color: var(--text-color) !important;
+    -webkit-text-fill-color: var(--text-color) !important;
+}
+
+@supports (-webkit-touch-callout: none) {
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        color: var(--text-color) !important;
+        -webkit-text-fill-color: var(--text-color) !important;
+        background-color: #f9f9f9 !important;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        color: var(--text-color) !important;
+        -webkit-text-fill-color: var(--text-color) !important;
+        background-color: var(--white) !important;
+    }
+}
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        font-size: 16px;
+        color: var(--text-color) !important;
+        background-color: #f9f9f9 !important;
+        -webkit-text-fill-color: var(--text-color) !important;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        color: var(--text-color) !important;
+        background-color: var(--white) !important;
+        -webkit-text-fill-color: var(--text-color) !important;
+    }
+}
