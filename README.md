@@ -42,6 +42,8 @@
     <ul>
       <li>
         <span property="scholarly:author">Andreea Platon</span> – <a href="mailto:andreeaplaton20@gmail.com">platonandreea3@gmail.com</a>
+      </li>
+      <li>
         <span property="scholarly:author">Andreea Aramă</span> – <a href="mailto:andreeaplaton20@gmail.com">andreea.arama.01@gmail.com</a>
       </li>
     </ul>
@@ -159,7 +161,7 @@
     <section id="34-interfata-de-comunicare">
       <h3>3.4 Interfața de comunicare</h3>
       <ul>
-        <li>HTTP/HTTPS</li>
+        <li>HTTP</li>
         <li>API REST pentru frontend-backend</li>
         <li>SMTP pentru trimitere email</li>
       </ul>
@@ -171,7 +173,7 @@
     <section id="41-gestionarea-contului">
       <h3>4.1 Gestionarea contului</h3>
       <ul>
-        <li><strong>Înregistrare:</strong> username, email, parolă (sau Gmail)</li>
+        <li><strong>Înregistrare:</strong> username, email, parolă</li>
         <li><strong>Autentificare:</strong> username/parolă sau Gmail</li>
         <li><strong>Confirmare email:</strong> la înregistrare (SMTP Gmail)</li>
         <li><strong>Actualizare informații:</strong> Modificare date personale</li>
@@ -200,7 +202,7 @@
     <h2>5. Funcționalități pentru protecție și securitate</h2>
     <ul>
       <li>Protecția datelor personale (hashing parolă, token JWT)</li>
-      <li>Securizarea datelor prin HTTPS, validare input, protecție împotriva SQL injection și XSS</li>
+      <li>Validare input, protecție împotriva SQL injection și XSS</li>
       <li>Calități software: adaptabilitate, ușurință în utilizare, flexibilitate</li>
     </ul>
   </section>
