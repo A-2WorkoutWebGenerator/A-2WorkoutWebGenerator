@@ -12,7 +12,7 @@
   <h1 property="scholarly:title">FitGen – Aplicație Web pentru generare antrenamente personalizate</h1>
   <p>
     <strong>Autor:</strong> <span property="scholarly:author">Andreea Platon</span><br>
-    <a href="mailto:platonandreea3@gmail.com">platonandreea3@gmail.com</a>
+    <a href="mailto:platonandreea3@gmail.com">platonandreea3@gmail.com</a><br>
     <strong>Autor:</strong> <span property="scholarly:author">Andreea Arama</span><br>
     <a href="mailto:andreea.arama.01@gmail.com">andreea.arama.01@gmail.com</a>
   </p>
@@ -52,7 +52,7 @@
     <section id="11-scop">
       <h3>1.1 Scop</h3>
       <p>
-        Scopul proiectului este de a dezvolta o aplicație web interactivă pentru generarea de rutine de antrenament personalizate pentru fizioterapie, kinetoterapie sau alte sporturi precum: fotbal, tenis, basket. Rutinele sunt adaptate în funcție de datele personale (gen, varsta, greutate, conditii medicale) și preferințele utilizatorului (grupă de mușchi, nivel de intensitate, durată, echipament, locație).
+        Scopul proiectului este de a dezvolta o aplicație web interactivă pentru generarea de rutine de antrenament personalizate pentru fizioterapie, kinetoterapie sau alte sporturi precum: fotbal, tenis, basket, înot. Rutinele sunt adaptate în funcție de datele personale (gen, varsta, greutate, conditii medicale) și preferințele utilizatorului (grupă de mușchi, nivel de intensitate, durată, echipament, locație).
       </p>
     </section>
     <section id="12-conventie-de-scriere">
@@ -70,7 +70,7 @@
     <section id="14-scopul-produsului">
       <h3>1.4 Scopul produsului</h3>
       <p>
-        Aplicația oferă utilizatorilor un spațiu interactiv unde pot genera, salva și descărca rutine de antrenament personalizate, pot vizualiza statistici, clasamente, pot trimite întrebări și primi răspunsuri pe email.
+        Aplicația oferă utilizatorilor un spațiu interactiv unde pot genera și salva rutine de antrenament personalizate, pot vizualiza statistici, clasamente, pot trimite întrebări și primi răspunsuri pe email.
       </p>
     </section>
     <section id="15-referinte">
@@ -122,7 +122,7 @@
     <section id="25-documentatia-pentru-utilizator">
       <h3>2.5 Documentația pentru utilizator</h3>
       <p>
-        Utilizatorii pot consulta acest document pentru explicații detaliate privind funcționalitățile aplicației. Pentru detalii suplimentare, vezi și sursele din repo.
+        Utilizatorii pot consulta acest document pentru explicații detaliate privind funcționalitățile aplicației. Pentru detalii suplimentare, vezi și demo-ul, precum și sursele din repo.
       </p>
     </section>
   </section>
@@ -134,12 +134,12 @@
       <ul>
         <li><strong>Bara de navigație:</strong> Navigare rapidă între paginile cheie: Workout Routines, Champions, Success stories, Contacts, Admin Panel (pentru administrator), 
         Profile (când ești logat), Autentificare(Login, Register)/Logout</li>
-        <li><strong>Pagina de autentificare:</strong> Formular pentru username și parolă, login cu Gmail (OAuth), link către înregistrare</li>
+        <li><strong>Pagina de autentificare:</strong> Formular pentru username și parolă, login cu Gmail (OAuth), resetare parolă prin email, link către înregistrare</li>
         <li><strong>Pagina de înregistrare:</strong> Formular pentru username, email, parolă, bifare termeni și condiții</li>
         <li><strong>Pagina de acasă:</strong> Prezentare functionalitati de baza ale aplicatiei, sectiune pentru clasamentul celor mai activi utilizatori, galerie foto, povesti de succes, sectiunea de contactare, credite</li>
-        <li><strong>Pagini dedicate fiecărei secțiuni (fizioterapie, kinetoterapie, fotbal, basket, tenis):</strong> Vizualizare antrenamente predefinite (pot fi salvate in contul personal), informații relevante despre fiecare secțiune (de ce ai practica, la ce să te aștepți și atenționări), întrebări frecvente </li>
+        <li><strong>Pagini dedicate fiecărei secțiuni (fizioterapie, kinetoterapie, fotbal, basket, tenis, înot):</strong> Vizualizare antrenamente predefinite (pot fi salvate in contul personal), informații relevante despre fiecare secțiune (de ce ai practica, la ce să te aștepți și atenționări), întrebări frecvente </li>
         <li><strong>Pagina de profil:</strong> Secțiune de completare și editare profil, secțiuni separate pentru rutinele de antrenament create și salvate, statistici personale, formular responsabil pentru generarea de antrenament, flux RSS</li>
-        <li><strong>Pagina admin:</strong> Pagină pentru a răspunde automat din aplicație la mesajele primite, pagină pentru validarea poveștilor de succes și pagină pentru administrarea exercițiilor din sistem, cu formularele pentru editare, dar și adăugarea unor exerciții noi</li>
+        <li><strong>Pagina admin:</strong> Pagină pentru a răspunde automat din aplicație la mesajele primite, pagină pentru validarea poveștilor de succes și pagină pentru administrarea exercițiilor din sistem, cu formularele pentru editare, adăugarea unor exerciții noi, dar și ștergerea celor existente la necesitate</li>
       </ul>
     </section>
     <section id="32-interfata-hardware">
@@ -181,7 +181,7 @@
     <section id="42-sectiunea-utilizatori">
       <h3>4.2 Secțiunea Utilizatori</h3>
       <ul>
-        <li><strong>Listă utilizatori:</strong> detalii profil, favorite</li>
+        <li><strong>Cont utilizator:</strong> Detalii profil, rutine de antrenament, statistici personale</li>
         <li><strong>Admin:</strong> Manageriere mesaje, istorii de succes și exerciții</li>
         <li><strong>Condiții:</strong> Drepturi de admin pentru modificări</li>
       </ul>
@@ -189,7 +189,7 @@
     <section id="43-sectiunea-admin">
       <h3>4.3 Secțiunea Admin</h3>
       <ul>
-        <li><strong>Gestionare:</strong> Adăugare/modificare exerciții</li>
+        <li><strong>Gestionare:</strong> Adăugare/modificare/ștergere exerciții</li>
         <li><strong>Actualizare:</strong> Gestionare baze de date de către admin</li>
         <li><strong>Condiții:</strong> Autentificare ca admin</li>
       </ul>
