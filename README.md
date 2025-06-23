@@ -245,7 +245,7 @@
     </ul>
   </section>
   <p>
-    Pentru detalii suplimentare, vezi și sursele din repo.
+    Pentru detalii suplimentare, vezi demo și sursele din repo.
   </p>
 </footer>
 </body>
