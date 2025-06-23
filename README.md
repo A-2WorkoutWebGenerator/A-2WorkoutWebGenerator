@@ -110,7 +110,7 @@
       <ul>
         <li><strong>Utilizator autentificat:</strong> accesează și personalizează rutine, accesează progres în aplicație și format RSS (poate vedea și actualizările asupra exercițiilor din sistem), accesează rutine de antrenament salvate.</li>
         <li><strong>Utilizator neautentificat:</strong> poate vizualiza pagini publice, clasament al utilizatorilor activi, poate contacta echipa de dezvoltare.</li>
-        <li><strong>Administrator:</strong> gestionează utilizatori și baze de date, adaugă/modifică exerciții/antrenamente, gestionează conținut (povești de succes), comunică prin mail cu utilizatorii.</li>
+        <li><strong>Administrator:</strong> gestionează utilizatori și baze de date, adaugă/modifică exerciții, gestionează conținut (povești de succes), comunică prin mail cu utilizatorii.</li>
       </ul>
     </section>
     <section id="24-mediul-de-operare">
