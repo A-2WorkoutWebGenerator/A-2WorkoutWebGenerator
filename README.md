@@ -30,7 +30,7 @@
       <li><a href="#5-functionalitati-pentru-protectie-si-securitate">5. Funcționalități pentru protecție și securitate</a></li>
       <li><a href="#6-diagrama-c4">6. Diagrama C4</a></li>
       <li><a href="#demo">Demo</a></li>
-      <li><a href="#performance">Performance</a></li>
+      <li><a href="#performance">Performanță</a></li>
       <li><a href="#autori">Autori</a></li>
     </ul>
   </nav>
@@ -52,7 +52,7 @@
     <section id="11-scop">
       <h3>1.1 Scop</h3>
       <p>
-        Scopul proiectului este de a dezvolta o aplicație web interactivă pentru generarea de rutine de antrenament personalizate pentru fizioterapie, kinetoterapie sau alte sporturi precum: fotbal, tenis, basket, înot. Rutinele sunt adaptate în funcție de datele personale (gen, varsta, greutate, conditii medicale) și preferințele utilizatorului (grupă de mușchi, nivel de intensitate, durată, echipament, locație).
+        Scopul proiectului este de a dezvolta o aplicație web interactivă pentru generarea de rutine de antrenament personalizate pentru fizioterapie, kinetoterapie sau alte sporturi precum: fotbal, tenis, basket, înot. Rutinele sunt adaptate în funcție de datele personale (gen, vârstă, greutate, condiții medicale) și preferințele utilizatorului (grupă de mușchi, nivel de intensitate, durată, echipament, locație).
       </p>
     </section>
     <section id="12-conventie-de-scriere">
@@ -136,8 +136,8 @@
         Profile (când ești logat), Autentificare(Login, Register)/Logout</li>
         <li><strong>Pagina de autentificare:</strong> Formular pentru username și parolă, login cu Gmail (OAuth), resetare parolă prin email, link către înregistrare</li>
         <li><strong>Pagina de înregistrare:</strong> Formular pentru username, email, parolă, bifare termeni și condiții</li>
-        <li><strong>Pagina de acasă:</strong> Prezentare functionalitati de baza ale aplicatiei, sectiune pentru clasamentul celor mai activi utilizatori, galerie foto, povesti de succes, sectiunea de contactare, credite</li>
-        <li><strong>Pagini dedicate fiecărei secțiuni (fizioterapie, kinetoterapie, fotbal, basket, tenis, înot):</strong> Vizualizare antrenamente predefinite (pot fi salvate in contul personal), informații relevante despre fiecare secțiune (de ce ai practica, la ce să te aștepți și atenționări), întrebări frecvente </li>
+        <li><strong>Pagina de acasă:</strong> Prezentare functionalități de bază ale aplicaței, secțiune pentru clasamentul celor mai activi utilizatori, galerie foto, povești de succes, secțiunea de contactare, credite</li>
+        <li><strong>Pagini dedicate fiecărei secțiuni (fizioterapie, kinetoterapie, fotbal, basket, tenis, înot):</strong> Vizualizare antrenamente predefinite (pot fi salvate în contul personal), informații relevante despre fiecare secțiune (de ce ai practica, la ce să te aștepți și atenționări), întrebări frecvente </li>
         <li><strong>Pagina de profil:</strong> Secțiune de completare și editare profil, secțiuni separate pentru rutinele de antrenament create și salvate, statistici personale, formular responsabil pentru generarea de antrenament, flux RSS</li>
         <li><strong>Pagina admin:</strong> Pagină pentru a răspunde automat din aplicație la mesajele primite, pagină pentru validarea poveștilor de succes și pagină pentru administrarea exercițiilor din sistem, cu formularele pentru editare, adăugarea unor exerciții noi, dar și ștergerea celor existente la necesitate</li>
       </ul>
