@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ro" prefix="scholarly: http://scholarly-html.org/vocab#">
+<head>
+  <meta charset="UTF-8">
+  <title>FitGen – Aplicație Web pentru generare antrenamente personalizate</title>
+  <meta name="author" content="Andreea Platon, Andreea Aramă">
+  <meta name="description" content="Documentație completă pentru FitGen, aplicație web de generare antrenamente personalizate.">
+  <link rel="canonical" href="https://github.com/A-2WorkoutWebGenerator/A-2WorkoutWebGenerator">
+  <link rel="stylesheet" href="documentation.css">
+</head>
+<body typeof="scholarly:ScholarlyArticle">
+<header>
+  <h1 property="scholarly:title">FitGen – Aplicație Web pentru generare antrenamente personalizate</h1>
+  <p>
+    <strong>Autor:</strong> <span property="scholarly:author">Andreea Platon</span><br>
+    <a href="mailto:platonandreea3@gmail.com">platonandreea3@gmail.com</a><br>
+    <strong>Autor:</strong> <span property="scholarly:author">Andreea Arama</span><br>
+    <a href="mailto:andreea.arama.01@gmail.com">andreea.arama.01@gmail.com</a>
+  </p>
+  <p>
+    <strong>Repo GitHub:</strong> <a href="https://github.com/A-2WorkoutWebGenerator/A-2WorkoutWebGenerator">https://github.com/A-2WorkoutWebGenerator/A-2WorkoutWebGenerator</a>
+  </p>
+  <a href="WoW.html" class="back-to-home">
+    <i class="fas fa-arrow-left"></i> Back to Home
+  </a>
+  <nav>
+    <h2>Cuprins</h2>
+    <ul>
+      <li><a href="#autori">Autori</a></li>
+      <li><a href="#1-introducere">1. Introducere</a></li>
+      <li><a href="#2-descriere-generala">2. Descriere Generală</a></li>
+      <li><a href="#3-interfetele-aplicatiei">3. Interfețele aplicației</a></li>
+      <li><a href="#4-caracteristici-ale-sistemului">4. Caracteristici ale sistemului</a></li>
+      <li><a href="#5-functionalitati-pentru-protectie-si-securitate">5. Funcționalități pentru protecție și securitate</a></li>
+      <li><a href="#6-diagrama-c4">6. Diagrama C4</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#performance">Performanță</a></li>
+      <li><a href="#autori">Autori</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section id="autori" typeof="scholarly:ContributorRole">
+    <h2>Autori</h2>
+    <ul>
+      <li>
+        <span property="scholarly:author">Andreea Platon</span> – <a href="mailto:andreeaplaton20@gmail.com">platonandreea3@gmail.com</a>
+      </li>
+      <li>
+        <span property="scholarly:author">Andreea Aramă</span> – <a href="mailto:andreeaplaton20@gmail.com">andreea.arama.01@gmail.com</a>
+      </li>
+    </ul>
+  </section>
+
+  <section id="1-introducere" typeof="scholarly:Introduction">
+    <h2>1. Introducere</h2>
+    <section id="11-scop">
+      <h3>1.1 Scop</h3>
+      <p>
+        Scopul proiectului este de a dezvolta o aplicație web interactivă pentru generarea de rutine de antrenament personalizate pentru fizioterapie, kinetoterapie sau alte sporturi precum: fotbal, tenis, basket, înot. Rutinele sunt adaptate în funcție de datele personale (gen, vârstă, greutate, condiții medicale) și preferințele utilizatorului (grupă de mușchi, nivel de intensitate, durată, echipament, locație).
+      </p>
+    </section>
+    <section id="12-conventie-de-scriere">
+      <h3>1.2 Convenție de scriere</h3>
+      <p>
+        Acest document urmează șablonul de documentație a cerințelor software conform IEEE Software Requirements Specification și standardului <a href="https://scholarly-html.org/">Scholarly HTML</a>. Textul <strong>îngroșat</strong> este folosit pentru a accentua concepte importante.
+      </p>
+    </section>
+    <section id="13-publicul-tinta">
+      <h3>1.3 Publicul țintă</h3>
+      <p>
+        Documentația este destinată utilizatorilor finali, dezvoltatorilor și profesorilor interesați de funcționalitatea și implementarea aplicației FitGen.
+      </p>
+    </section>
+    <section id="14-scopul-produsului">
+      <h3>1.4 Scopul produsului</h3>
+      <p>
+        Aplicația oferă utilizatorilor un spațiu interactiv unde pot genera și salva rutine de antrenament personalizate, pot vizualiza statistici, clasamente, pot trimite întrebări și primi răspunsuri pe email.
+      </p>
+    </section>
+    <section id="15-referinte">
+      <h3>1.5 Referințe</h3>
+      <ul>
+        <li><a href="https://scholarly-html.org/">Scholarly HTML</a></li>
+        <li><a href="https://github.com/hhru/template-srs">IEEE Software Requirements Specification Template</a></li>
+        <li><a href="https://github.com/A-2WorkoutWebGenerator/A-2WorkoutWebGenerator">Repo GitHub</a></li>
+        <li><a href="https://developers.google.com/identity/protocols/oauth2">Google OAuth 2.0</a></li>
+      </ul>
+    </section>
+  </section>
+
+  <section id="2-descriere-generala" typeof="scholarly:Background">
+    <h2>2. Descriere Generală</h2>
+    <section id="21-perspectiva-produsului">
+      <h3>2.1 Perspectiva produsului</h3>
+      <p>
+        FitGen este o aplicație web cu backend PHP, ce permite generarea și vizualizarea unor rutine de antrenament personalizate și gestionarea progresului utilizatorului. Oferă interfață prietenoasă, export date, autentificare clasică și cu Gmail și comunicare prin email.
+      </p>
+    </section>
+    <section id="22-functiile-produsului">
+      <h3>2.2 Funcțiile produsului</h3>
+      <ul>
+        <li>Înregistrare și autentificare (standard și cu Gmail/OAuth)</li>
+        <li>Personalizare profil și preferințe pentru antrenamente</li>
+        <li>Generare automată de rutine cu instrucțiuni detaliate și exemple video</li>
+        <li>Vizualizare statistici individuale în aplicație</li>
+        <li>Clasament public al utilizatorilor activi (export JSON/PDF/CSV)</li>
+        <li>Export statistici ca RSS</li>
+        <li>Trimitere email (SMTP Gmail)</li>
+        <li>Trimitere poveste de succes, cu validare de la admin pentru a apărea și pe site la secțiunea relevantă</li>
+      </ul>
+    </section>
+    <section id="23-clase-si-caracteristici-ale-utilizatorilor">
+      <h3>2.3 Clase și caracteristici ale utilizatorilor</h3>
+      <ul>
+        <li><strong>Utilizator autentificat:</strong> accesează și personalizează rutine, accesează progres în aplicație și format RSS (poate vedea și actualizările asupra exercițiilor din sistem), accesează rutine de antrenament salvate.</li>
+        <li><strong>Utilizator neautentificat:</strong> poate vizualiza pagini publice, clasament al utilizatorilor activi, poate contacta echipa de dezvoltare.</li>
+        <li><strong>Administrator:</strong> gestionează utilizatori și baze de date, adaugă/modifică exerciții, gestionează conținut (povești de succes), comunică prin mail cu utilizatorii.</li>
+      </ul>
+    </section>
+    <section id="24-mediul-de-operare">
+      <h3>2.4 Mediul de operare</h3>
+      <p>
+        Produsul poate fi folosit pe orice dispozitiv cu browser modern (desktop, laptop, tabletă, telefon) și conexiune la internet.
+      </p>
+    </section>
+    <section id="25-documentatia-pentru-utilizator">
+      <h3>2.5 Documentația pentru utilizator</h3>
+      <p>
+        Utilizatorii pot consulta acest document pentru explicații detaliate privind funcționalitățile aplicației. Pentru detalii suplimentare, vezi și demo-ul, precum și sursele din repo.
+      </p>
+    </section>
+  </section>
+
+  <section id="3-interfetele-aplicatiei" typeof="scholarly:Methods">
+    <h2>3. Interfețele aplicației</h2>
+    <section id="31-interfata-utilizatorului">
+      <h3>3.1 Interfața utilizatorului</h3>
+      <ul>
+        <li><strong>Bara de navigație:</strong> Navigare rapidă între paginile cheie: Workout Routines, Champions, Success stories, Contacts, Admin Panel (pentru administrator), 
+        Profile (când ești logat), Autentificare(Login, Register)/Logout</li>
+        <li><strong>Pagina de autentificare:</strong> Formular pentru username și parolă, login cu Gmail (OAuth), resetare parolă prin email, link către înregistrare</li>
+        <li><strong>Pagina de înregistrare:</strong> Formular pentru username, email, parolă, bifare termeni și condiții</li>
+        <li><strong>Pagina de acasă:</strong> Prezentare functionalități de bază ale aplicaței, secțiune pentru clasamentul celor mai activi utilizatori, galerie foto, povești de succes, secțiunea de contactare, credite</li>
+        <li><strong>Pagini dedicate fiecărei secțiuni (fizioterapie, kinetoterapie, fotbal, basket, tenis, înot):</strong> Vizualizare antrenamente predefinite (pot fi salvate în contul personal), informații relevante despre fiecare secțiune (de ce ai practica, la ce să te aștepți și atenționări), întrebări frecvente </li>
+        <li><strong>Pagina de profil:</strong> Secțiune de completare și editare profil, secțiuni separate pentru rutinele de antrenament create și salvate, statistici personale, formular responsabil pentru generarea de antrenament, flux RSS</li>
+        <li><strong>Pagina admin:</strong> Pagină pentru a răspunde automat din aplicație la mesajele primite, pagină pentru validarea poveștilor de succes și pagină pentru administrarea exercițiilor din sistem, cu formularele pentru editare, adăugarea unor exerciții noi, dar și ștergerea celor existente la necesitate</li>
+      </ul>
+    </section>
+    <section id="32-interfata-hardware">
+      <h3>3.2 Interfața Hardware</h3>
+      <p>
+        Nu necesită hardware special. Se poate folosi pe orice dispozitiv cu browser web.
+      </p>
+    </section>
+    <section id="33-interfata-software">
+      <h3>3.3 Interfața Software</h3>
+      <ul>
+        <li>Browser compatibil HTML5, CSS3, JavaScript</li>
+        <li>Backend PHP, microserviciu pentru OAuth</li>
+        <li>PostgreSQL pentru stocare date</li>
+      </ul>
+    </section>
+    <section id="34-interfata-de-comunicare">
+      <h3>3.4 Interfața de comunicare</h3>
+      <ul>
+        <li>HTTP</li>
+        <li>API REST pentru frontend-backend</li>
+        <li>SMTP pentru trimitere email</li>
+      </ul>
+    </section>
+  </section>
+
+  <section id="4-caracteristici-ale-sistemului" typeof="scholarly:Results">
+    <h2>4. Caracteristici ale sistemului</h2>
+    <section id="41-gestionarea-contului">
+      <h3>4.1 Gestionarea contului</h3>
+      <ul>
+        <li><strong>Înregistrare:</strong> username, email, parolă</li>
+        <li><strong>Autentificare:</strong> username/parolă sau Gmail</li>
+        <li><strong>Confirmare email:</strong> la înregistrare (SMTP Gmail)</li>
+        <li><strong>Actualizare informații:</strong> Modificare date personale</li>
+        <li><strong>Condiții:</strong> Autentificare obligatorie pentru modificări de profil</li>
+      </ul>
+    </section>
+    <section id="42-sectiunea-utilizatori">
+      <h3>4.2 Secțiunea Utilizatori</h3>
+      <ul>
+        <li><strong>Cont utilizator:</strong> Detalii profil, rutine de antrenament, statistici personale</li>
+        <li><strong>Admin:</strong> Manageriere mesaje, istorii de succes și exerciții</li>
+        <li><strong>Condiții:</strong> Drepturi de admin pentru modificări</li>
+      </ul>
+    </section>
+    <section id="43-sectiunea-admin">
+      <h3>4.3 Secțiunea Admin</h3>
+      <ul>
+        <li><strong>Gestionare:</strong> Adăugare/modificare/ștergere exerciții</li>
+        <li><strong>Actualizare:</strong> Gestionare baze de date de către admin</li>
+        <li><strong>Condiții:</strong> Autentificare ca admin</li>
+      </ul>
+    </section>
+  </section>
+
+  <section id="5-functionalitati-pentru-protectie-si-securitate" typeof="scholarly:Discussion">
+    <h2>5. Funcționalități pentru protecție și securitate</h2>
+    <ul>
+      <li>Protecția datelor personale (hashing parolă, token JWT)</li>
+      <li>Validare input, protecție împotriva SQL injection și XSS</li>
+      <li>Calități software: adaptabilitate, ușurință în utilizare, flexibilitate</li>
+    </ul>
+  </section>
+
+  <section id="6-diagrama-c4" typeof="scholarly:Materials">
+    <h2>6. Diagrama C4</h2>
+    <p>
+      <em>Aici poți atașa sau descrie diagrama arhitecturii C4 a aplicației.</em>
+    </p>
+  </section>
+
+  <section id="demo" typeof="scholarly:Materials">
+    <h2>Demo</h2>
+    <p>
+      <a href="#">Accesează Demo</a> <em>(adauga link dacă ai unul public)</em>
+    </p>
+  </section>
+
+  <section id="performance" typeof="scholarly:Results">
+    <h2>Performance</h2>
+    <ul>
+      <li>homePerformance</li>
+      <li>statisticsPerformance</li>
+    </ul>
+    <p>
+      <em>(Adaugă valori sau capturi pentru performanța fiecărei pagini)</em>
+    </p>
+  </section>
+</main>
+
+<footer>
+  <hr>
+  <section id="autori-1">
+    <h2>Autori</h2>
+    <ul>
+      <li>
+        <span property="scholarly:author">Andreea Platon</span> – <a href="mailto:platonandreea3@gmail.com">platonandreea3@gmail.com</a>
+      </li>
+      <li>
+        <span property="scholarly:author">Andreea Aramă</span> – <a href="mailto:andreea.arama.01@gmail.com">andreea.arama.01@gmail.com</a>
+      </li>
+    </ul>
+  </section>
+  <p>
+    Pentru detalii suplimentare, vezi demo și sursele din repo.
+  </p>
+</footer>
+</body>
+</html>
