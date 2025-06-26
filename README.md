@@ -219,7 +219,7 @@
   <section id="demo" typeof="scholarly:Materials">
     <h2>Demo</h2>
     <p>
-      <a href="#">Accesează Demo</a> <em>(adauga link dacă ai unul public)</em>
+      <a href="https://www.youtube.com/watch?v=1CeVWRKjAq8">Accesează Demo</a> <em>(adauga link dacă ai unul public)</em>
     </p>
   </section>
 </main>
