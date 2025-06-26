@@ -212,6 +212,7 @@
     <p>
         <img src="C4_diagrams/nivelul1.png">
         <img src="C4_diagrams/nivelul2.png">
+        <img src="C4_diagrams/nivelul3.png">
     </p>
   </section>
 

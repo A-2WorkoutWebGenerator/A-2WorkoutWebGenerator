@@ -70,6 +70,9 @@ switch (true) {
         break;
 
     default:
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
         http_response_code(404);
         echo json_encode(['error' => 'Endpoint not found']);
         break;
