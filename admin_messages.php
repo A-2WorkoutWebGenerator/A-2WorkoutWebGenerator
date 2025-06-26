@@ -74,7 +74,11 @@ try {
         ]);
 
     } elseif ($method === 'POST') {
+        // ✅ Verifică că EmailConfig este disponibil
         require_once 'email_config.php';
+        
+        // ✅ Testează conexiunea email la început
+        error_log("🔍 Testing email configuration before sending...");
         
         $input = json_decode(file_get_contents('php://input'), true);
         
@@ -96,6 +100,7 @@ try {
         if (!$conn) {
             throw new Exception('Database connection failed');
         }
+        
         $getMessageQuery = "SELECT full_name, email, message FROM contact_messages WHERE id = $1";
         $messageResult = pg_query_params($conn, $getMessageQuery, [$messageId]);
         
@@ -116,7 +121,10 @@ try {
 
         try {
             error_log("🚀 Attempting to send admin response email to: " . $to);
+            error_log("📋 Email subject: " . $subject);
+            error_log("📝 Response preview: " . substr($responseText, 0, 100) . "...");
             
+            // ✅ Folosește metoda corectată sendEmail
             $emailSent = EmailConfig::sendEmail($to, $subject, $emailBody, $adminEmail);
             
             if ($emailSent) {
@@ -126,7 +134,7 @@ try {
                                SET response_sent = true, is_read = true, admin_notes = $1 
                                WHERE id = $2";
                 
-                $adminNotes = "Admin response sent on " . date('Y-m-d H:i:s') . 
+                $adminNotes = "✅ Admin response sent on " . date('Y-m-d H:i:s') . 
                             " from " . $adminEmail . 
                             ". Response preview: " . substr($responseText, 0, 100) . 
                             (strlen($responseText) > 100 ? "..." : "");
@@ -134,7 +142,7 @@ try {
                 $updateResult = pg_query_params($conn, $updateQuery, [$adminNotes, $messageId]);
                 
                 if (!$updateResult) {
-                    error_log("Failed to update message status: " . pg_last_error($conn));
+                    error_log("❌ Failed to update message status: " . pg_last_error($conn));
                     throw new Exception('Failed to update message status in database');
                 }
 
@@ -142,35 +150,47 @@ try {
 
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Response sent successfully! The customer will receive your reply via email.',
+                    'message' => '✅ Response sent successfully! The customer will receive your reply via email.',
                     'details' => [
                         'recipient' => $to,
                         'timestamp' => date('Y-m-d H:i:s'),
-                        'method' => 'Multi-Method Email System'
+                        'method' => 'Multi-Method Email System (AWS Optimized)',
+                        'admin_email' => $adminEmail
                     ]
                 ]);
                 
             } else {
-                throw new Exception('All email delivery methods failed. Please check server configuration and try again.');
+                // ✅ Mai multe detalii despre eroare
+                $errorDetails = "Email delivery failed. Possible causes: " .
+                              "1) Gmail SMTP connection issues, " .
+                              "2) Invalid App Password, " . 
+                              "3) AWS security restrictions. " .
+                              "Check server logs for detailed error information.";
+                              
+                error_log("❌ " . $errorDetails);
+                throw new Exception($errorDetails);
             }
             
         } catch (Exception $emailError) {
-            error_log("Email sending failed completely: " . $emailError->getMessage());
+            error_log("❌ Email sending failed completely: " . $emailError->getMessage());
 
+            // ✅ Salvează eroarea în baza de date pentru debugging
             $updateQuery = "UPDATE contact_messages 
                            SET is_read = true, admin_notes = $1 
                            WHERE id = $2";
             
-            $failureNotes = "Email send FAILED on " . date('Y-m-d H:i:s') . 
+            $failureNotes = "❌ Email send FAILED on " . date('Y-m-d H:i:s') . 
                           ". Error: " . $emailError->getMessage() . 
-                          ". Response was: " . substr($responseText, 0, 200);
+                          ". Response was: " . substr($responseText, 0, 200) .
+                          ". Server: AWS Elastic Beanstalk";
             
             pg_query_params($conn, $updateQuery, [$failureNotes, $messageId]);
             pg_close($conn);
             
-            throw new Exception('Email delivery failed: ' . $emailError->getMessage() . 
+            throw new Exception('❌ Email delivery failed: ' . $emailError->getMessage() . 
                               '. The message has been marked as read but no email was sent. ' .
-                              'Please contact the customer directly at: ' . $to);
+                              'Please contact the customer directly at: ' . $to .
+                              '. Check AWS logs for detailed error information.');
         }
 
     } else {
@@ -178,13 +198,18 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("Admin messages error: " . $e->getMessage());
+    error_log("❌ Admin messages error: " . $e->getMessage());
     
     http_response_code(400);
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage(),
-        'timestamp' => date('Y-m-d H:i:s')
+        'timestamp' => date('Y-m-d H:i:s'),
+        'server_info' => [
+            'php_version' => PHP_VERSION,
+            'curl_available' => function_exists('curl_init'),
+            'mail_available' => function_exists('mail')
+        ]
     ]);
 }
 
@@ -264,6 +289,14 @@ function buildAdminResponseEmail($customerName, $responseText, $originalMessage)
                 padding-top: 20px;
                 border-top: 1px solid #e9ecef;
             }
+            .aws-badge {
+                background: #ff9900;
+                color: white;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
@@ -271,6 +304,9 @@ function buildAdminResponseEmail($customerName, $responseText, $originalMessage)
             <div class='header'>
                 <div class='logo'>💪 FitGen</div>
                 <h2 style='margin: 0; font-weight: 300;'>Support Team Response</h2>
+                <div style='margin-top: 10px;'>
+                    <span class='aws-badge'>Powered by AWS</span>
+                </div>
             </div>
             <div class='content'>
                 <div class='greeting'>
@@ -315,10 +351,11 @@ function buildAdminResponseEmail($customerName, $responseText, $originalMessage)
                 <p><strong>© 2025 FitGen. All rights reserved.</strong></p>
                 <p style='margin: 10px 0;'>
                     📧 <a href='mailto:support@fitgen.com' style='color: #18D259;'>support@fitgen.com</a> | 
-                    🌐 <a href='http://www.fitgen.com' style='color: #18D259;'>www.fitgen.com</a>
+                    🌐 <a href='http://fitgen.eu-north-1.elasticbeanstalk.com' style='color: #18D259;'>www.fitgen.com</a>
                 </p>
                 <p style='font-size: 12px; color: #adb5bd; margin: 15px 0 0 0;'>
-                    This email was sent in response to your inquiry. Please add us to your contacts to ensure delivery.
+                    This email was sent from AWS Elastic Beanstalk in response to your inquiry. 
+                    Please add us to your contacts to ensure delivery.
                 </p>
             </div>
         </div>
