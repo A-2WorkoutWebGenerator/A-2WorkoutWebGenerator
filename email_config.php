@@ -9,16 +9,22 @@ class EmailConfig {
     const FROM_NAME = 'FitGen Support';
     const ADMIN_EMAIL = 'andreea.arama.01@gmail.com';
     
+
     public static function sendEmail($to, $subject, $htmlBody, $replyTo = null) {
         error_log("🚀 Starting email send to: $to");
+
         if (self::sendEmailCurl($to, $subject, $htmlBody, $replyTo)) {
             return true;
         }
-
+        
         if (self::sendEmailNative($to, $subject, $htmlBody, $replyTo)) {
             return true;
         }
-
+        
+        if (self::sendEmailSocket($to, $subject, $htmlBody, $replyTo)) {
+            return true;
+        }
+        
         error_log("All email methods failed for: $to");
         return false;
     }
@@ -31,8 +37,10 @@ class EmailConfig {
         
         try {
             error_log("🔄 Trying cURL SMTP method");
+            
             $headers = self::buildEmailHeaders($to, $subject, $replyTo);
             $emailContent = $headers . "\r\n" . $htmlBody;
+            
             $tempFile = tempnam(sys_get_temp_dir(), 'email_');
             file_put_contents($tempFile, $emailContent);
             
@@ -46,10 +54,10 @@ class EmailConfig {
                 CURLOPT_MAIL_RCPT => [$to],
                 CURLOPT_READDATA => fopen($tempFile, 'r'),
                 CURLOPT_UPLOAD => true,
-                CURLOPT_VERBOSE => true, 
+                CURLOPT_VERBOSE => false,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_TIMEOUT => 60 
+                CURLOPT_TIMEOUT => 30
             ]);
             
             $result = curl_exec($ch);
@@ -59,15 +67,15 @@ class EmailConfig {
             unlink($tempFile);
             
             if ($result && empty($error)) {
-                error_log("✅ cURL SMTP success for: $to");
+                error_log("cURL SMTP success for: $to");
                 return true;
             } else {
-                error_log("❌ cURL SMTP failed: $error (code: $httpCode)");
+                error_log("cURL SMTP failed: $error (code: $httpCode)");
                 return false;
             }
             
         } catch (Exception $e) {
-            error_log("❌ cURL SMTP exception: " . $e->getMessage());
+            error_log("cURL SMTP exception: " . $e->getMessage());
             return false;
         }
     }
@@ -96,20 +104,59 @@ class EmailConfig {
             $result = @mail($to, $cleanSubject, $cleanBody, $headersString, $additionalParams);
             
             if ($result) {
-                error_log("✅ Native mail() success for: $to");
+                error_log("Native mail() success for: $to");
                 return true;
             } else {
                 $lastError = error_get_last();
-                error_log("❌ Native mail() failed for: $to - " . ($lastError['message'] ?? 'Unknown error'));
+                error_log("Native mail() failed for: $to - " . ($lastError['message'] ?? 'Unknown error'));
                 return false;
             }
             
         } catch (Exception $e) {
-            error_log("❌ Native mail() exception: " . $e->getMessage());
+            error_log("Native mail() exception: " . $e->getMessage());
             return false;
         }
     }
-    
+   
+    private static function sendEmailSocket($to, $subject, $htmlBody, $replyTo = null) {
+        try {
+            error_log("Trying simple socket method");
+            $socket = @fsockopen('localhost', 25, $errno, $errstr, 10);
+            
+            if (!$socket) {
+                error_log("Socket connection failed: $errstr ($errno)");
+                return false;
+            }
+            
+            $response = fgets($socket, 515);
+            
+            fwrite($socket, "HELO " . $_SERVER['SERVER_NAME'] . "\r\n");
+            $response = fgets($socket, 515);
+
+            fwrite($socket, "MAIL FROM: <" . self::FROM_EMAIL . ">\r\n");
+            $response = fgets($socket, 515);
+            
+            fwrite($socket, "RCPT TO: <$to>\r\n");
+            $response = fgets($socket, 515);
+            
+            fwrite($socket, "DATA\r\n");
+            $response = fgets($socket, 515);
+            
+            $headers = self::buildEmailHeaders($to, $subject, $replyTo);
+            $emailContent = $headers . "\r\n" . $htmlBody . "\r\n.\r\n";
+            fwrite($socket, $emailContent);
+            $response = fgets($socket, 515);
+            fwrite($socket, "QUIT\r\n");
+            fclose($socket);
+            
+            error_log("Socket method success for: $to");
+            return true;
+            
+        } catch (Exception $e) {
+            error_log("Socket method exception: " . $e->getMessage());
+            return false;
+        }
+    }
     public static function sendEmailSMTP($to, $subject, $htmlBody, $replyTo = null) {
         return self::sendEmail($to, $subject, $htmlBody, $replyTo);
     }

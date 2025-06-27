@@ -31,6 +31,6 @@ if (!$row || !$row['rss_token']) {
 
 echo json_encode([
     "success" => true,
-    "rss_link" => "http://fitgen.eu-north-1.elasticbeanstalk.com/rss.php?token=" . $row['rss_token']
+    "rss_link" => "http://localhost:8081/rss.php?token=" . $row['rss_token']
 ]);
 ?>

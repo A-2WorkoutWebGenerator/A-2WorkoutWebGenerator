@@ -82,11 +82,8 @@ class MobileMenu {
     }
 
     isUnloggedPage() {
-        // Check if this is an unlogged page by looking for login/signup buttons
         const loginButton = document.querySelector('a[href="login.html"]');
         const signupButton = document.querySelector('a[href="register.html"]');
-        
-        // Or check by URL patterns
         const url = window.location.pathname;
         const unloggedPatterns = ['-unlogged.html', 'login.html', 'register.html'];
         const isUnloggedByUrl = unloggedPatterns.some(pattern => url.includes(pattern));
@@ -95,7 +92,6 @@ class MobileMenu {
     }
 
     isUserAdmin() {
-        // Skip admin check if this is an unlogged page
         if (this.isUnloggedPage()) {
             return false;
         }
@@ -121,7 +117,6 @@ class MobileMenu {
         let headerButtons = '';
 
         if (isUnlogged) {
-            // For unlogged pages: show Login and Sign Up buttons
             headerButtons = `
                 <a href="login.html" class="btn btn-outline">
                     <i class="fas fa-sign-in-alt"></i> Log In
@@ -131,7 +126,6 @@ class MobileMenu {
                 </a>
             `;
         } else {
-            // For logged pages: show Profile and Logout (+ Admin if admin)
             headerButtons = `
                 <a href="profile.html" class="btn btn-outline">
                     <i class="fas fa-user"></i> Profile
@@ -156,7 +150,6 @@ class MobileMenu {
             }
         }
 
-        // Set up navigation links based on page type
         const workoutLinks = isUnlogged ? {
             physiotherapy: 'physiotherapy-unlogged.html',
             kinetotherapy: 'kinetotherapy-unlogged.html',
@@ -244,7 +237,7 @@ class MobileMenu {
 
         if (this.isUnloggedPage()) {
             return {
-                logoutLink: 'WoW.html' // Redirect to main unlogged page
+                logoutLink: 'WoW.html'
             };
         }
 
